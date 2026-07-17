@@ -1,0 +1,49 @@
+{
+  "plugins": [
+    "stylelint-declaration-strict-value"
+  ],
+  "rules": {
+    "scale-unlimited/declaration-strict-value": [
+      [
+        "color",
+        "background-color",
+        "background",
+        "border-color",
+        "border-top-color",
+        "border-right-color",
+        "border-bottom-color",
+        "border-left-color",
+        "fill",
+        "stroke",
+        "box-shadow",
+        "text-shadow",
+        "outline-color"
+      ],
+      {
+        "ignoreValues": [
+          "inherit",
+          "initial",
+          "unset",
+          "transparent",
+          "currentColor",
+          "none",
+          "white",
+          "black",
+          "/^var\\(/"
+        ],
+        "ignoreFunctions": true,
+        "severity": "warning",
+        "message": "颜色值应使用 CSS 变量 var(--*) 而非硬编码值。请使用 :root 中预定义的 token。"
+      }
+    ],
+    "color-no-hex": [true, {
+      "severity": "warning",
+      "message": "禁止使用 hex 颜色值，请使用 CSS 变量 var(--*)。"
+    }],
+    "color-named": ["never", {
+      "ignore": ["inside-function"],
+      "severity": "warning",
+      "message": "禁止使用命名颜色（如 red, blue），请使用 CSS 变量 var(--*)。"
+    }]
+  }
+}
