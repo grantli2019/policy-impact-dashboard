@@ -2954,3 +2954,51 @@ a.policy-source-link:hover::after {
   .profile-score { text-align: center; }
   .pg-label { font-size: 2.8px; }
 }
+/* ═══ Header V2: 搜索即入口 ═══ */
+.header-v2 { padding: 8px 0; }
+.header-inner-v2 { display: flex; align-items: center; gap: 12px; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.logo-compact { flex-shrink: 0; }
+.logo-compact .logo-icon { font-size: 1.5rem; }
+.logo-compact .logo-title { font-size: 1.1rem; }
+.header-search { flex: 1; min-width: 0; max-width: 560px; }
+.ps-header { margin-bottom: 0; }
+.ps-header .ps-input-wrap { padding: 0 12px; background: var(--surface-alt); border-width: 1px; }
+.ps-header .ps-input { padding: 8px 0; font-size: 0.9rem; }
+.ps-header .ps-hint { display: none; }
+.ps-header .ps-hot { display: none; }
+.ps-header .ps-results { position: fixed; top: 56px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; border-radius: var(--r-lg); }
+.header-actions-v2 { flex-shrink: 0; display: flex; align-items: center; gap: 4px; }
+.icon-btn { border: none; background: none; cursor: pointer; font-size: 1.1rem; padding: 6px; border-radius: var(--r-md); transition: background .15s; }
+.icon-btn:hover { background: var(--surface-alt); }
+.header-actions-v2 .upgrade-btn { padding: 6px 10px; font-size: 0.85rem; }
+.header-actions-v2 .persona-chip { font-size: 0.8rem; padding: 4px 10px; }
+
+/* ═══ Tabs V2: 5标签 + 更多下拉 ═══ */
+.tabs-v2 { display: flex; align-items: center; gap: 2px; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+.tabs-v2 .tab { flex: 1; text-align: center; justify-content: center; }
+.tab-more-wrap { position: relative; flex: 1; }
+.tab-more { width: 100%; }
+.tab-dropdown { position: absolute; top: 100%; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: var(--sh-lg); z-index: 200; min-width: 140px; padding: 4px; margin-top: 4px; }
+.tab-drop-item { display: block; width: 100%; text-align: left; padding: 8px 12px; border: none; background: none; cursor: pointer; font-size: 0.85rem; border-radius: var(--r-sm); color: var(--text); transition: background .15s; }
+.tab-drop-item:hover { background: var(--surface-alt); }
+.tab-drop-item.active { color: var(--primary); font-weight: 600; }
+
+/* ═══ 暗黑模式补充 ═══ */
+.dark .ps-header .ps-input-wrap { background: var(--surface-alt); }
+.dark .ps-header .ps-results { background: var(--surface); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.dark .tab-dropdown { background: var(--surface); border-color: var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.dark .tab-drop-item { color: var(--text); }
+.dark .tab-drop-item:hover { background: var(--surface-alt); }
+.dark .icon-btn:hover { background: var(--surface-alt); }
+
+/* ═══ 移动端 ═══ */
+@media (max-width: 768px) {
+  .header-inner-v2 { flex-wrap: wrap; }
+  .header-search { order: 3; flex-basis: 100%; max-width: 100%; }
+  .ps-header .ps-results { width: 95%; top: 100px; }
+  .logo-compact .logo-title { font-size: 1rem; }
+}
+@media (max-width: 480px) {
+  .header-actions-v2 .persona-chip { display: none; }
+  .tabs-v2 .tab { font-size: 0.72rem; padding: 5px 4px; }
+}

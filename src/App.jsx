@@ -1762,7 +1762,7 @@ class ErrorBoundary extends React.Component {
 
 
 /* ═══════ 政策搜索（对标企查查搜索框）═══════ */
-function PolicySearch({ onSwitchTab }) {
+function PolicySearch({ onSwitchTab, variant }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState(null)
   const [dailyCount, setDailyCount] = useState(() => {
@@ -1821,7 +1821,7 @@ function PolicySearch({ onSwitchTab }) {
   const sentColor = s => s === '利好' || s === '偏利好' ? 'var(--success)' : s === '利空' || s === '偏利空' ? 'var(--danger)' : 'var(--text-secondary)'
 
   return (
-    <div className="policy-search">
+    <div className={`policy-search ${variant === 'header' ? 'ps-header' : ''}`}>
       <div className="ps-input-wrap">
         <span className="ps-icon">🔍</span>
         <input className="ps-input" aria-label="搜索政策" role="searchbox" type="text" placeholder="搜索政策（如：公积金、延迟退休、个税、AI教育）"
@@ -2167,6 +2167,7 @@ function App() {
   const [showTour, setShowTour] = useState(() => !sessionStorage.getItem("tour_done"))
   const [showReport, setShowReport] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
   // Track visits
   useEffect(() => {
     try {
@@ -2244,29 +2245,25 @@ function App() {
       {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
       <BackToTop />
 
-      <header className="header">
-        <div className="header-inner">
-          <div className="logo-area">
+      <header className="header header-v2">
+        <div className="header-inner header-inner-v2">
+          <div className="logo-area logo-compact">
             <span className="logo-icon">🧭</span>
-            <div>
-              <h1 className="logo-title">政策罗盘</h1>
-              <p className="logo-sub">读懂政策，做对决策</p>
-            </div>
+            <h1 className="logo-title">政策罗盘</h1>
           </div>
-          <div className="header-actions">
-          <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)} title={darkMode ? '切换亮色模式' : '切换暗黑模式'}>{darkMode ? '☀️' : '🌙'}</button>
+          <div className="header-search">
+            <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="header" />
+          </div>
+          <div className="header-actions header-actions-v2">
+            <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)} title={darkMode ? '切换亮色模式' : '切换暗黑模式'}>{darkMode ? '☀️' : '🌙'}</button>
             {currentPersona && (
               <button className="persona-chip" onClick={() => { localStorage.removeItem('persona'); setPersonaKey(null); setShowModal(true); sessionStorage.removeItem('skipped') }}>
                 {currentPersona.icon} {currentPersona.label}<span className="chip-x">✕</span>
               </button>
             )}
-            {!isPremium() && <button className="upgrade-btn" onClick={() => setShowUpgrade(true)}>⭐ 升级</button>}
-            <button className="report-btn" onClick={() => setShowReport(true)}>📄 报告</button>
-            <button className="share-btn" onClick={() => setShowShare(true)}>📤 分享</button>
-            <div className="header-badge">
-              <span className="badge-label">更新至</span>
-              <span className="badge-date">{timeAgo('2026-07-12')}</span>
-            </div>
+            {!isPremium() && <button className="upgrade-btn" onClick={() => setShowUpgrade(true)}>⭐</button>}
+            <button className="icon-btn" onClick={() => setShowReport(true)} title="下载报告">📄</button>
+            <button className="icon-btn" onClick={() => setShowShare(true)} title="分享">📤</button>
           </div>
         </div>
       </header>
@@ -2274,10 +2271,20 @@ function App() {
       {/* 区域选择器 */}
       <RegionSelector value={regionKey} onChange={handleRegionChange} />
 
-      <nav className="tabs" role="tablist" aria-label="主导航">
-        {[['overview','🏠 总览'],['dimensions','📈 六维度'],['tools','🧮 工具'],['topics','🎯 专题'],['methodology','🔬 方法论'],['dashboard','📊 我的'], ['monitor','🔔 监控'], ['graph','🕸️ 图谱'], ['api','🔌 API']].map(([k, label]) => (
+      <nav className="tabs tabs-v2" role="tablist" aria-label="主导航">
+        {[['overview','🏠 首页'],['dimensions','📋 政策库'],['tools','🧮 工具箱'],['dashboard','👤 我的']].map(([k, label]) => (
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
+        <div className="tab-more-wrap">
+          <button className={`tab tab-more ${['methodology','graph','api','topics','monitor'].includes(activeTab)?'active':''}`} onClick={() => setMoreOpen(!moreOpen)}>⋯ 更多</button>
+          {moreOpen && (
+            <div className="tab-dropdown">
+              {[['topics','🎯 专题'],['methodology','🔬 方法论'],['monitor','🔔 监控'],['graph','🕸️ 图谱'],['api','🔌 API']].map(([k, label]) => (
+                <button key={k} className={`tab-drop-item ${activeTab===k?'active':''}`} onClick={() => { switchTab(k); setMoreOpen(false); }}>{label}</button>
+              ))}
+            </div>
+          )}
+        </div>
       </nav>
 
       <main className="main tab-fade" key={tabKey}>
@@ -2286,8 +2293,6 @@ function App() {
         {activeTab === 'overview' && (
           <div className="overview">
             <WeeklyUpdateBar />
-            <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />
-            <NewsLianboPanel />
             <section className="overall-card">
               <div className="overall-left">
                 <div className="overall-ring" style={{ '--pct': ringValue, '--clr': overallLevel.color }}>
@@ -2407,6 +2412,7 @@ function App() {
         {/* ════════ DIMENSIONS ════════ */}
         {activeTab === 'dimensions' && (
           <div className="dimensions-page">
+            <NewsLianboPanel />
             <div className="dim-pills">
               {currentDims.map(dim => {
                 const isTop = topDimKeys.includes(dim.key)
