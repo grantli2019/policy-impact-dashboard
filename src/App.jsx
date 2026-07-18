@@ -1863,6 +1863,237 @@ function PolicySearch({ onSwitchTab }) {
   )
 }
 
+
+/* ═══════ P2: 付费墙 + 升级模态框 ═══════ */
+const TIERS = {
+  free: { label: '免费版', price: '¥0', features: ['综合指数', '六维度概览', '每日3次搜索', '新闻联播速递'] },
+  personal: { label: '个人版', price: '¥99/年', features: ['无限搜索', '完整行动清单', '政策红利账本', 'PDF报告', '关注5个关键词'] },
+  pro: { label: '专业版', price: '¥299/年', features: ['个人版全部', '政策监控推送', '关系图谱', '决策模拟全场景', '无限关注'] },
+}
+function getTier() { return localStorage.getItem('user_tier') || 'free' }
+function isPremium() { return getTier() !== 'free' }
+
+function UpgradeModal({ onClose }) {
+  const [selected, setSelected] = useState('personal')
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="upgrade-modal" onClick={e => e.stopPropagation()}>
+        <h3 className="upgrade-title">🚀 升级政策罗盘</h3>
+        <p className="upgrade-sub">解锁全部功能，让政策成为你的决策利器</p>
+        <div className="tier-grid">
+          {Object.entries(TIERS).filter(([k]) => k !== 'free').map(([key, tier]) => (
+            <div key={key} className={`tier-card ${selected === key ? 'tier-selected' : ''}`} onClick={() => setSelected(key)}>
+              {key === 'pro' && <span className="tier-badge">推荐</span>}
+              <h4>{tier.label}</h4>
+              <div className="tier-price">{tier.price}</div>
+              <ul className="tier-features">{tier.features.map((f, i) => <li key={i}>✓ {f}</li>)}</ul>
+              <button className={`tier-btn ${selected === key ? 'tier-btn-active' : ''}`}
+                onClick={() => { localStorage.setItem('user_tier', key); onClose(); window.location.reload(); }}>
+                {selected === key ? '选择此方案' : '查看详情'}
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className="upgrade-guarantee">💡 首月¥1体验 · 随时取消 · 7天无理由退款</div>
+        <button className="upgrade-close" onClick={onClose}>暂不升级</button>
+      </div>
+    </div>
+  )
+}
+
+function PaywallGate({ feature, children }) {
+  const [showUpgrade, setShowUpgrade] = useState(false)
+  if (isPremium()) return children
+  return (
+    <div className="paywall-gate">
+      <div className="paywall-blur">{children}</div>
+      <div className="paywall-overlay">
+        <span className="paywall-lock">🔒</span>
+        <span className="paywall-text">{feature}为专业版功能</span>
+        <button className="paywall-btn" onClick={() => setShowUpgrade(true)}>升级解锁</button>
+      </div>
+      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
+    </div>
+  )
+}
+
+/* ═══════ P3: 政策监控 + 推送 ═══════ */
+function PolicyMonitor() {
+  const [keywords, setKeywords] = useState(() => { try { return JSON.parse(localStorage.getItem('monitor_keywords') || '[]') } catch { return [] } })
+  const [input, setInput] = useState('')
+  const [alerts, setAlerts] = useState([])
+  const tier = getTier()
+  const maxKeywords = tier === 'free' ? 3 : tier === 'personal' ? 5 : 99
+
+  const addKeyword = () => {
+    const kw = input.trim()
+    if (!kw || keywords.includes(kw)) return
+    if (keywords.length >= maxKeywords) return
+    const next = [...keywords, kw]
+    setKeywords(next)
+    localStorage.setItem('monitor_keywords', JSON.stringify(next))
+    setInput('')
+    // Check for matches in newsLianboUpdates
+    const matches = newsLianboUpdates.filter(n => n.title.includes(kw) || n.summary?.includes(kw))
+    if (matches.length > 0 && 'Notification' in window && Notification.permission === 'granted') {
+      new Notification('📺 政策罗盘·监控提醒', { body: `"${kw}"有${matches.length}条相关动态` })
+    }
+  }
+  const removeKeyword = (kw) => {
+    const next = keywords.filter(k => k !== kw)
+    setKeywords(next)
+    localStorage.setItem('monitor_keywords', JSON.stringify(next))
+  }
+  const requestNotify = () => { if ('Notification' in window) Notification.requestPermission() }
+
+  // Find matching news for each keyword
+  const matchedNews = keywords.map(kw => ({
+    kw, matches: newsLianboUpdates.filter(n => n.title.includes(kw) || n.summary?.includes(kw)).slice(0, 3)
+  })).filter(m => m.matches.length > 0)
+
+  return (
+    <div className="monitor-panel">
+      <div className="monitor-header">
+        <h3>🔔 政策监控</h3>
+        <span className="monitor-count">{keywords.length}/{maxKeywords} 关键词</span>
+      </div>
+      <div className="monitor-input-row">
+        <input className="monitor-input" placeholder="输入关注关键词（如：公积金、利率）" value={input}
+          onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && addKeyword()} />
+        <button className="monitor-add" onClick={addKeyword}>+ 关注</button>
+      </div>
+      {keywords.length > 0 && (
+        <div className="monitor-tags">
+          {keywords.map(kw => (
+            <span key={kw} className="monitor-tag">{kw}<button className="mt-x" onClick={() => removeKeyword(kw)}>✕</button></span>
+          ))}
+        </div>
+      )}
+      {'Notification' in window && Notification.permission !== 'granted' && (
+        <button className="monitor-notify-btn" onClick={requestNotify}>🔔 开启浏览器通知</button>
+      )}
+      {matchedNews.length > 0 && (
+        <div className="monitor-alerts">
+          <h4>📡 最新动态</h4>
+          {matchedNews.map(m => (
+            <div key={m.kw} className="monitor-alert-group">
+              <span className="mag-kw">🔑 {m.kw}</span>
+              {m.matches.map((n, i) => (
+                <div key={i} className="mag-item">
+                  <span className="mag-date">{n.date}</span>
+                  <span className="mag-title">{n.title}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ═══════ P4: 政策关系图谱 ═══════ */
+function PolicyGraph() {
+  const [selected, setSelected] = useState(null)
+  const nodes = [
+    { id: 'hukou_shebao', label: '户籍社保脱钩', dim: 'employment', x: 50, y: 30 },
+    { id: 'gjj', label: '公积金修订', dim: 'housing', x: 20, y: 60 },
+    { id: 'retirement', label: '延迟退休', dim: 'pension', x: 80, y: 25 },
+    { id: 'superage', label: '超龄劳动者权益', dim: 'employment', x: 85, y: 55 },
+    { id: 'finlaw', label: '金融法', dim: 'finance', x: 50, y: 75 },
+    { id: 'deposit', label: '大额存单管理', dim: 'finance', x: 25, y: 90 },
+    { id: 'ai_mgmt', label: 'AI管理办法', dim: 'industry', x: 75, y: 80 },
+    { id: 'edu_digital', label: '教育数字化', dim: 'education', x: 55, y: 50 },
+    { id: 'property_tax', label: '房地产税', dim: 'housing', x: 15, y: 35 },
+    { id: 'h7', label: '沪七条松绑', dim: 'housing', x: 35, y: 15 },
+    { id: 'birth_subsidy', label: '生育补贴', dim: 'pension', x: 65, y: 10 },
+    { id: 'childcare_law', label: '托育服务法', dim: 'education', x: 90, y: 40 },
+  ]
+  const dimColor = { housing: '#3498db', employment: '#e67e22', education: '#9b59b6', pension: '#e74c3c', finance: '#f1c40f', industry: '#1abc9c' }
+  const selectedNode = nodes.find(n => n.id === selected)
+  const relatedLinks = crossLinks.filter(l => {
+    const n = nodes.find(nd => nd.label.includes(l.from.slice(0,4)) || nd.label.includes(l.to.slice(0,4)))
+    return n?.id === selected
+  })
+
+  return (
+    <div className="policy-graph">
+      <h3 className="pg-title">🕸️ 政策关系图谱</h3>
+      <p className="pg-sub">点击节点查看政策间的传导关系</p>
+      <div className="pg-canvas-wrap">
+        <svg viewBox="0 0 100 100" className="pg-svg">
+          {crossLinks.map((link, i) => {
+            const from = nodes.find(n => n.label.includes(link.from.slice(0,4)))
+            const to = nodes.find(n => n.label.includes(link.to.slice(0,4)))
+            if (!from || !to) return null
+            return <line key={i} x1={from.x} y1={from.y} x2={to.x} y2={to.y} className="pg-edge" />
+          })}
+          {nodes.map(n => (
+            <g key={n.id} className={`pg-node ${selected === n.id ? 'pg-active' : ''}`} onClick={() => setSelected(selected === n.id ? null : n.id)}>
+              <circle cx={n.x} cy={n.y} r={selected === n.id ? 5 : 3.5} fill={dimColor[n.dim]} />
+              <text x={n.x} y={n.y - 5} className="pg-label" textAnchor="middle">{n.label}</text>
+            </g>
+          ))}
+        </svg>
+      </div>
+      {selectedNode && (
+        <div className="pg-detail">
+          <h4>{selectedNode.label}</h4>
+          <div className="pg-detail-dim" style={{ color: dimColor[selectedNode.dim] }}>
+            {dimensions.find(d => d.key === selectedNode.dim)?.icon} {dimensions.find(d => d.key === selectedNode.dim)?.name}
+          </div>
+          {crossLinks.filter(l => l.from.includes(selectedNode.label.slice(0,3)) || l.to.includes(selectedNode.label.slice(0,3))).map((l, i) => (
+            <div key={i} className="pg-link-item">
+              <span className="pg-link-chain">{l.from} → {l.to}</span>
+              <span className="pg-link-note">💡 {l.note}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="pg-legend">
+        {Object.entries(dimColor).map(([dim, color]) => (
+          <span key={dim} className="pg-legend-item"><span className="pg-dot" style={{ background: color }} />{dimensions.find(d => d.key === dim)?.name}</span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ P5: API文档页 ═══════ */
+function ApiDocs() {
+  const endpoints = [
+    { method: 'GET', path: '/api/v1/policies', desc: '获取政策列表', params: 'dimension, region, status' },
+    { method: 'GET', path: '/api/v1/impact-score', desc: '计算政策影响指数', params: 'persona, region' },
+    { method: 'GET', path: '/api/v1/news', desc: '获取新闻联播政策速递', params: 'date, dimension' },
+    { method: 'GET', path: '/api/v1/deadlines', desc: '获取政策截止日期', params: 'persona' },
+    { method: 'GET', path: '/api/v1/topics', desc: '获取场景化专题', params: 'persona, region' },
+  ]
+  return (
+    <div className="api-docs">
+      <h2 className="section-title">🔌 政策数据 API</h2>
+      <p className="api-intro">面向企业客户和开发者，提供结构化政策数据接口。适用于房产中介、金融机构、企业HR、政策研究机构。</p>
+      <div className="api-pricing">
+        <div className="api-plan"><span className="ap-name">体验版</span><span className="ap-price">免费</span><span className="ap-limit">100次/月</span></div>
+        <div className="api-plan"><span className="ap-name">标准版</span><span className="ap-price">¥500/月</span><span className="ap-limit">10,000次/月</span></div>
+        <div className="api-plan"><span className="ap-name">企业版</span><span className="ap-price">¥5,000/月</span><span className="ap-limit">无限调用</span></div>
+      </div>
+      <div className="api-endpoints">
+        {endpoints.map((ep, i) => (
+          <div key={i} className="api-ep">
+            <span className={`api-method api-${ep.method.toLowerCase()}`}>{ep.method}</span>
+            <code className="api-path">{ep.path}</code>
+            <span className="api-desc">{ep.desc}</span>
+            <span className="api-params">参数: {ep.params}</span>
+          </div>
+        ))}
+      </div>
+      <div className="api-cta">
+        <p>📧 商务合作请联系：<a href="mailto:api@policycompass.app">api@policycompass.app</a></p>
+      </div>
+    </div>
+  )
+}
+
 /* ═══════ 新闻联播政策速递 ═══════ */
 function NewsLianboPanel() {
   const [expanded, setExpanded] = useState(false)
@@ -1934,6 +2165,7 @@ function App() {
   useEffect(() => { document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : ''); localStorage.setItem('theme', darkMode ? 'dark' : 'light') }, [darkMode])
   const [showTour, setShowTour] = useState(() => !sessionStorage.getItem("tour_done"))
   const [showReport, setShowReport] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
   // Track visits
   useEffect(() => {
     try {
@@ -2008,6 +2240,7 @@ function App() {
       {showModal && <PersonaModal onSelect={handlePersonaSelect} onSkip={handleSkip} />}
       {showShare && <ShareCard personaKey={personaKey} regionKey={regionKey} onClose={() => setShowShare(false)} />}
       {showReport && <ReportExport personaKey={personaKey} regionKey={regionKey} onClose={() => setShowReport(false)} />}
+      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
       <BackToTop />
 
       <header className="header">
@@ -2026,6 +2259,7 @@ function App() {
                 {currentPersona.icon} {currentPersona.label}<span className="chip-x">✕</span>
               </button>
             )}
+            {!isPremium() && <button className="upgrade-btn" onClick={() => setShowUpgrade(true)}>⭐ 升级</button>}
             <button className="report-btn" onClick={() => setShowReport(true)}>📄 报告</button>
             <button className="share-btn" onClick={() => setShowShare(true)}>📤 分享</button>
             <div className="header-badge">
@@ -2040,7 +2274,7 @@ function App() {
       <RegionSelector value={regionKey} onChange={handleRegionChange} />
 
       <nav className="tabs" role="tablist" aria-label="主导航">
-        {[['overview','🏠 总览'],['dimensions','📈 六维度'],['tools','🧮 工具'],['topics','🎯 专题'],['methodology','🔬 方法论'],['dashboard','📊 我的']].map(([k, label]) => (
+        {[['overview','🏠 总览'],['dimensions','📈 六维度'],['tools','🧮 工具'],['topics','🎯 专题'],['methodology','🔬 方法论'],['dashboard','📊 我的'], ['monitor','🔔 监控'], ['graph','🕸️ 图谱'], ['api','🔌 API']].map(([k, label]) => (
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
       </nav>
@@ -2458,6 +2692,27 @@ function App() {
         {activeTab === 'dashboard' && (
           <Dashboard personaKey={personaKey} regionKey={regionKey} bookmarks={bookmarks}
             onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />
+        )}
+
+        {/* ════════ MONITOR ════════ */}
+        {activeTab === 'monitor' && (
+          <div className="tab-content-wrap">
+            <PolicyMonitor />
+          </div>
+        )}
+
+        {/* ════════ GRAPH ════════ */}
+        {activeTab === 'graph' && (
+          <div className="tab-content-wrap">
+            <PolicyGraph />
+          </div>
+        )}
+
+        {/* ════════ API ════════ */}
+        {activeTab === 'api' && (
+          <div className="tab-content-wrap">
+            <ApiDocs />
+          </div>
         )}
       </main>
 
