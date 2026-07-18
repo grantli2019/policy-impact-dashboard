@@ -62,14 +62,24 @@ export const personas = [
 
 /* ── 本周更新数据 ──────────────────────────────────────────── */
 export const weeklyUpdates = [
+  { date: "2026-07-17", dim: "industry", type: "new", text: "2026世界人工智能大会在上海开幕，AI全球治理高级别会议举行", impact: "偏利好" },
+  { date: "2026-07-15", dim: "employment", type: "update", text: "上半年GDP同比增长4.7%，经济总量达69.6万亿元", impact: "偏利好" },
+  { date: "2026-07-15", dim: "finance", type: "update", text: "个人住房贷款利率约3.1%，企业贷款利率约3.0%创新低", impact: "偏利好" },
+  { date: "2026-07-15", dim: "housing", type: "update", text: "上海高质量推进城市更新，老旧小区加装电梯、独立厨卫改造", impact: "偏利好" },
+  { date: "2026-07-14", dim: "industry", type: "new", text: "上半年进出口规模首破25万亿元，同比增长16.9%", impact: "偏利好" },
+  { date: "2026-07-14", dim: "elderly", type: "update", text: "基本医保参保人数达13.19亿，基金收入增长8.49%", impact: "偏利好" },
+  { date: "2026-07-14", dim: "finance", type: "new", text: "上半年新能源汽车新注册519.5万辆，占比近半", impact: "偏利好" },
+  { date: "2026-07-13", dim: "industry", type: "new", text: "人工智能产业规模突破1.2万亿元，锻造高质量发展新引擎", impact: "偏利好" },
+  { date: "2026-07-12", dim: "housing", type: "update", text: "夏粮首次突破3000亿斤，严守18亿亩耕地红线", impact: "偏利好" },
+  { date: "2026-07-12", dim: "industry", type: "update", text: "上半年多项先行指标企稳回升，工业园区热度指数上升3.9%", impact: "偏利好" },
   { date: "2026-07-04", dim: "industry", type: "new", text: "电子商务法修正草案开始征求意见", impact: "偏利好" },
-  { date: "2026-07-02", dim: "employment", type: "update", text: "铁路交通事故调查处理规则修订征求意见", impact: "中性" },
+  { date: "2026-07-03", dim: "housing", type: "update", text: "2000亿元设备更新资金全部下达，含老旧电梯改造", impact: "偏利好" },
   { date: "2026-06-30", dim: "finance", type: "new", text: "化妆品标准管理办法征求意见开始", impact: "偏利好" },
-  { date: "2026-06-30", dim: "finance", type: "new", text: "海关免税商店监管办法修订征求意见", impact: "偏利好" },
-  { date: "2026-06-29", dim: "finance", type: "new", text: "实施价格监督员制度暂行规定征求意见", impact: "中性" },
+  { date: "2026-06-28", dim: "finance", type: "new", text: "第三批625亿元以旧换新资金下达，全年共1875亿元", impact: "偏利好" },
   { date: "2026-06-26", dim: "finance", type: "new", text: "8件法律草案同时征求意见（含金融法、招投标法）", impact: "偏利好" },
+  { date: "2026-06-25", dim: "industry", type: "update", text: "发电装机突破40亿千瓦，新能源占比达62%", impact: "偏利好" },
   { date: "2026-06-17", dim: "employment", type: "new", text: "外卖平台补贴行为规范十条征求意见", impact: "偏利好" },
-  { date: "2026-06-17", dim: "housing", type: "update", text: "上海入河排污口审批方案征求意见", impact: "中性" },
+  { date: "2026-06-15", dim: "education", type: "new", text: "两重建设推动新增普通高中学位超60万个", impact: "偏利好" },
 ];
 
 /* ── 评分引擎 ─────────────────────────────────────────────── */
@@ -193,6 +203,9 @@ export const dimensions = [
       { policyName: "外卖平台补贴行为规范", breadth: 7, depth: 6, direction: 1, status: "进行中", date: "2026-06-17", note: "骑手收入有望改善", confidence: "★☆☆", rationale: "breadth=7: 外卖骑手+消费者数千万人。depth=6: 平台用工规范化的重要一步。", url: "https://www.samr.gov.cn/hd/zjdc/" },
       { policyName: "电子商务法修正草案", breadth: 7, depth: 7, direction: 1, status: "进行中", date: "2026-07-04", note: "电商从业者合规化", confidence: "★☆☆", rationale: "breadth=7: 电商从业者和消费者覆盖面广。depth=7: 法律修订具有长期约束力。", url: "http://www.npc.gov.cn/npc/c2/c30834/202607/t20260704_1.html" },
       { policyName: "个人信息保护法执法加强", breadth: 8, depth: 7, direction: -1, status: "已发布", date: "2025-01-01", note: "互联网企业合规成本上升", confidence: "★★★", rationale: "breadth=8: 数亿互联网用户。depth=7: 执法力度显著加强。direction=-1: 企业合规成本增加。", url: "https://www.cac.gov.cn/gfxwj.htm" },
+
+      { policyName: "上半年GDP同比增长4.7%", breadth: 10, depth: 8, direction: 1, status: "已发布", date: "2026-07-15", note: "经济总量69.6万亿元，就业基本盘稳固", confidence: "★★★", rationale: "breadth=10: 影响全体国民。depth=8: 宏观经济基本面决定就业和收入预期。", url: "https://www.stats.gov.cn/" },
+      { policyName: "春招2.3万场招聘会1268万个岗位", breadth: 8, depth: 6, direction: 1, status: "已发布", date: "2026-06-15", note: "高校毕业生就业服务专项", confidence: "★★★", rationale: "breadth=8: 覆盖全国高校毕业生。depth=6: 年度性就业服务。", url: "https://www.mohrss.gov.cn/" },
     ],
     tips: [
       { title: "❌ 社保断缴3个月就清零", tip: "谣言！社保断缴后养老保险累计年限不清零，医疗保险个人账户余额也不清零。但医保断缴超过3个月，重新缴纳后有6个月等待期不能报销。" },
@@ -229,6 +242,9 @@ export const dimensions = [
       { policyName: "职业教育法修订（2022年施行）", breadth: 8, depth: 9, direction: 1, status: "已发布", date: "2022-05-01", note: "职教与普教同等地位首次入法", confidence: "★★★", rationale: "breadth=8: 全国1500所高职院校+数千万职教学生。depth=9: 30年来首次大修，制度性突破。", url: "http://www.npc.gov.cn/npc/c30834/202204/3832a91a55004a6c97c0e3c18e8f6d3c.shtml" },
       { policyName: "中小学科学教育加法行动", breadth: 7, depth: 7, direction: 1, status: "已发布", date: "2024-05-01", note: "实验课时占比提升，STEM教育强化", confidence: "★★★", rationale: "breadth=7: 全国1.5亿中小学生。depth=7: 课程体系结构性调整。", url: "http://www.moe.gov.cn/srcsite/A06/s3732/202405/t20240501_1125432.html" },
       { policyName: "国家教育数字化战略行动", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2025-03-01", note: "AI进入中小学课堂加速推进", confidence: "★★★", rationale: "breadth=8: 覆盖全国2.9亿在校学生。depth=8: 教育模式根本性变革。", url: "http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202503/t20250301_1180234.html" },
+
+      { policyName: "新增普通高中学位超60万个", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2026-06-15", note: "两重建设推动教育资源扩容", confidence: "★★★", rationale: "breadth=8: 影响全国初中毕业生家庭。depth=7: 学位供给结构性改善。", url: "https://www.moe.gov.cn/" },
+      { policyName: "AI教育试点加速推广", breadth: 7, depth: 8, direction: 1, status: "进行中", date: "2026-07-17", note: "世界人工智能大会教育论坛", confidence: "★★☆", rationale: "breadth=7: 全国中小学生。depth=8: AI重塑教育模式。", url: "https://www.moe.gov.cn/" },
     ],
     regionalPolicies: {
       yangtze_delta: [
@@ -260,6 +276,8 @@ export const dimensions = [
       { policyName: "医疗保障法草案（二次审议稿）", breadth: 9, depth: 9, direction: 1, status: "已结束", date: "2026-04-30", note: "医保基金规范化", confidence: "★★☆", rationale: "breadth=9: 影响全部13.6亿医保参保人。depth=9: 首部医保领域专门法律。", url: "https://www.moj.gov.cn/pub/sfbgw/lfyjzj/" },
       { policyName: "超龄劳动者基本权益保障", breadth: 7, depth: 9, direction: 1, status: "已结束", date: "2025-07-31", note: "延迟退休配套", confidence: "★★☆", rationale: "breadth=7: 直接影响退休后再就业群体。depth=9: 为延迟退休提供法律保障框架。", url: "https://www.mohrss.gov.cn/SYrlzyhshbzb/zwgk/szrs/gkml/202507/t20250731_532567.html" },
       { policyName: "常住地基本公共服务（老人随迁）", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2026-01-01", note: "随迁老人可就地就医养老", confidence: "★★★", rationale: "breadth=8: 影响所有随迁老人家庭。depth=8: 打破养老服务的户籍壁垒。", url: "https://www.gov.cn/zhengce/content/202601/content_7003456.htm" },
+
+      { policyName: "基本医保参保人数达13.19亿", breadth: 10, depth: 7, direction: 1, status: "已发布", date: "2026-07-14", note: "参保率稳定在95%，基金收入增长8.49%", confidence: "★★★", rationale: "breadth=10: 覆盖全民。depth=7: 医保基金可持续性。", url: "https://www.nhsa.gov.cn/" },
     ],
     regionalPolicies: {
       yangtze_delta: [
@@ -290,6 +308,9 @@ export const dimensions = [
       { policyName: "税收征收管理法修订", breadth: 8, depth: 7, direction: -1, status: "已结束", date: "2025-03-28", note: "高收入群体监管加强", confidence: "★★☆", rationale: "breadth=8: 所有纳税人。depth=7: 征管手段升级。", url: "https://www.chinatax.gov.cn/chinatax/n810219/n810724/common_list_n810774.html" },
       { policyName: "化妆品标准管理办法", breadth: 5, depth: 5, direction: 1, status: "进行中", date: "2026-06-30", note: "消费品安全标准提升", confidence: "★☆☆", rationale: "breadth=5: 主要影响化妆品消费者。", url: "https://www.nmpa.gov.cn" },
       { policyName: "禁止传销条例修订", breadth: 6, depth: 6, direction: 1, status: "已结束", date: "2026-05-29", note: "消费安全环境改善", confidence: "★★☆", rationale: "breadth=6: 保护易受骗群体。", url: "https://www.samr.gov.cn/hd/zjdc/" },
+
+      { policyName: "个人住房贷款利率降至3.1%", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2026-07-15", note: "购房成本持续降低，同比基本持平", confidence: "★★★", rationale: "breadth=8: 影响所有房贷用户。depth=7: 利率水平直接影响月供和购房决策。", url: "http://www.pbc.gov.cn/" },
+      { policyName: "消费品以旧换新资金1875亿元", breadth: 8, depth: 6, direction: 1, status: "已发布", date: "2026-06-28", note: "三批625亿元超长期特别国债支持", confidence: "★★★", rationale: "breadth=8: 覆盖全国消费者。depth=6: 年度性财政刺激。", url: "https://www.ndrc.gov.cn/" },
     ],
     regionalPolicies: {
       yangtze_delta: [
@@ -1683,8 +1704,12 @@ export const dashboardRecommendations = {
   freelancer: { topics: ["workplace_rights", "medicare_guide"], scenarios: ["start_business"] },
 };
 
-/* ── 新闻联播政策速递（06-18 ~ 07-14）────────── */
+/* ── 新闻联播政策速递（06-18 ~ 06-25）────────── */
 export const newsLianboUpdates = [
+  { date: "07-17", title: "2026世界人工智能大会教育论坛：AI重塑教育模式", dim: "education", sentiment: "利好", data: ["突破1.2万亿", "15所", "100亿"], summary: "世界人工智能大会教育论坛在上海举行，AI教育试点加速推广，科学教育加法全面推进，中小学AI课程设置扩大。", source: "新闻联播 20260717" },
+  { date: "06-18", title: "国聘行动北京行高校毕业生就业服务专场启动", dim: "education", sentiment: "利好", data: ["2万", "14万", "1300万"], summary: "国聘行动北京行高校毕业生就业服务专场活动启动，线上线下同步提供超2万个就业岗位，累计汇聚超14万家企业。", source: "新闻联播 20260618" },
+  { date: "06-15", title: "两重建设推动新增普通高中学位超60万个", dim: "education", sentiment: "利好", data: ["60万", "76个", "12.4万亿"], summary: "今年两重建设将推动全国新增普通高中学位超60万个，布局76个国家产教融合创新平台，教育社保等4项支出超12.4万亿。", source: "新闻联播 20260615" },
+  { date: "06-15", title: "持续增进民生福祉：普惠托育扩面+养老服务体系升级", dim: "pension", sentiment: "利好", data: ["4000个", "130家", "90%"], summary: "辽宁新增普惠托位4000个，安徽新建130家社区嵌入式养老服务机构，贵州县域内基层医疗就诊率保持在90%以上。", source: "新闻联播 20260615" },
   { date: "06-18", title: "加快下达“两新”项目资金持续释放政策效能", dim: "housing", sentiment: "利好", data: ["2000亿元", "625亿元", "1851亿元"], summary: "记者今天（6月18日）从国家发展改革委了解到，6月底前，国家将下达今年全部2000亿元设备更新项目清单和第三批625亿元消费品以旧换新资金。 今年以来，两新政策在支持范围、补贴标准、实施机制等方面都进", source: "新闻联播 20260618" },
   { date: "06-18", title: "端午临近节日市场供应丰富", dim: "finance", sentiment: "利好", data: ["10万", "29.5万", "1500万元"], summary: "端午将至，各地节日氛围渐浓，时令商品热销，民俗文化带动消费市场持续升温。 端午佳节临近，上海多家老字号的特色食品进入销售高峰。传统的大肉粽、赤豆粽持续热销，不少商家还在口味上推陈出新，乌米豆沙粽等新品", source: "新闻联播 20260618" },
   { date: "06-18", title: "海南自贸港全岛封关半年政策红利持续释放", dim: "industry", sentiment: "利好", data: ["10个", "60%", "26.45亿元"], summary: "海南自贸港全岛封关半年，通关便利化水平持续提升。一线报关单申报项目从105项精简至33项。10个二线口岸出岛申报项目简化60%以上。封关至2026年5月31日，零关税政策进口货物26.45亿元、同比增", source: "新闻联播 20260618" },
@@ -1702,18 +1727,16 @@ export const newsLianboUpdates = [
   { date: "06-27", title: "筑牢基层战斗堡垒建设幸福和美乡村", dim: "employment", sentiment: "中性", data: ["4600元", "24600元", "100%"], summary: "从早年基层建设软弱涣散村到获评全国先进基层党组织，十多年间，河南省兰考县仪封镇代庄村党组织坚持党建引领，一步步把代庄村建成了产业兴旺、治理有序、村民富裕的乡村振兴样板村。 记者在代庄村采访时，正赶上共", source: "新闻联播 20260627" },
   { date: "06-27", title: "今年前5个月工业企业利润实现较快增长", dim: "industry", sentiment: "利好", data: ["5个", "增长18.8%", "0.6个百分点"], summary: "国家统计局今天（6月27日）发布的数据显示，15月份，全国规模以上工业企业利润同比增长18.8%，比14月份加快0.6个百分点。 从门类看，制造业企业利润同比增长20%。其中，高技术制造业利润同比增长", source: "新闻联播 20260627" },
   { date: "06-28", title: "新一批支持消费品以旧换新资金下达", dim: "finance", sentiment: "利好", data: ["625亿元", "1875亿元", "超过30%"], summary: "记者从国家发展改革委了解到，今年第三批625亿元超长期特别国债支持消费品以旧换新资金近日下达，至此，今年以来共下达消费品以旧换新资金1875亿元，激发消费潜力加速释放。 今年15月，限额以上单位中高能", source: "新闻联播 20260628" },
-  { date: "06-28", title: "前五个月我国物流运行结构优化质效提升", dim: "finance", sentiment: "利好", data: ["146.6万亿元", "增长5.2%", "增长15.1%"], summary: "中国物流与采购联合会今天（6月28日）公布，今年15月份，全国社会物流总额146.6万亿元，同比增长5.2%。高端制造领域物流需求保持较快增长。5月份高技术制造业、装备制造业相关物流需求同比分别增长1", source: "新闻联播 20260628" },
+  { date: "06-28", title: "前五个月我国物流运行结构优化质效提升", dim: "industry", sentiment: "利好", data: ["146.6万亿元", "增长5.2%", "增长15.1%"], summary: "中国物流与采购联合会今天（6月28日）公布，今年15月份，全国社会物流总额146.6万亿元，同比增长5.2%。高端制造领域物流需求保持较快增长。5月份高技术制造业、装备制造业相关物流需求同比分别增长1", source: "新闻联播 20260628" },
   { date: "06-28", title: "香港回归29年来内地与香港贸易值年均增长6.7%", dim: "industry", sentiment: "中性", data: ["增长6.7%", "4208.7亿元", "2.6万亿元"], summary: "据深圳海关统计，香港回归29年来，内地与香港贸易值从1997年的4208.7亿元增长至2025年的2.6万亿元，年均增长6.7%。今年前5个月，内地与香港贸易进出口值达1.4万亿元，同比增长48.6%", source: "新闻联播 20260628" },
   { date: "06-30", title: "中国共产党最新党内统计数据发布", dim: "employment", sentiment: "利好", data: ["10128.6万", "101.5万", "543.1万"], summary: "中央组织部最新党内统计数据显示，截至2025年底，中国共产党党员总数为10128.6万名，比上年净增101.5万名；党的基层组织543.1万个，比上年净增18.1万个。 党员总量适度增长。党员总量比上", source: "新闻联播 20260630" },
   { date: "06-30", title: "夏播粮食近八成夏管全面展开", dim: "finance", sentiment: "利好", data: ["6000万", "3台", "8个"], summary: "眼下，全国夏播粮食进度近八成，夏季田间管理全面展开。各地因地制宜，夯实秋粮丰收基础。 今年，山东夏播粮食面积预计稳定在6000万亩以上，当地利用农机购置与应用补贴、农机报废更新补贴等惠农政策，加大推广", source: "新闻联播 20260630" },
   { date: "06-30", title: "中国制造业采购经理指数升至50.3%", dim: "industry", sentiment: "利好", data: ["50.3%", "0.3个百分点", "4个"], summary: "国家统计局、中国物流与采购联合会今天（6月30日）公布，6月份中国制造业采购经理指数为50.3%，较上月上升0.3个百分点。指数连续4个月运行在50%及以上的水平，制造业发展动能在增强。 从主要分项指", source: "新闻联播 20260630" },
   { date: "07-03", title: "今年2000亿元设备更新资金已全部下达", dim: "housing", sentiment: "利好", data: ["2000亿元", "22个", "约1.1万"], summary: "记者今天（7月3日）从国家发展改革委了解到，今年第三批设备更新项目清单和资金安排已下达，支持能源电力、物流、教育、养老机构、线下消费商业设施、老旧营运货车、住宅老旧电梯等领域设备更新和老旧小区加装电梯", source: "新闻联播 20260703" },
-  { date: "07-04", title: "“七一勋章”获得者李连成：当干部就应该能吃亏", dim: "employment", sentiment: "中性", data: ["17万元", "68万元", "突破42000元"], summary: "七一勋章获得者、河南省濮阳县庆祖镇西辛庄村党支部书记李连成，30多年来，他以当干部就应该能吃亏的朴素信念，带领乡亲们走出一条集体共富的乡村振兴之路。 眼下，西辛庄村农业产业园里，今年新引进的75亩无土", source: "新闻联播 20260704" },
   { date: "07-04", title: "西渝高铁石家梁隧道贯通", dim: "industry", sentiment: "中性", data: ["5个", "13个", "7个"], summary: "今天（7月4日），西安至重庆高速铁路控制性工程全长11908米的石家梁隧道顺利贯通。西渝高铁全线预计2028年建成通车，届时，重庆到西安的列车运行时间，将由现在的最快5个多小时缩短至2小时左右。 全球", source: "新闻联播 20260704" },
-  { date: "07-06", title: "携手构建人类命运共同体谱写和平发展新篇章", dim: "industry", sentiment: "利好", data: ["超过4000个", "1万亿", "突破13万"], summary: "中国共产党坚持胸怀天下，既为中国人民谋幸福、为中华民族谋复兴，也为人类谋进步、为世界谋大同。构建人类命运共同体是习近平外交思想的核心理念，鲜明体现了当代中国共产党人的全球视野，展现了中国将自身发展与世", source: "新闻联播 20260706" },
   { date: "07-06", title: "今年“两重”建设项目清单全部下达完毕", dim: "industry", sentiment: "中性", data: ["1935亿元", "8000亿元", "1417个"], summary: "记者从国家发展改革委了解到，2026年第三批两重建设项目近日已下达，共安排超长期特别国债资金1935亿元。至此，今年两重建设项目清单已全部下达完毕。 今年以来，国家发展改革委联合有关行业主管部门，共安", source: "新闻联播 20260706" },
   { date: "07-07", title: "中央组织部从代中央管理党费中划拨6000万元用于支持广西、甘肃等5省区防汛救灾工", dim: "pension", sentiment: "利好", data: ["6000万元", "84700人", "54468人"], summary: "近日，中央组织部从代中央管理党费中给广西、甘肃等5省区划拨专项资金6000万元，用于支持防汛救灾工作。 极端天气影响我国多地各方全力组织抢险救援 近日，极端天气影响广西、湖北、甘肃等地，各地各部门全力", source: "新闻联播 20260707" },
-  { date: "07-07", title: "6月份中国仓储指数重回扩张区间", dim: "industry", sentiment: "利好", data: ["50.2%", "0.6个百分点", "20万"], summary: "中国物流与采购联合会今天（7月7日）公布，6月份中国仓储指数为50.2%，较上月上升0.6个百分点。其中，新订单指数回升明显，钢材、建材、机械设备等与基建相关的大宗商品仓储需求表现较好。 互联网企业云", source: "新闻联播 20260707" },
+  { date: "07-07", title: "6月份中国仓储指数重回扩张区间", dim: "employment", sentiment: "利好", data: ["50.2%", "0.6个百分点", "20万"], summary: "中国物流与采购联合会今天（7月7日）公布，6月份中国仓储指数为50.2%，较上月上升0.6个百分点。其中，新订单指数回升明显，钢材、建材、机械设备等与基建相关的大宗商品仓储需求表现较好。 互联网企业云", source: "新闻联播 20260707" },
   { date: "07-12", title: "严守耕地红线筑牢国家粮食安全根基", dim: "housing", sentiment: "利好", data: ["突破3000亿", "18亿", "超过2000元"], summary: "粮食安全是国之大者，耕地是粮食生产的命根子。习近平总书记指出，要守住耕地这个命根子，坚决整治乱占、破坏耕地违法行为，加大高标准农田建设投入和管护力度，确保耕地数量有保障、质量有提升。今年以来，各地着力", source: "新闻联播 20260712" },
   { date: "07-12", title: "上半年多项先行指标企稳回升", dim: "industry", sentiment: "利好", data: ["3.9%", "增长15.6%", "增长23%"], summary: "国家信息中心今天（7月12日）发布最新数据显示，今年上半年，多项先行指标企稳回升，彰显出宏观经济韧性强、动能足的积极态势。 工业生产稳健复苏。16月份，工业园区生产热度指数同比上升3.9%，工业生产活", source: "新闻联播 20260712" },
   { date: "07-12", title: "我国新材料领域持续取得新突破", dim: "industry", sentiment: "利好", data: ["40%", "550亿元", "近10万亿元"], summary: "今年以来，我国新材料产业重点领域密集取得原创性成果突破，惠及高端制造、人工智能等一批关键产业，成为培育新质生产力的重要引擎。 现在您看到的这片薄薄的材料，是我国最新研制的新型智能材料。您可别小瞧它，只", source: "新闻联播 20260712" },
@@ -1724,5 +1747,12 @@ export const newsLianboUpdates = [
   { date: "07-14", title: "今年上半年我国货物贸易进出口同比增长16.9%", dim: "industry", sentiment: "利好", data: ["增长16.9%", "突破25万亿元", "25.47万亿元"], summary: "国务院新闻办公室今天（7月14日）举行发布会，海关总署介绍，今年上半年，我国进出口规模历史同期首次突破25万亿元。在复杂严峻的外部环境下，我国外贸增势强劲、走势稳健。 据海关统计，今年上半年，我国货物", source: "新闻联播 20260714" },
   { date: "07-14", title: "各地各部门多措施应对台风“巴威”影响", dim: "housing", sentiment: "利好", data: ["超过18亿", "3000万元", "6.1%"], summary: "今年第9号台风巴威给我国东北地区带来强降雨，各地各部门多举措全力应对。 受台风巴威影响，东北多地出现大到暴雨。辽宁省中北部从12日开始出现暴雨到大暴雨，局地特大暴雨。沈阳部分地区的累计降雨量超过450", source: "新闻联播 20260714" },
   { date: "07-14", title: "今年上半年新注册登记新能源汽车占比近半", dim: "finance", sentiment: "中性", data: ["3.71亿", "13.19%", "519.5万"], summary: "公安部今天（7月14日）发布数据，截至2026年6月底，全国汽车保有量达3.71亿辆，其中，新能源汽车保有量占汽车总量的13.19%。今年上半年，全国新注册登记新能源汽车519.5万辆，占汽车新注册登", source: "新闻联播 20260714" },
-  { date: "07-14", title: "15月全国基本医保基金收入同比增长8.49%", dim: "pension", sentiment: "利好", data: ["增长8.49%", "13.19亿", "增加469万"], summary: "截至今年5月底，全国基本医保参保人数达13.19亿人，同比增加469万人，参保率稳定在95%。今年15月，基本医保基金收入1.61万亿元，同比增长8.49%，支出1.21万亿元，同比增长2.12%，基", source: "新闻联播 20260714" }
+  { date: "07-14", title: "15月全国基本医保基金收入同比增长8.49%", dim: "pension", sentiment: "利好", data: ["增长8.49%", "13.19亿", "增加469万"], summary: "截至今年5月底，全国基本医保参保人数达13.19亿人，同比增加469万人，参保率稳定在95%。今年15月，基本医保基金收入1.61万亿元，同比增长8.49%，支出1.21万亿元，同比增长2.12%，基", source: "新闻联播 20260714" },
+  { date: "07-15", title: "上半年GDP同比增长4.7%中国经济持续向新向优", dim: "employment", sentiment: "利好", data: ["增长4.7%", "达到69.6万亿元", "增长13.3%"], summary: "国务院新闻办公室今天（7月15日）举行新闻发布会，国家统计局发布的数据显示，今年上半年，中国经济顶住压力，有效应对外部冲击挑战，国内生产总值同比增长4.7%，延续了总体平稳、向新向优的发展态势，展现出", source: "新闻联播 20260715" },
+  { date: "07-15", title: "上半年金融总量合理增长信贷结构持续优化", dim: "finance", sentiment: "利好", data: ["增长8.0%", "10.72万亿元", "8.51万亿元"], summary: "国务院新闻办公室今天（7月15日）举行新闻发布会，中国人民银行发布的数据显示，今年上半年，金融总量合理增长，金融体系对实体经济支持力度稳固。 数据显示，上半年金融总量合理增长。6月末，广义货币（M2）", source: "新闻联播 20260715" },
+  { date: "07-15", title: "美联储主席：高通胀已成为过度负担", dim: "finance", sentiment: "中性", data: ["4.2%", "3.5%", "2%"], summary: "美国联邦储备委员会主席沃什14日表示，高通胀已成为美国家庭和企业的过度负担，美联储不能容忍持续高企的通胀率。美国劳工部当天发布的数据显示，受能源价格下跌影响，美国6月消费者价格指数（CPI）涨幅从5月", source: "新闻联播 20260715" },
+  { date: "07-16", title: "我国中西部地区最大乙烯产业基地建成", dim: "industry", sentiment: "中性", data: ["120万", "10亿", "137万"], summary: "我国中西部地区最大乙烯产业基地中国石油独山子石化塔里木120万吨乙烯绿色低碳示范工程今天（7月16日）在新疆建成投产，工程构建起全链条低碳技术闭环体系，实现了二氧化碳、副产氢气全部回收再利用，每年可消", source: "新闻联播 20260716" },
+  { date: "07-17", title: "上半年我国涉外收支规模创新高外汇市场交易量稳步增长", dim: "industry", sentiment: "利好", data: ["9.2万亿", "增长21%", "2.9万亿"], summary: "国务院新闻办今天（7月17日）举行新闻发布会，介绍2026年上半年我国外汇收支情况。国家外汇管理局数据显示，上半年我国涉外收支规模创新高，银行代客涉外收入和支出合计9.2万亿美元，同比增长21%；银行", source: "新闻联播 20260717" },
+  { date: "06-24", title: "链博会与会嘉宾：中国开辟全球供应链合作新机遇", dim: "industry", sentiment: "中性", data: ["676家", "200个"], summary: "第四届链博会吸引了676家企业和行业机构参展，超200个境外团组专程来华观展洽谈。多国与会嘉宾表示，中国正不断为全球供应链开放合作带来新机遇。 本届链博会第一天，记者遇到了一位来自澳大利亚的参展嘉宾。", source: "新闻联播 20260624" },
+  { date: "06-25", title: "暑期档电影片单发布2026年电影票房超170亿元", dim: "finance", sentiment: "中性", data: ["170亿元", "超过2680亿元"], summary: "2026年暑期档电影片单今天（6月25日）发布，暑期档影片涵盖革命历史、科幻、喜剧、动画等多种类型，为观众带来多样化的观影选择，助力观影热情持续走高。截至昨晚（6月24日），2026年度电影票房已超1", source: "新闻联播 20260625" }
 ];
