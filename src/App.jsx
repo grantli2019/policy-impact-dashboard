@@ -1504,17 +1504,81 @@ function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
   const progress = (() => { try { return JSON.parse(localStorage.getItem("action_progress") || "{}") } catch { return {} } })()
   const done = progress[personaKey] || []
   const plans = actionPlans[personaKey] || []
+  const dividends = policyDividends[personaKey] || []
+  const confirmedTotal = dividends.filter(d => d.confirmed && d.amount > 0).reduce((a, d) => a + d.amount, 0)
+  const riskTotal = dividends.filter(d => d.isRisk && d.amount < 0).reduce((a, d) => a + d.amount, 0)
+  const dims = getDimensionsForRegion(regionKey)
+  const dimScores = dims.map(d => ({ ...d, idx: calcDimensionScore(d) }))
+  const overallIndex = calcOverallIndex(personaKey, regionKey)
+  const overallLevel = getIndexLevel(overallIndex)
+  const doneBenefit = plans.filter(p => done.includes(p.id)).reduce((a, p) => a + (p.benefit || 0), 0)
+  const firstVisit = visits.firstDate || new Date().toISOString().slice(0, 10)
 
   return (
     <div className="dashboard-view">
-      <h2 className="section-title">📊 我的仪表盘</h2>
+      <h2 className="section-title">📊 我的政策档案</h2>
+
+      {/* Profile Card */}
+      <div className="profile-card">
+        <div className="profile-header">
+          <span className="profile-avatar">{persona ? persona.icon : '👤'}</span>
+          <div className="profile-info">
+            <span className="profile-name">{persona ? persona.label + '视角' : '未选择身份'}</span>
+            <span className="profile-since">首次访问：{firstVisit}</span>
+          </div>
+          <div className="profile-score" style={{ color: overallLevel.color }}>
+            <span className="ps-num">{overallIndex}</span>
+            <span className="ps-label">{overallLevel.icon} {overallLevel.label}</span>
+          </div>
+        </div>
+        {/* Radar-like dimension bars */}
+        <div className="profile-dims">
+          {dimScores.map(d => (
+            <div key={d.key} className="pd-row">
+              <span className="pd-icon">{d.icon}</span>
+              <span className="pd-name">{d.name}</span>
+              <div className="pd-bar-wrap"><div className="pd-bar" style={{ width: d.idx + '%', background: d.color }} /></div>
+              <span className="pd-score" style={{ color: getIndexLevel(d.idx).color }}>{d.idx}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Stats Row */}
       <div className="dash-stats">
         <div className="dash-stat"><span className="ds-num">{visits.count || 1}</span><span className="ds-label">访问次数</span></div>
+        <div className="dash-stat"><span className="ds-num">{done.length}/{plans.length}</span><span className="ds-label">行动完成</span></div>
+        <div className="dash-stat"><span className="ds-num">+{(confirmedTotal/10000).toFixed(1)}万</span><span className="ds-label">已确认红利</span></div>
         <div className="dash-stat"><span className="ds-num">{bookmarks.length}</span><span className="ds-label">收藏政策</span></div>
-        <div className="dash-stat"><span className="ds-num">{done.length}/{plans.length}</span><span className="ds-label">行动进度</span></div>
-        <div className="dash-stat"><span className="ds-num">{persona ? persona.icon : "👤"}</span><span className="ds-label">{persona ? persona.label : "未选择"}</span></div>
       </div>
+
+      {/* Dividend Ledger */}
+      <div className="dash-section">
+        <h3>💰 我的政策红利账本</h3>
+        <div className="ledger-grid">
+          <div className="ledger-card ledger-confirm"><span className="lc-label">已确认红利</span><span className="lc-value">+{confirmedTotal.toLocaleString()}元/年</span></div>
+          <div className="ledger-card ledger-risk"><span className="lc-label">潜在风险</span><span className="lc-value">{riskTotal.toLocaleString()}元/年</span></div>
+          <div className="ledger-card ledger-action"><span className="lc-label">行动收益</span><span className="lc-value">+{(doneBenefit/10000).toFixed(1)}万</span></div>
+          <div className="ledger-card ledger-net"><span className="lc-label">净收益</span><span className="lc-value">{(confirmedTotal+riskTotal>=0?'+':'')}{(confirmedTotal+riskTotal).toLocaleString()}元</span></div>
+        </div>
+      </div>
+
+      {/* Action Progress */}
+      {plans.length > 0 && (
+        <div className="dash-section">
+          <h3>📋 行动进度 ({done.length}/{plans.length})</h3>
+          <div className="action-progress-list">
+            {plans.map(p => (
+              <div key={p.id} className={`apl-item ${done.includes(p.id) ? 'apl-done' : ''}`}>
+                <span className="apl-check">{done.includes(p.id) ? '✅' : '⬜'}</span>
+                <span className="apl-title">{p.title}</span>
+                {p.benefit > 0 && <span className="apl-benefit">+{(p.benefit/10000).toFixed(1)}万</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Bookmarks */}
       {bookmarks.length > 0 && (
         <div className="dash-section">
@@ -1522,6 +1586,7 @@ function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
           <div className="dash-bookmarks">{bookmarks.map(b => <div key={b} className="dash-bm-item" onClick={() => onSwitchTab("dimensions")}>{b}</div>)}</div>
         </div>
       )}
+
       {/* Recommendations */}
       <div className="dash-section">
         <h3>🎯 为你推荐</h3>
@@ -1694,6 +1759,109 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+
+
+/* ═══════ 政策搜索（对标企查查搜索框）═══════ */
+function PolicySearch({ onSwitchTab }) {
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState(null)
+  const [dailyCount, setDailyCount] = useState(() => {
+    try { const d = JSON.parse(localStorage.getItem('search_stats') || '{}'); const today = new Date().toISOString().slice(0,10); return d.date === today ? d.count : 0 } catch { return 0 }
+  })
+  const FREE_LIMIT = 3
+
+  const doSearch = (q) => {
+    setQuery(q)
+    if (!q.trim()) { setResults(null); return }
+    const today = new Date().toISOString().slice(0,10)
+    const stats = (() => { try { return JSON.parse(localStorage.getItem('search_stats') || '{}') } catch { return {} } })()
+    const count = stats.date === today ? stats.count : 0
+    if (count >= FREE_LIMIT) { setResults([]); return }
+    localStorage.setItem('search_stats', JSON.stringify({ date: today, count: count + 1 }))
+    setDailyCount(count + 1)
+
+    const kw = q.toLowerCase()
+    const res = []
+    // Search dimensions
+    dimensions.forEach(dim => {
+      dim.scores.forEach(p => {
+        if (p.policyName.toLowerCase().includes(kw) || (p.note && p.note.toLowerCase().includes(kw))) {
+          res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date })
+        }
+      })
+    })
+    // Search newsLianboUpdates
+    newsLianboUpdates.forEach(n => {
+      if (n.title.toLowerCase().includes(kw) || n.summary.toLowerCase().includes(kw)) {
+        const dimMeta = { housing:'🏠', employment:'💼', education:'🎓', pension:'👴', finance:'💰', industry:'🏭' }
+        res.push({ type: 'news', dim: n.dim, icon: dimMeta[n.dim] || '📺', dimLabel: '新闻联播', title: n.title, desc: n.summary?.slice(0,60), sentiment: n.sentiment, data: n.data, date: n.date })
+      }
+    })
+    // Search weeklyUpdates
+    weeklyUpdates.forEach(w => {
+      if (w.text.toLowerCase().includes(kw)) {
+        res.push({ type: 'weekly', dim: w.dim, icon: '📡', dimLabel: '本周更新', title: w.text, desc: '', sentiment: w.impact, date: w.date })
+      }
+    })
+    // Search keyFindings
+    keyFindings.forEach(k => {
+      if (k.title.toLowerCase().includes(kw) || k.summary.toLowerCase().includes(kw)) {
+        res.push({ type: 'finding', dim: '', icon: '🔑', dimLabel: '关键发现', title: k.title, desc: k.summary?.slice(0,60), sentiment: '', url: k.url })
+      }
+    })
+    // Search specialTopics
+    specialTopics.forEach(t => {
+      if (t.title.toLowerCase().includes(kw) || t.subtitle.toLowerCase().includes(kw) || t.tags.some(tag => tag.toLowerCase().includes(kw))) {
+        res.push({ type: 'topic', dim: '', icon: t.icon, dimLabel: '专题', title: t.title, desc: t.subtitle, sentiment: '' })
+      }
+    })
+    setResults(res.slice(0, 20))
+  }
+
+  const sentColor = s => s === '利好' || s === '偏利好' ? 'var(--success)' : s === '利空' || s === '偏利空' ? 'var(--danger)' : 'var(--text-secondary)'
+
+  return (
+    <div className="policy-search">
+      <div className="ps-input-wrap">
+        <span className="ps-icon">🔍</span>
+        <input className="ps-input" type="text" placeholder="搜索政策（如：公积金、延迟退休、个税、AI教育）"
+          value={query} onChange={e => doSearch(e.target.value)} />
+        {query && <button className="ps-clear" onClick={() => { setQuery(''); setResults(null) }}>✕</button>}
+      </div>
+      <div className="ps-hint">
+        <span>已搜索 {dailyCount}/{FREE_LIMIT} 次</span>
+        {dailyCount >= FREE_LIMIT && <span className="ps-limit">今日免费次数已用完，升级专业版享无限搜索</span>}
+      </div>
+      {results && (
+        <div className="ps-results">
+          {results.length === 0 ? (
+            <div className="ps-empty">{dailyCount >= FREE_LIMIT ? '🔒 今日免费搜索次数已用完' : '未找到相关政策'}</div>
+          ) : (
+            <>
+              <div className="ps-results-header">找到 {results.length} 条结果</div>
+              {results.map((r, i) => (
+                <div key={i} className="ps-result-item" onClick={() => { if (r.type === 'topic') onSwitchTab('topics'); else if (r.type === 'policy') onSwitchTab('dimensions'); else onSwitchTab('overview') }}>
+                  <span className="ps-ri-icon">{r.icon}</span>
+                  <div className="ps-ri-body">
+                    <div className="ps-ri-title">{r.title}</div>
+                    {r.desc && <div className="ps-ri-desc">{r.desc}</div>}
+                    <div className="ps-ri-meta">
+                      <span className="ps-ri-tag">{r.dimLabel}</span>
+                      {r.sentiment && <span className="ps-ri-sent" style={{ color: sentColor(r.sentiment) }}>{r.sentiment}</span>}
+                      {r.data && r.data.length > 0 && <span className="ps-ri-data">{r.data[0]}</span>}
+                      {r.date && <span className="ps-ri-date">{r.date}</span>}
+                    </div>
+                  </div>
+                  {r.url && <a className="ps-ri-link" href={r.url} target="_blank" rel="noopener" onClick={e => e.stopPropagation()}>↗</a>}
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
 
 /* ═══════ 新闻联播政策速递 ═══════ */
 function NewsLianboPanel() {
@@ -1883,6 +2051,7 @@ function App() {
         {activeTab === 'overview' && (
           <div className="overview">
             <WeeklyUpdateBar />
+            <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />
             <NewsLianboPanel />
             <section className="overall-card">
               <div className="overall-left">
