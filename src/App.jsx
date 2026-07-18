@@ -1832,6 +1832,7 @@ function PolicySearch({ onSwitchTab }) {
         <span>已搜索 {dailyCount}/{FREE_LIMIT} 次</span>
         {dailyCount >= FREE_LIMIT && <span className="ps-limit">今日免费次数已用完，升级专业版享无限搜索</span>}
       </div>
+      {!results && <div className="ps-hot"><span className="ps-hot-label">热门：</span><span key="公积金" className="ps-hot-tag" onClick={() => doSearch('公积金')}>公积金</span><span key="延迟退休" className="ps-hot-tag" onClick={() => doSearch('延迟退休')}>延迟退休</span><span key="个税" className="ps-hot-tag" onClick={() => doSearch('个税')}>个税</span><span key="GDP" className="ps-hot-tag" onClick={() => doSearch('GDP')}>GDP</span><span key="利率" className="ps-hot-tag" onClick={() => doSearch('利率')}>利率</span><span key="AI教育" className="ps-hot-tag" onClick={() => doSearch('AI教育')}>AI教育</span><span key="医保" className="ps-hot-tag" onClick={() => doSearch('医保')}>医保</span><span key="购房" className="ps-hot-tag" onClick={() => doSearch('购房')}>购房</span></div>}
       {results && (
         <div className="ps-results">
           {results.length === 0 ? (
