@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { useState, useRef, useEffect, useCallback, useMemo, memo } from 'react'
 import {
   dimensions, methodology, rubric, personas, weeklyUpdates, regions,
@@ -9,9 +9,12 @@ import {
 import './App.css'
 import Tools from './Tools'
 
+// Lazy-loaded components
+const ShareCard = lazy(() => import('./components/ShareCard'));
+
 /* ═══════ 工具函数 ═══════ */
 function timeAgo(dateStr) {
-  const now = new Date('2026-07-12'), d = new Date(dateStr)
+  const now = new Date(), d = new Date(dateStr)
   const days = Math.floor((now - d) / 86400000)
   if (days === 0) return '今天'; if (days === 1) return '昨天'
   if (days <= 7) return `${days}天前`; if (days <= 30) return `${Math.floor(days/7)}周前`
@@ -23,7 +26,7 @@ function PersonaModal({ onSelect, onSkip }) {
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="选择用户画像" onClick={onSkip}>
       <div className="modal-box" onClick={e => e.stopPropagation()}>
-        <h2 className="modal-title">🧭 欢迎来到政策罗盘</h2>
+        <h2 className="modal-title">🧭 欢迎来到策查查</h2>
         <p className="modal-sub">选一个最符合你的身份，我们会根据你的身份调整各维度权重，让分析更贴合你的实际情况</p>
         <div className="persona-grid">
           {personas.map(p => (
@@ -38,101 +41,6 @@ function PersonaModal({ onSelect, onSkip }) {
       </div>
     </div>
   )
-}
-
-/* ═══════ 分享卡片 ═══════ */
-function ShareCard({ personaKey, regionKey, onClose }) {
-  const canvasRef = useRef(null)
-  const persona = personas.find(p => p.key === personaKey)
-  const region = regions.find(r => r.key === regionKey)
-  const dims = getDimensionsForRegion(regionKey)
-  const overallIndex = calcOverallIndex(personaKey, regionKey)
-  const overallLevel = getIndexLevel(overallIndex)
-  const dimScores = dims.map(d => ({ ...d, idx: calcDimensionScore(d) }))
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    const W = 750, H = 1100
-    canvas.width = W; canvas.height = H
-    const grad = ctx.createLinearGradient(0, 0, W, H)
-    grad.addColorStop(0, '#1a1a2e'); grad.addColorStop(1, '#16213e')
-    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H)
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 32px sans-serif'
-    ctx.fillText('🧭 政策罗盘', 40, 60)
-    ctx.font = '18px sans-serif'; ctx.fillStyle = '#aaa'
-    ctx.fillText(`${region?.name || '全国'} · 征求意见稿跟踪${persona ? ' · ' + persona.icon + persona.label + '视角' : ''}`, 40, 95)
-    ctx.fillText('2026-07-12', 40, 125)
-    ctx.fillStyle = overallLevel.color; ctx.font = 'bold 100px sans-serif'
-    ctx.fillText(overallIndex, 40, 250)
-    ctx.font = 'bold 36px sans-serif'
-    ctx.fillText(overallLevel.icon + ' ' + overallLevel.label, 280, 240)
-    ctx.font = '20px sans-serif'; ctx.fillStyle = '#ccc'
-    ctx.fillText(overallLevel.plain, 280, 275)
-    ctx.strokeStyle = '#333'; ctx.lineWidth = 1
-    ctx.beginPath(); ctx.moveTo(40, 310); ctx.lineTo(W - 40, 310); ctx.stroke()
-    dimScores.forEach((d, i) => {
-      const y = 360 + i * 70
-      const lvl = getIndexLevel(d.idx)
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 22px sans-serif'
-      ctx.fillText(d.icon + ' ' + d.name, 40, y)
-      ctx.fillStyle = lvl.color; ctx.font = 'bold 28px sans-serif'
-      ctx.fillText(d.idx, 650, y)
-      ctx.fillStyle = '#333'; ctx.fillRect(300, y - 15, 300, 20)
-      ctx.fillStyle = d.color; ctx.fillRect(300, y - 15, 300 * d.idx / 100, 20)
-    })
-    const qrX = W - 180, qrY = H - 190
-    ctx.fillStyle = '#fff'; ctx.fillRect(qrX, qrY, 140, 140)
-    ctx.fillStyle = '#1a1a2e'
-    for (let r = 0; r < 7; r++) for (let c = 0; c < 7; c++)
-      if ((r + c) % 2 === 0 || (r < 3 && c < 3) || (r < 3 && c > 3) || (r > 3 && c < 3))
-        ctx.fillRect(qrX + 10 + c * 17, qrY + 10 + r * 17, 15, 15)
-    ctx.fillStyle = '#aaa'; ctx.font = '13px sans-serif'
-    ctx.fillText('扫码查看你的', qrX - 5, qrY - 15)
-    ctx.fillText('专属政策分析', qrX - 5, qrY + 160)
-    ctx.fillStyle = '#666'; ctx.font = 'bold 16px sans-serif'
-    ctx.fillText('政策罗盘', 40, H - 50)
-    const totalPolicies = dims.reduce((a, d) => a + d.scores.length, 0)
-    ctx.font = '14px sans-serif'
-    ctx.fillText(`基于 OECD RIA + PEST + 利益相关者矩阵 · ${totalPolicies}条权威政策`, 40, H - 25)
-    if (persona) {
-      ctx.fillStyle = 'rgba(255,255,255,0.1)'; roundRect(ctx, W - 220, 30, 180, 40, 20); ctx.fill()
-      ctx.fillStyle = '#fff'; ctx.font = '16px sans-serif'
-      ctx.fillText(`${persona.icon} ${persona.label}视角`, W - 205, 58)
-    }
-  }, [personaKey, regionKey])
-
-  const downloadImage = () => {
-    const canvas = canvasRef.current; if (!canvas) return
-    const link = document.createElement('a')
-    link.download = '政策罗盘_分享卡片.png'
-    link.href = canvas.toDataURL('image/png'); link.click()
-  }
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="share-card-modal" onClick={e => e.stopPropagation()}>
-        <h3>📤 分享卡片</h3>
-        <canvas ref={canvasRef} style={{ width: '100%', borderRadius: 12, maxWidth: 375 }} />
-        <div className="share-actions">
-          <button className="btn-primary" onClick={downloadImage}>💾 保存图片</button>
-          <button className="btn-secondary" onClick={() => { navigator.clipboard.writeText(window.location.href) }}>📋 复制链接</button>
-          <a className="btn-secondary" href={`https://service.weibo.com/share/share.php?title=${encodeURIComponent("我的政策影响力指数是" + calcOverallIndex(personaKey, regionKey) + "分，来看看你的！")}&url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener" style={{ textDecoration: "none" }}>📢 微博</a>
-          <div className="share-wechat-hint"><small>💡 保存图片后可直接发到微信群/朋友圈</small></div>
-          <button className="btn-secondary" onClick={onClose}>关闭</button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y)
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h - r)
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h)
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r)
-  ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath()
 }
 
 /* ═══════ 本周更新条 ═══════ */
@@ -441,7 +349,7 @@ function PolicyRadar({ personaKey, regionKey }) {
   })
 
   // Score = weight * breadth * depth * direction_abs * recency
-  const now = new Date('2026-07-12')
+  const now = new Date()
   allPolicies.forEach(p => {
     const d = new Date(p.date)
     const months = Math.max(0, (now - d) / (1000*60*60*24*30))
@@ -1113,7 +1021,7 @@ function ActionHub({ personaKey, onSwitchTab }) {
   const myDeadlines = deadlines.filter(d => d.persona.includes(personaKey))
     .map(d => {
       const target = new Date(d.date)
-      const now = new Date('2026-07-12')
+      const now = new Date()
       const days = Math.ceil((target - now) / 86400000)
       return { ...d, daysLeft: days, expired: days < 0 }
     })
@@ -1339,7 +1247,7 @@ function ReportExport({ personaKey, regionKey, onClose }) {
     hGrad.addColorStop(0, "#1a1a2e"); hGrad.addColorStop(1, "#16213e")
     ctx.fillStyle = hGrad; ctx.fillRect(0, 0, W, 100)
     ctx.fillStyle = "#fff"; ctx.font = "bold 28px sans-serif"
-    ctx.fillText("🧭 政策罗盘 · 个人政策影响报告", 30, 60)
+    ctx.fillText("🧭 策查查 · 个人政策影响报告", 30, 60)
     ctx.font = "14px sans-serif"; ctx.fillStyle = "#aaa"
     ctx.fillText(`${region?.name || "全国"} · ${persona ? persona.icon + persona.label : "未选择身份"} · 2026-07-12`, 30, 85)
     // Overall Index
@@ -1371,14 +1279,14 @@ function ReportExport({ personaKey, regionKey, onClose }) {
     ctx.fillStyle = "#27ae60"; ctx.font = "bold 22px sans-serif"; ctx.fillText(`已确认红利: +${confirmedTotal.toLocaleString()}元/年`, 40, dy + 35)
     // Footer
     ctx.fillStyle = "#999"; ctx.font = "12px sans-serif"
-    ctx.fillText("政策罗盘 · 读懂政策，做对决策 · 基于 OECD RIA + PEST + 利益相关者矩阵", 30, H - 25)
+    ctx.fillText("策查查 · 读懂政策，做对决策 · 基于 OECD RIA + PEST + 利益相关者矩阵", 30, H - 25)
     ctx.fillText("仅供参考，不构成投资建议", W - 200, H - 25)
   }, [personaKey, regionKey])
 
   const downloadReport = () => {
     const canvas = canvasRef.current; if (!canvas) return
     const link = document.createElement("a")
-    link.download = "政策罗盘_个人报告_2026-07-12.png"
+    link.download = "策查查_个人报告_2026-07-12.png"
     link.href = canvas.toDataURL("image/png"); link.click()
   }
 
@@ -1662,7 +1570,7 @@ function InvitePanel() {
   return (
     <div className="invite-panel">
       <h3 className="invite-title">🤝 邀请好友一起用</h3>
-      <p className="invite-desc">把政策罗盘分享给朋友，一起读懂政策、做对决策</p>
+      <p className="invite-desc">把策查查分享给朋友，一起读懂政策、做对决策</p>
       <div className="invite-link-box">
         <input className="invite-input" readOnly value={inviteLink} onClick={e => e.target.select()} />
         <button className="invite-copy" onClick={copyLink}>{copied ? "✅ 已复制" : "📋 复制"}</button>
@@ -1879,7 +1787,7 @@ function UpgradeModal({ onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="upgrade-modal" onClick={e => e.stopPropagation()}>
-        <h3 className="upgrade-title">🚀 升级政策罗盘</h3>
+        <h3 className="upgrade-title">🚀 升级策查查</h3>
         <p className="upgrade-sub">解锁全部功能，让政策成为你的决策利器</p>
         <div className="tier-grid">
           {Object.entries(TIERS).filter(([k]) => k !== 'free').map(([key, tier]) => (
@@ -1937,7 +1845,7 @@ function PolicyMonitor() {
     // Check for matches in newsLianboUpdates
     const matches = newsLianboUpdates.filter(n => n.title.includes(kw) || n.summary?.includes(kw))
     if (matches.length > 0 && 'Notification' in window && Notification.permission === 'granted') {
-      new Notification('📺 政策罗盘·监控提醒', { body: `"${kw}"有${matches.length}条相关动态` })
+      new Notification('📺 策查查·监控提醒', { body: `"${kw}"有${matches.length}条相关动态` })
     }
   }
   const removeKeyword = (kw) => {
@@ -2241,22 +2149,22 @@ function App() {
       {showTour && <OnboardingTour onClose={() => setShowTour(false)} />}
     <div className="app">
       {showModal && <PersonaModal onSelect={handlePersonaSelect} onSkip={handleSkip} />}
-      {showShare && <ShareCard personaKey={personaKey} regionKey={regionKey} onClose={() => setShowShare(false)} />}
+      {showShare && <Suspense fallback={null}><ShareCard personaKey={personaKey} regionKey={regionKey} onClose={() => setShowShare(false)} /></Suspense>}
       {showReport && <ReportExport personaKey={personaKey} regionKey={regionKey} onClose={() => setShowReport(false)} />}
       {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
       <BackToTop />
 
-      <header className="header header-v2">
-        <div className="header-inner header-inner-v2">
-          <div className="logo-area logo-compact">
+      <header className="header">
+        <div className="header-inner">
+          <div className="logo-area">
             <span className="logo-icon">🧭</span>
-            <h1 className="logo-title">政策罗盘</h1>
+            <h1 className="logo-title">策查查</h1>
           </div>
           <div className="header-search">
             <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="header" />
           </div>
-          <div className="header-actions header-actions-v2">
-            <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)} title={darkMode ? '切换亮色模式' : '切换暗黑模式'}>{darkMode ? '☀️' : '🌙'}</button>
+          <div className="header-actions">
+            <button className="icon-btn" onClick={() => setDarkMode(!darkMode)} title={darkMode ? '切换亮色模式' : '切换暗黑模式'}>{darkMode ? '☀️' : '🌙'}</button>
             {currentPersona && (
               <button className="persona-chip" onClick={() => { localStorage.removeItem('persona'); setPersonaKey(null); setShowModal(true); sessionStorage.removeItem('skipped') }}>
                 {currentPersona.icon} {currentPersona.label}<span className="chip-x">✕</span>
@@ -2272,7 +2180,7 @@ function App() {
       {/* 区域选择器 */}
       <RegionSelector value={regionKey} onChange={handleRegionChange} />
 
-      <nav className="tabs tabs-v2" role="tablist" aria-label="主导航">
+      <nav className="tabs" role="tablist" aria-label="主导航">
         {[['overview','🏠 首页'],['dimensions','📋 政策库'],['tools','🧮 工具箱'],['dashboard','👤 我的']].map(([k, label]) => (
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
@@ -2293,6 +2201,15 @@ function App() {
         {/* ════════ OVERVIEW ════════ */}
         {activeTab === 'overview' && (
           <div className="overview">
+            {/* Hero Search — 企查查风格大搜索框 */}
+            <section className="hero-search">
+              <h2 className="hero-title">读懂政策，做对决策</h2>
+              <p className="hero-sub">覆盖房产、就业、教育、养老、消费、行业六大维度，{totalPolicies}条权威政策实时解读</p>
+              <div className="hero-search-box">
+                <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="hero" />
+              </div>
+            </section>
+
             <section className="overall-card">
               <div className="overall-left">
                 <div className="overall-ring" style={{ '--pct': ringValue, '--clr': overallLevel.color }}>
@@ -2306,7 +2223,7 @@ function App() {
               </div>
               <div className="overall-right">
                 <div className="overall-title">综合政策影响力指数</div>
-                        <div className="overall-brand-tag">政策罗盘</div>
+                        <div className="overall-brand-tag">策查查</div>
                 <div className="overall-level" style={{ color: overallLevel.color }}>{overallLevel.icon} {overallLevel.label}</div>
                 <div className="overall-plain main-plain">💬 <b>对你意味着：</b>{overallLevel.plain}</div>
                 <Collapsible title="📐 我们怎么算的？" defaultOpen={false}>
@@ -2706,7 +2623,7 @@ function App() {
 
       <footer className="footer">
         <div className="footer-nav">
-          <span className="footer-brand">🧭 政策罗盘</span>
+          <span className="footer-brand">🧭 策查查</span>
           <div className="footer-links">
             <button className="footer-link" onClick={() => { setActiveTab("overview"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>总览</button>
             <button className="footer-link" onClick={() => { setActiveTab("monitor"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>政策监控</button>
@@ -2716,7 +2633,7 @@ function App() {
           </div>
         </div>
         <p className="footer-info">读懂政策，做对决策 · 数据更新至 2026-07-17 · 方法论v{methodology.version} · {currentRegion.name} · {totalPolicies}条政策</p>
-        <p className="footer-legal">数据来源均为政府官方网站 · 仅供参考，不构成投资建议 · © 2026 政策罗盘</p>
+        <p className="footer-legal">数据来源均为政府官方网站 · 仅供参考，不构成投资建议 · © 2026 策查查</p>
       </footer>
     </div>
       </ErrorBoundary>
