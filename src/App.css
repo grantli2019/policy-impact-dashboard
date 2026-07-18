@@ -2707,3 +2707,24 @@ a.policy-source-link:hover::after {
 .invite-copy:hover { background: var(--p-600); }
 .invite-stats { font-size: 0.8rem; color: var(--text-muted); }
 .invite-badge-earned { margin-left: var(--sp-3); color: var(--warning); font-weight: 600; }
+
+/* ═══ 新闻联播政策速递 ═══ */
+.xwlb-panel { background: var(--surface); border-radius: var(--r-lg); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+.xwlb-header { display: flex; align-items: center; gap: 8px; cursor: pointer; flex-wrap: wrap; }
+.xwlb-title { font-weight: 700; font-size: 1rem; }
+.xwlb-count { font-size: 0.75rem; color: var(--text-secondary); }
+.xwlb-toggle { margin-left: auto; font-size: 0.8rem; color: var(--primary); }
+.xwlb-filters { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
+.xwlb-filter { padding: 3px 10px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface-alt); font-size: 0.75rem; cursor: pointer; transition: all .2s; }
+.xwlb-filter.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.xwlb-list { display: flex; flex-direction: column; gap: 10px; }
+.xwlb-item { padding: 10px; border-radius: var(--r-md); background: var(--surface-alt); border-left: 3px solid var(--primary); }
+.xwlb-item-top { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; margin-bottom: 4px; }
+.xwlb-date { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.xwlb-dim-tag { background: var(--surface-alt2); padding: 1px 6px; border-radius: 4px; }
+.xwlb-sent { font-weight: 600; margin-left: auto; }
+.xwlb-item-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; line-height: 1.4; }
+.xwlb-data { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.xwlb-datum { background: var(--primary); color: #fff; padding: 1px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+.xwlb-summary { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.xwlb-more { width: 100%; padding: 8px; border: none; background: var(--surface-alt); border-radius: var(--r-md); color: var(--primary); cursor: pointer; font-size: 0.85rem; margin-top: 8px; }

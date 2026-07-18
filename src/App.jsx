@@ -4,7 +4,7 @@ import {
   dimensions, methodology, rubric, personas, weeklyUpdates, regions,
   calcDimensionScore, calcOverallIndex, getIndexLevel, keyFindings,
   getDimensionsForRegion, getTimelineForDimension, regionToolParams,
-  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, dashboardRecommendations,
+  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, dashboardRecommendations, newsLianboUpdates,
 } from './data/impactData'
 import './App.css'
 import Tools from './Tools'
@@ -1694,6 +1694,59 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+
+/* ═══════ 新闻联播政策速递 ═══════ */
+function NewsLianboPanel() {
+  const [expanded, setExpanded] = useState(false)
+  const [filter, setFilter] = useState('all')
+  const dimMeta = {
+    housing: { icon: '🏠', label: '房产' }, employment: { icon: '💼', label: '就业' },
+    education: { icon: '🎓', label: '教育' }, pension: { icon: '👴', label: '养老' },
+    finance: { icon: '💰', label: '消费' }, industry: { icon: '🏭', label: '行业' },
+  }
+  const sentColor = { '利好': 'var(--success)', '利空': 'var(--danger)', '中性': 'var(--text-secondary)' }
+  const filtered = filter === 'all' ? newsLianboUpdates : newsLianboUpdates.filter(n => n.dim === filter)
+  const shown = expanded ? filtered : filtered.slice(0, 6)
+  const dims = [...new Set(newsLianboUpdates.map(n => n.dim))]
+
+  return (
+    <div className="xwlb-panel">
+      <div className="xwlb-header" onClick={() => setExpanded(!expanded)}>
+        <span className="xwlb-title">📺 新闻联播·政策速递</span>
+        <span className="xwlb-count">{newsLianboUpdates.length}条 · {newsLianboUpdates[0]?.date}~{newsLianboUpdates[newsLianboUpdates.length-1]?.date}</span>
+        <span className="xwlb-toggle">{expanded ? '收起 ▲' : '展开 ▼'}</span>
+      </div>
+      <div className="xwlb-filters">
+        <button className={`xwlb-filter ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>全部</button>
+        {dims.map(d => (
+          <button key={d} className={`xwlb-filter ${filter === d ? 'active' : ''}`} onClick={() => setFilter(d)}>
+            {dimMeta[d]?.icon} {dimMeta[d]?.label}
+          </button>
+        ))}
+      </div>
+      <div className="xwlb-list">
+        {shown.map((item, i) => (
+          <div key={i} className="xwlb-item">
+            <div className="xwlb-item-top">
+              <span className="xwlb-date">{item.date}</span>
+              <span className="xwlb-dim-tag">{dimMeta[item.dim]?.icon} {dimMeta[item.dim]?.label}</span>
+              <span className="xwlb-sent" style={{ color: sentColor[item.sentiment] }}>{item.sentiment}</span>
+            </div>
+            <div className="xwlb-item-title">{item.title}</div>
+            {item.data?.length > 0 && (
+              <div className="xwlb-data">{item.data.map((d, j) => <span key={j} className="xwlb-datum">{d}</span>)}</div>
+            )}
+            <div className="xwlb-summary">{item.summary}</div>
+          </div>
+        ))}
+      </div>
+      {!expanded && filtered.length > 6 && (
+        <button className="xwlb-more" onClick={() => setExpanded(true)}>查看全部 {filtered.length} 条 ▼</button>
+      )}
+    </div>
+  )
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState('overview')
   const [selectedDim, setSelectedDim] = useState(null)
@@ -1830,6 +1883,7 @@ function App() {
         {activeTab === 'overview' && (
           <div className="overview">
             <WeeklyUpdateBar />
+            <NewsLianboPanel />
             <section className="overall-card">
               <div className="overall-left">
                 <div className="overall-ring" style={{ '--pct': ringValue, '--clr': overallLevel.color }}>
