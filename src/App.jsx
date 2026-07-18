@@ -2501,6 +2501,8 @@ function App() {
                 </section>
               )
             })}
+            <LegislativeOutlook regionKey={regionKey} personaKey={personaKey} />
+            <PersonaCompare currentPersonaKey={personaKey || "homebuyer"} />
           </div>
         )}
 
