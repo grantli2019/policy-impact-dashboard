@@ -1637,3 +1637,48 @@ export const rentalQuiz = {
     result_talent: { icon: "🎓", title: "推荐：人才公寓", desc: "你有本科及以上学历，可申请人才公寓。租金为市场价60-80%，部分区还有租房补贴（每月300-3000元）。", action: "咨询你所在区的人才服务平台或单位HR" },
   },
 };
+
+/* ── 商业化: 专业版功能 ─────────────────────────────────────── */
+export const premiumFeatures = [
+  { id: "ai_advisor", icon: "🤖", title: "AI 政策顾问", desc: "基于大语言模型的个性化政策解读，7×24小时在线问答", badge: "即将上线" },
+  { id: "realtime_push", icon: "🔔", title: "实时政策推送", desc: "政策发布即刻通知，第一时间掌握与你相关的政策变化", badge: "即将上线" },
+  { id: "multi_compare", icon: "📊", title: "多方案对比", desc: "同时对比多种决策方案的政策影响，找到最优路径", badge: "即将上线" },
+];
+
+/* ── 商业化: 智能推荐 ─────────────────────────────────────── */
+export const recommendations = {
+  homebuyer: [
+    { type: "topic", id: "shanghai_hukou_edu", text: "落户后子女入学条件一览" },
+    { type: "scenario", id: "buy_house", text: "模拟你的购房决策影响" },
+    { type: "deadline", text: "公积金贷款新政窗口期即将截止" },
+  ],
+  worker: [
+    { type: "topic", id: "workplace_rights", text: "职场权益：加班/社保/竞业限制" },
+    { type: "scenario", id: "get_laid_off", text: "万一被裁员，你能拿多少补偿？" },
+    { type: "topic", id: "tax_settlement", text: "个税汇算：别忘了这5项扣除" },
+  ],
+  parent: [
+    { type: "topic", id: "shanghai_hukou_edu", text: "沪籍vs非沪籍子女入学对比" },
+    { type: "scenario", id: "have_baby", text: "生育政策全解读：补贴+假期+扣除" },
+    { type: "topic", id: "medicare_guide", text: "子女医保报销完全指南" },
+  ],
+  investor: [
+    { type: "topic", id: "rental_housing", text: "保租房/公租房投资新机遇" },
+    { type: "scenario", id: "retire_plan", text: "个人养老金：每年最多省5400元税" },
+    { type: "topic", id: "tax_settlement", text: "投资收益个税优化策略" },
+  ],
+  freelancer: [
+    { type: "scenario", id: "start_business", text: "创业税费全景：增值税+个税+社保" },
+    { type: "topic", id: "workplace_rights", text: "灵活就业社保怎么缴最划算" },
+    { type: "topic", id: "medicare_guide", text: "自由职业者医保选择指南" },
+  ],
+};
+
+/* ── 留存: 仪表盘推荐 ─────────────────────────────────────── */
+export const dashboardRecommendations = {
+  homebuyer: { topics: ["shanghai_hukou_edu", "rental_housing"], scenarios: ["buy_house"] },
+  worker: { topics: ["workplace_rights", "tax_settlement"], scenarios: ["get_laid_off"] },
+  parent: { topics: ["shanghai_hukou_edu", "medicare_guide"], scenarios: ["have_baby"] },
+  investor: { topics: ["rental_housing", "tax_settlement"], scenarios: ["retire_plan"] },
+  freelancer: { topics: ["workplace_rights", "medicare_guide"], scenarios: ["start_business"] },
+};

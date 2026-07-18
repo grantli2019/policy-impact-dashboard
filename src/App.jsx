@@ -4,7 +4,7 @@ import {
   dimensions, methodology, rubric, personas, weeklyUpdates, regions,
   calcDimensionScore, calcOverallIndex, getIndexLevel, keyFindings,
   getDimensionsForRegion, getTimelineForDimension, regionToolParams,
-  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz,
+  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, dashboardRecommendations,
 } from './data/impactData'
 import './App.css'
 import Tools from './Tools'
@@ -117,6 +117,9 @@ function ShareCard({ personaKey, regionKey, onClose }) {
         <canvas ref={canvasRef} style={{ width: '100%', borderRadius: 12, maxWidth: 375 }} />
         <div className="share-actions">
           <button className="btn-primary" onClick={downloadImage}>💾 保存图片</button>
+          <button className="btn-secondary" onClick={() => { navigator.clipboard.writeText(window.location.href) }}>📋 复制链接</button>
+          <a className="btn-secondary" href={`https://service.weibo.com/share/share.php?title=${encodeURIComponent("我的政策影响力指数是" + calcOverallIndex(personaKey, regionKey) + "分，来看看你的！")}&url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener" style={{ textDecoration: "none" }}>📢 微博</a>
+          <div className="share-wechat-hint"><small>💡 保存图片后可直接发到微信群/朋友圈</small></div>
           <button className="btn-secondary" onClick={onClose}>关闭</button>
         </div>
       </div>
@@ -1155,6 +1158,7 @@ function ActionHub({ personaKey, onSwitchTab }) {
 
   return (
     <div className="action-hub">
+      <SavingsDashboard personaKey={personaKey} />
       {/* Header */}
       <div className="hub-header">
         <h2 className="section-title">📋 你的行动清单</h2>
@@ -1280,6 +1284,331 @@ function ActionHub({ personaKey, onSwitchTab }) {
   )
 }
 
+
+/* ═══════ A1: 行动成果可视化 (Savings Dashboard) ═══════ */
+function SavingsDashboard({ personaKey }) {
+  const plans = actionPlans[personaKey] || []
+  const dividends = policyDividends[personaKey] || []
+  const progress = (() => { try { return JSON.parse(localStorage.getItem("action_progress") || "{}") } catch { return {} } })()
+  const done = progress[personaKey] || []
+  const doneBenefit = plans.filter(p => done.includes(p.id)).reduce((a, p) => a + (p.benefit || 0), 0)
+  const totalBenefit = plans.reduce((a, p) => a + (p.benefit || 0), 0)
+  const confirmedTotal = dividends.filter(d => d.confirmed && d.amount > 0).reduce((a, d) => a + d.amount, 0)
+  const riskTotal = dividends.filter(d => d.isRisk && d.amount < 0).reduce((a, d) => a + d.amount, 0)
+  const netTotal = confirmedTotal + riskTotal
+  const pct = plans.length > 0 ? Math.round(done.length / plans.length * 100) : 0
+  return (
+    <div className="savings-dashboard">
+      <h3 className="savings-title">💰 你的政策红利总览</h3>
+      <div className="savings-grid">
+        <div className="savings-card savings-confirm"><span className="sv-label">已确认红利</span><span className="sv-value">+{confirmedTotal.toLocaleString()}元</span></div>
+        <div className="savings-card savings-risk"><span className="sv-label">潜在风险</span><span className="sv-value">{riskTotal.toLocaleString()}元</span></div>
+        <div className={`savings-card savings-net ${netTotal >= 0 ? "positive" : "negative"}`}><span className="sv-label">净收益</span><span className="sv-value">{netTotal >= 0 ? "+" : ""}{netTotal.toLocaleString()}元</span></div>
+        <div className="savings-card savings-done"><span className="sv-label">行动收益</span><span className="sv-value">+{(doneBenefit / 10000).toFixed(1)}万</span></div>
+      </div>
+      {pct < 100 && (
+        <div className="savings-warning">
+          <span>⚠️</span>
+          <span>你还有 {plans.length - done.length} 项行动未完成，可能每年损失 <b>{((totalBenefit - doneBenefit) / 10000).toFixed(1)}万</b> 元政策红利</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ═══════ A2: PDF 报告导出 ═══════ */
+function ReportExport({ personaKey, regionKey, onClose }) {
+  const canvasRef = useRef(null)
+  const persona = personas.find(p => p.key === personaKey)
+  const region = regions.find(r => r.key === regionKey)
+  const dims = getDimensionsForRegion(regionKey)
+  const overallIndex = calcOverallIndex(personaKey, regionKey)
+  const overallLevel = getIndexLevel(overallIndex)
+  const plans = actionPlans[personaKey] || []
+  const dividends = policyDividends[personaKey] || []
+  const confirmedTotal = dividends.filter(d => d.confirmed && d.amount > 0).reduce((a, d) => a + d.amount, 0)
+
+  useEffect(() => {
+    const canvas = canvasRef.current; if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    const W = 750, H = 1400; canvas.width = W; canvas.height = H
+    // Background
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H)
+    // Header
+    const hGrad = ctx.createLinearGradient(0, 0, W, 100)
+    hGrad.addColorStop(0, "#1a1a2e"); hGrad.addColorStop(1, "#16213e")
+    ctx.fillStyle = hGrad; ctx.fillRect(0, 0, W, 100)
+    ctx.fillStyle = "#fff"; ctx.font = "bold 28px sans-serif"
+    ctx.fillText("🧭 政策罗盘 · 个人政策影响报告", 30, 60)
+    ctx.font = "14px sans-serif"; ctx.fillStyle = "#aaa"
+    ctx.fillText(`${region?.name || "全国"} · ${persona ? persona.icon + persona.label : "未选择身份"} · 2026-07-12`, 30, 85)
+    // Overall Index
+    ctx.fillStyle = overallLevel.color; ctx.font = "bold 64px sans-serif"
+    ctx.fillText(String(overallIndex), 30, 180)
+    ctx.font = "bold 24px sans-serif"; ctx.fillText(overallLevel.icon + " " + overallLevel.label, 180, 170)
+    ctx.font = "16px sans-serif"; ctx.fillStyle = "#666"; ctx.fillText(overallLevel.plain, 180, 200)
+    // Divider
+    ctx.strokeStyle = "#e0e0e0"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(30, 220); ctx.lineTo(W-30, 220); ctx.stroke()
+    // Dimension Scores
+    ctx.fillStyle = "#333"; ctx.font = "bold 18px sans-serif"; ctx.fillText("📈 六维度评分", 30, 260)
+    dims.forEach((d, i) => {
+      const y = 290 + i * 45; const idx = calcDimensionScore(d); const lvl = getIndexLevel(idx)
+      ctx.fillStyle = "#333"; ctx.font = "16px sans-serif"; ctx.fillText(d.icon + " " + d.name, 40, y)
+      ctx.fillStyle = "#e0e0e0"; ctx.fillRect(250, y - 12, 350, 16)
+      ctx.fillStyle = lvl.color; ctx.fillRect(250, y - 12, 350 * idx / 100, 16)
+      ctx.fillStyle = lvl.color; ctx.font = "bold 18px sans-serif"; ctx.fillText(String(idx), 630, y)
+    })
+    // Action Plans Summary
+    const ay = 290 + dims.length * 45 + 30
+    ctx.fillStyle = "#333"; ctx.font = "bold 18px sans-serif"; ctx.fillText("📋 行动清单", 30, ay)
+    plans.slice(0, 5).forEach((p, i) => {
+      ctx.fillStyle = "#555"; ctx.font = "14px sans-serif"
+      ctx.fillText(`${i+1}. ${p.title}${p.benefit > 0 ? " (+" + (p.benefit/10000).toFixed(1) + "万)" : ""}`, 40, ay + 30 + i * 28)
+    })
+    // Dividends
+    const dy = ay + 30 + Math.min(plans.length, 5) * 28 + 30
+    ctx.fillStyle = "#333"; ctx.font = "bold 18px sans-serif"; ctx.fillText("💰 政策红利", 30, dy)
+    ctx.fillStyle = "#27ae60"; ctx.font = "bold 22px sans-serif"; ctx.fillText(`已确认红利: +${confirmedTotal.toLocaleString()}元/年`, 40, dy + 35)
+    // Footer
+    ctx.fillStyle = "#999"; ctx.font = "12px sans-serif"
+    ctx.fillText("政策罗盘 · 读懂政策，做对决策 · 基于 OECD RIA + PEST + 利益相关者矩阵", 30, H - 25)
+    ctx.fillText("仅供参考，不构成投资建议", W - 200, H - 25)
+  }, [personaKey, regionKey])
+
+  const downloadReport = () => {
+    const canvas = canvasRef.current; if (!canvas) return
+    const link = document.createElement("a")
+    link.download = "政策罗盘_个人报告_2026-07-12.png"
+    link.href = canvas.toDataURL("image/png"); link.click()
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="share-card-modal" onClick={e => e.stopPropagation()}>
+        <h3>📄 个人政策影响报告</h3>
+        <canvas ref={canvasRef} style={{ width: "100%", borderRadius: 12, maxWidth: 375 }} />
+        <div className="share-actions">
+          <button className="btn-primary" onClick={downloadReport}>💾 下载报告</button>
+          <button className="btn-secondary" onClick={onClose}>关闭</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ A3: 高级功能锁 (Premium Teaser) ═══════ */
+function PremiumTeaser() {
+  const [showModal, setShowModal] = useState(false)
+  return (
+    <div className="premium-teaser">
+      <h3 className="premium-title">🚀 解锁专业版功能</h3>
+      <div className="premium-grid">
+        {premiumFeatures.map(f => (
+          <div key={f.id} className="premium-card" onClick={() => setShowModal(true)}>
+            <span className="premium-badge">{f.badge}</span>
+            <span className="premium-icon">{f.icon}</span>
+            <h4>{f.title}</h4>
+            <p className="premium-desc">{f.desc}</p>
+            <div className="premium-lock">🔒 专业版</div>
+          </div>
+        ))}
+      </div>
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <h3 className="modal-title">🚀 专业版即将上线</h3>
+            <p style={{ color: "var(--text-secondary)", marginBottom: 16 }}>我们正在开发 AI 政策顾问、实时推送等高级功能。<br/>订阅通知，第一时间获得上线提醒和早鸟优惠。</p>
+            <div style={{ display: "flex", gap: 8 }}>
+              <a href="mailto:subscribe@policycompass.app?subject=订阅专业版上线通知" className="btn-primary" style={{ textDecoration: "none" }}>📧 订阅通知</a>
+              <button className="btn-secondary" onClick={() => setShowModal(false)}>稍后再说</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ═══════ A4: Before/After 对比 ═══════ */
+function BeforeAfterCompare({ currentScore, actionCount, doneCount }) {
+  const boost = Math.min(15, Math.round(actionCount * 2.5))
+  const afterScore = Math.min(100, currentScore + boost)
+  const pct = actionCount > 0 ? Math.round(doneCount / actionCount * 100) : 0
+  return (
+    <div className="ba-compare">
+      <div className="ba-header">
+        <span className="ba-label-before">当前</span>
+        <span className="ba-arrow">→</span>
+        <span className="ba-label-after">完成行动后</span>
+      </div>
+      <div className="ba-bars">
+        <div className="ba-bar-wrap">
+          <div className="ba-bar ba-before" style={{ width: `${currentScore}%` }}><span>{currentScore}</span></div>
+        </div>
+        <div className="ba-bar-wrap">
+          <div className="ba-bar ba-after" style={{ width: `${afterScore}%` }}><span>{afterScore}</span></div>
+        </div>
+      </div>
+      <p className="ba-text">完成全部行动后，你的指数可从 <b>{currentScore}</b> 提升至 <b style={{ color: "var(--success)" }}>{afterScore}</b>（+{boost}分）</p>
+    </div>
+  )
+}
+
+/* ═══════ B1: 首次访问引导 ═══════ */
+function OnboardingTour({ onClose }) {
+  const [step, setStep] = useState(0)
+  const steps = [
+    { target: ".overall-card", title: "你的政策影响力指数", desc: "基于六大维度综合计算，告诉你政策对你的整体影响程度", pos: "bottom" },
+    { target: ".action-hub", title: "你的行动清单", desc: "根据你的身份生成的个性化行动建议，帮你把握政策红利", pos: "bottom" },
+    { target: ".tabs", title: "探索更多维度", desc: "切换标签查看六维度详情、工具、专题和方法论", pos: "bottom" },
+    { target: ".quick-stat", title: "维度快览", desc: "点击任意维度卡片，深入了解该维度的政策影响分析", pos: "top" },
+    { target: ".share-btn", title: "分享你的结果", desc: "生成精美的分享卡片，把你的政策分析结果分享给朋友", pos: "bottom" },
+  ]
+  const current = steps[step]
+  const finish = () => { sessionStorage.setItem("tour_done", "1"); onClose() }
+
+  useEffect(() => {
+    if (!current) return
+    const el = document.querySelector(current.target)
+    if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.add("tour-highlight") }
+    return () => { if (el) el.classList.remove("tour-highlight") }
+  }, [step])
+
+  if (!current) return null
+  return (
+    <div className="tour-overlay" onClick={finish}>
+      <div className="tour-tooltip" onClick={e => e.stopPropagation()}>
+        <div className="tour-step-indicator">{step + 1} / {steps.length}</div>
+        <h4 className="tour-step-title">{current.title}</h4>
+        <p className="tour-step-desc">{current.desc}</p>
+        <div className="tour-actions">
+          <button className="tour-skip" onClick={finish}>跳过</button>
+          {step < steps.length - 1 ? (
+            <button className="tour-next" onClick={() => setStep(s => s + 1)}>下一步 →</button>
+          ) : (
+            <button className="tour-next" onClick={finish}>开始使用 🎉</button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ B3: 个人仪表盘 ═══════ */
+function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
+  const visits = (() => { try { return JSON.parse(localStorage.getItem("visit_stats") || "{}") } catch { return {} } })()
+  const persona = personas.find(p => p.key === personaKey)
+  const recs = dashboardRecommendations[personaKey] || { topics: [], scenarios: [] }
+  const relatedTopics = specialTopics.filter(t => recs.topics.includes(t.id))
+  const relatedScenarios = decisionScenarios.filter(s => recs.scenarios.includes(s.id))
+  const progress = (() => { try { return JSON.parse(localStorage.getItem("action_progress") || "{}") } catch { return {} } })()
+  const done = progress[personaKey] || []
+  const plans = actionPlans[personaKey] || []
+
+  return (
+    <div className="dashboard-view">
+      <h2 className="section-title">📊 我的仪表盘</h2>
+      {/* Stats Row */}
+      <div className="dash-stats">
+        <div className="dash-stat"><span className="ds-num">{visits.count || 1}</span><span className="ds-label">访问次数</span></div>
+        <div className="dash-stat"><span className="ds-num">{bookmarks.length}</span><span className="ds-label">收藏政策</span></div>
+        <div className="dash-stat"><span className="ds-num">{done.length}/{plans.length}</span><span className="ds-label">行动进度</span></div>
+        <div className="dash-stat"><span className="ds-num">{persona ? persona.icon : "👤"}</span><span className="ds-label">{persona ? persona.label : "未选择"}</span></div>
+      </div>
+      {/* Bookmarks */}
+      {bookmarks.length > 0 && (
+        <div className="dash-section">
+          <h3>🔖 我收藏的政策</h3>
+          <div className="dash-bookmarks">{bookmarks.map(b => <div key={b} className="dash-bm-item" onClick={() => onSwitchTab("dimensions")}>{b}</div>)}</div>
+        </div>
+      )}
+      {/* Recommendations */}
+      <div className="dash-section">
+        <h3>🎯 为你推荐</h3>
+        <div className="dash-recs">
+          {relatedTopics.map(t => (
+            <div key={t.id} className="dash-rec-card" onClick={() => onSwitchTab("topics")}>
+              <span className="drc-icon">{t.icon}</span><span className="drc-title">{t.title}</span>
+            </div>
+          ))}
+          {relatedScenarios.map(s => (
+            <div key={s.id} className="dash-rec-card" onClick={() => onSwitchTab("topics")}>
+              <span className="drc-icon">{s.icon}</span><span className="drc-title">{s.title}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ B4: 智能推荐 ═══════ */
+function SmartRecommendations({ personaKey, onSwitchTab }) {
+  const recs = recommendations[personaKey] || []
+  if (recs.length === 0) return null
+  const typeIcon = { topic: "📖", scenario: "🎮", deadline: "⏰" }
+  const typeTarget = { topic: "topics", scenario: "topics", deadline: "overview" }
+  return (
+    <div className="smart-recs">
+      <h3 className="sr-title">💡 为你推荐</h3>
+      <div className="sr-cards">
+        {recs.map((r, i) => (
+          <div key={i} className="sr-card" onClick={() => onSwitchTab(typeTarget[r.type])}>
+            <span className="sr-type-icon">{typeIcon[r.type]}</span>
+            <span className="sr-text">{r.text}</span>
+            <span className="sr-go">→</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ C2: 画像对比 ═══════ */
+function PersonaCompare({ currentPersonaKey }) {
+  const scores = personas.map(p => ({ ...p, score: calcOverallIndex(p.key, "national") }))
+  const maxScore = Math.max(...scores.map(s => s.score))
+  const current = scores.find(s => s.key === currentPersonaKey)
+  return (
+    <div className="persona-compare">
+      <h3 className="pc-title">👥 画像对比（同一政策，不同身份的影响差异）</h3>
+      <div className="pc-bars">
+        {scores.map(s => (
+          <div key={s.key} className={`pc-row ${s.key === currentPersonaKey ? "pc-current" : ""}`}>
+            <span className="pc-label">{s.icon} {s.label}</span>
+            <div className="pc-bar-track"><div className="pc-bar-fill" style={{ width: `${(s.score / maxScore) * 100}%`, background: getIndexLevel(s.score).color }} /></div>
+            <span className="pc-score">{s.score}</span>
+          </div>
+        ))}
+      </div>
+      {current && <p className="pc-summary">作为「{current.icon} {current.label}」，你的指数在所有画像中排名第 {scores.sort((a,b) => b.score - a.score).findIndex(s => s.key === currentPersonaKey) + 1} 位</p>}
+    </div>
+  )
+}
+
+/* ═══════ C3: 邀请机制 ═══════ */
+function InvitePanel() {
+  const userId = (() => { let id = localStorage.getItem("user_id"); if (!id) { id = "u_" + Math.random().toString(36).slice(2, 10); localStorage.setItem("user_id", id) } return id })()
+  const inviteCount = parseInt(localStorage.getItem("invite_count") || "0")
+  const inviteLink = window.location.origin + "?ref=" + userId
+  const [copied, setCopied] = useState(false)
+  const hasBadge = inviteCount >= 3
+  const copyLink = () => { navigator.clipboard.writeText(inviteLink).then(() => setCopied(true)); setTimeout(() => setCopied(false), 2000) }
+  return (
+    <div className="invite-panel">
+      <h3 className="invite-title">🤝 邀请好友一起用</h3>
+      <p className="invite-desc">把政策罗盘分享给朋友，一起读懂政策、做对决策</p>
+      <div className="invite-link-box">
+        <input className="invite-input" readOnly value={inviteLink} onClick={e => e.target.select()} />
+        <button className="invite-copy" onClick={copyLink}>{copied ? "✅ 已复制" : "📋 复制"}</button>
+      </div>
+      <div className="invite-stats">
+        <span>已邀请 <b>{inviteCount}</b> 人</span>
+        {hasBadge && <span className="invite-badge-earned">🏆 罗盘达人</span>}
+      </div>
+    </div>
+  )
+}
 /* ═══════ 主应用 ═══════ */
 /* ═══════ 动画计数器 ═══════ */
 const AnimatedCounter = memo(function AnimatedCounter({ target, duration = 600 }) {
@@ -1382,6 +1711,16 @@ function App() {
   const [topicSearch, setTopicSearch] = useState('')
   const [darkMode, setDarkMode] = useState(() => { try { return localStorage.getItem('theme') === 'dark' } catch { return false } })
   useEffect(() => { document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : ''); localStorage.setItem('theme', darkMode ? 'dark' : 'light') }, [darkMode])
+  const [showTour, setShowTour] = useState(() => !sessionStorage.getItem("tour_done"))
+  const [showReport, setShowReport] = useState(false)
+  // Track visits
+  useEffect(() => {
+    try {
+      const stats = JSON.parse(localStorage.getItem("visit_stats") || "{}")
+      const today = new Date().toISOString().slice(0, 10)
+      if (stats.lastDate !== today) { stats.count = (stats.count || 0) + 1; stats.lastDate = today; localStorage.setItem("visit_stats", JSON.stringify(stats)) }
+    } catch {}
+  }, [])
 
   // Region-aware data
   const currentRegion = regions.find(r => r.key === regionKey) || regions[0]
@@ -1389,6 +1728,7 @@ function App() {
   const totalPolicies = currentDims.reduce((a, d) => a + d.scores.length, 0)
 
   const overallIndex = calcOverallIndex(personaKey, regionKey)
+  const doneActions = (() => { try { return JSON.parse(localStorage.getItem("action_progress") || "{}") } catch { return {} } })()[personaKey] || []
   const overallLevel = getIndexLevel(overallIndex)
   const currentPersona = personas.find(p => p.key === personaKey)
 
@@ -1442,9 +1782,11 @@ function App() {
 
   return (
     <ErrorBoundary>
+      {showTour && <OnboardingTour onClose={() => setShowTour(false)} />}
     <div className="app">
       {showModal && <PersonaModal onSelect={handlePersonaSelect} onSkip={handleSkip} />}
       {showShare && <ShareCard personaKey={personaKey} regionKey={regionKey} onClose={() => setShowShare(false)} />}
+      {showReport && <ReportExport personaKey={personaKey} regionKey={regionKey} onClose={() => setShowReport(false)} />}
       <BackToTop />
 
       <header className="header">
@@ -1463,6 +1805,7 @@ function App() {
                 {currentPersona.icon} {currentPersona.label}<span className="chip-x">✕</span>
               </button>
             )}
+            <button className="report-btn" onClick={() => setShowReport(true)}>📄 报告</button>
             <button className="share-btn" onClick={() => setShowShare(true)}>📤 分享</button>
             <div className="header-badge">
               <span className="badge-label">更新至</span>
@@ -1476,7 +1819,7 @@ function App() {
       <RegionSelector value={regionKey} onChange={handleRegionChange} />
 
       <nav className="tabs" role="tablist" aria-label="主导航">
-        {[['overview','🏠 总览'],['dimensions','📈 六维度'],['tools','🧮 工具'],['topics','🎯 专题'],['methodology','🔬 方法论']].map(([k, label]) => (
+        {[['overview','🏠 总览'],['dimensions','📈 六维度'],['tools','🧮 工具'],['topics','🎯 专题'],['methodology','🔬 方法论'],['dashboard','📊 我的']].map(([k, label]) => (
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
       </nav>
@@ -1593,6 +1936,11 @@ function App() {
               </div>
             )}
 
+            {currentPersona && <BeforeAfterCompare currentScore={overallIndex} actionCount={(actionPlans[personaKey]||[]).length} doneCount={doneActions.length} />}
+            {currentPersona && <SmartRecommendations personaKey={personaKey} onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />}
+            <PersonaCompare currentPersonaKey={personaKey || "homebuyer"} />
+            <InvitePanel />
+            <PremiumTeaser />
             {/* TOP5政策雷达 */}
             <PolicyRadar personaKey={personaKey} regionKey={regionKey} />
           </div>
@@ -1881,6 +2229,12 @@ function App() {
               </p>
             </Collapsible>
           </div>
+        )}
+
+        {/* ════════ DASHBOARD ════════ */}
+        {activeTab === 'dashboard' && (
+          <Dashboard personaKey={personaKey} regionKey={regionKey} bookmarks={bookmarks}
+            onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />
         )}
       </main>
 
