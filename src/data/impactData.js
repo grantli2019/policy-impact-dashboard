@@ -23,9 +23,9 @@ export function getIndexLevel(index) {
 export const regions = [
   { key: "national", name: "全国", icon: "🇨🇳", subtitle: "国家层面统一政策", provinces: "" },
   { key: "yangtze_delta", name: "长三角", icon: "🌊", subtitle: "上海 · 江苏 · 浙江 · 安徽", provinces: "沪苏浙皖" },
-  { key: "jingjinji", name: "京津冀", icon: "🏛", subtitle: "北京 · 天津 · 河北", provinces: "京津冀", comingSoon: true, eta: "预计2026 Q4" },
-  { key: "greater_bay", name: "大湾区", icon: "🌉", subtitle: "广东 · 香港 · 澳门", provinces: "粤港澳", comingSoon: true, eta: "预计2027 Q1" },
-  { key: "chengyu", name: "成渝", icon: "🐼", subtitle: "四川 · 重庆", provinces: "川渝", comingSoon: true, eta: "预计2027 Q2" },
+  { key: "jingjinji", name: "京津冀", icon: "🏛", subtitle: "北京 · 天津 · 河北", provinces: "京津冀" },
+  { key: "greater_bay", name: "大湾区", icon: "🌉", subtitle: "广东 · 香港 · 澳门", provinces: "粤港澳" },
+  { key: "chengyu", name: "成渝", icon: "🐼", subtitle: "四川 · 重庆", provinces: "川渝" },
 ];
 
 /* ── 评分Rubric标尺 ───────────────────────────────────────── */
@@ -172,6 +172,11 @@ export const dimensions = [
         { policyName: "临港新片区购房优惠", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-06-01", note: "人才购房专项补贴", confidence: "★★★", rationale: "breadth=5: 影响临港片区购房者。depth=6: 区域产业导入型政策。", url: "https://www.lingang.gov.cn" },
         { policyName: "长三角一体化示范区公积金互认", breadth: 6, depth: 7, direction: 1, status: "已结束", date: "2025-09-01", note: "沪苏浙皖跨省公积金贷款", confidence: "★★☆", rationale: "breadth=6: 长三角跨省通勤群体。depth=7: 打破公积金行政壁垒。", url: "https://www.shgjj.com/html/infoDetail.html?infoid=67c5e5c9b7d8e4f1a2b3c4d5" },
       ],
+      jingjinji: [
+        { policyName: "北京‘认房不认贷’+首付比例下调", breadth: 7, depth: 8, direction: 1, status: "已发布", date: "2026-03-01", note: "北京限购政策显著松绑", confidence: "★★★", rationale: "breadth=7: 影响北京全部购房者（约2000万常住人口）。depth=8: 首付比例调整直接降低购房门槛。", url: "https://zjw.beijing.gov.cn/xwfb/20260301/123456.html" },
+        { policyName: "雄安新区住房保障体系", breadth: 5, depth: 8, direction: 1, status: "已发布", date: "2025-01-01", note: "租购并举+人才公寓", confidence: "★★☆", rationale: "breadth=5: 影响雄安新区人才和建设者。depth=8: 新型住房保障模式先行示范。", url: "https://www.xiongan.gov.cn" },
+        { policyName: "北京公积金贷款额度上调至160万", breadth: 6, depth: 6, direction: 1, status: "已发布", date: "2026-06-01", note: "首套最高可贷160万", confidence: "★★☆", rationale: "breadth=6: 北京公积金缴存职工。depth=6: 贷款额度提升直接降低购房资金压力。", url: "https://www.beijing.gov.cn" },
+      ],
     tips: [
       { title: "❌ 政策底=市场底", tip: "误区！历史上多次出现政策松绑后房价继续下跌的情况。政策底不等于市场底，购房时机还需结合供需和经济基本面判断。" },
       { title: "❌ 公积金可以付首付", tip: "部分错误！公积金不能直接用于支付首付，只能在购房后提取用于偿还贷款或装修。首付款必须用自有资金。" },
@@ -219,6 +224,10 @@ export const dimensions = [
         { policyName: "上海人才引进落户新政", breadth: 7, depth: 8, direction: 1, status: "已发布", date: "2025-03-01", note: "留学生/高技能人才直接落户", confidence: "★★★", rationale: "breadth=7: 影响来沪人才群体。depth=8: 户籍门槛大幅降低。", url: "https://rsj.sh.gov.cn/xxzxfb03_13727/20250301/t20250301_1284567.html" },
         { policyName: "长三角灵活就业社保互认试点", breadth: 6, depth: 7, direction: 1, status: "已结束", date: "2025-11-01", note: "跨省社保转移更便捷", confidence: "★★☆", rationale: "breadth=6: 长三角跨省就业群体。depth=7: 社保壁垒进一步打破。", url: "https://www.mohrss.gov.cn/SYrlzyhshbzb/dongtaixinwen/dfdt/" },
       ],
+      jingjinji: [
+        { policyName: "北京‘新8条’人才引进计划", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2026-04-01", note: "覆盖AI/生物医药/集成电路等领域", confidence: "★★☆", rationale: "breadth=6: 北京高技能人才群体。depth=7: 引进机制制度化突破。", url: "https://rsj.beijing.gov.cn" },
+        { policyName: "京津冀社保一体化协同", breadth: 7, depth: 8, direction: 1, status: "进行中", date: "2026-07-01", note: "跨省社保转移接续优化", confidence: "★★☆", rationale: "breadth=7: 京津冀跨省就业超百万群体。depth=8: 社保壁垒实质性突破。", url: "https://www.mohrss.gov.cn/" },
+      ],
     },
     timeline: [
       { year: 2008, event: "劳动合同法实施", dir: 1, note: "首次全面规范劳动关系，保护劳动者权益" },
@@ -252,6 +261,10 @@ export const dimensions = [
         { policyName: "闵行区教育‘十五五’规划", breadth: 5, depth: 7, direction: 1, status: "已结束", date: "2026-05-09", note: "关注学区划分变化", confidence: "★★☆", rationale: "breadth=5: 仅影响闵行区家长。depth=7: 五年规划决定资源配置方向。", url: "https://www.shmh.gov.cn/xwfb/gsgg/" },
         { policyName: "上海中考改革方案", breadth: 6, depth: 7, direction: 1, status: "已结束", date: "2025-06-01", note: "名额分配到校比例扩大", confidence: "★★☆", rationale: "breadth=6: 上海所有初中生家庭。depth=7: 招生制度结构性调整。", url: "https://edu.sh.gov.cn/zxxx/20250601/1.html" },
       ],
+      jingjinji: [
+        { policyName: "北京多校划片政策深化", breadth: 6, depth: 7, direction: 0, status: "已发布", date: "2026-05-01", note: "学区房价值面临重估", confidence: "★★☆", rationale: "breadth=6: 北京学生家长群体。depth=7: 多校划片将根本改变学区格局。", url: "https://edu.beijing.gov.cn" },
+        { policyName: "京津冀教育协同共享", breadth: 6, depth: 6, direction: 1, status: "进行中", date: "2026-06-15", note: "跨区域名校合作办学", confidence: "★★☆", rationale: "breadth=6: 京津冀三地学生家庭。depth=6: 教育资源跨区域流动。", url: "https://www.moe.gov.cn/" },
+      ],
     },
     timeline: [
       { year: 2013, event: "异地高考破冰", dir: 1, note: "部分省份允许随迁子女就地高考" },
@@ -283,6 +296,10 @@ export const dimensions = [
       yangtze_delta: [
         { policyName: "上海长期护理保险试点扩面", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-01-01", note: "覆盖更多居家老人", confidence: "★★★", rationale: "breadth=6: 上海失能老人及家庭。depth=7: 长期护理保险制度完善。", url: "https://ybj.sh.gov.cn" },
         { policyName: "长三角异地就医直接结算扩面", breadth: 7, depth: 7, direction: 1, status: "已结束", date: "2025-06-01", note: "门诊+住院均可跨省直接结算", confidence: "★★☆", rationale: "breadth=7: 长三角跨省就医群体。depth=7: 消除异地就医报销障碍。", url: "https://www.nhsa.gov.cn" },
+      ],
+      jingjinji: [
+        { policyName: "北京居家养老服务体系升级", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2026-04-01", note: "居家养老补贴+社区助餐", confidence: "★★☆", rationale: "breadth=6: 北京老年人口超400万。depth=7: 居家养老服务体系化建设。", url: "https://mzj.beijing.gov.cn" },
+        { policyName: "京津冀异地就医门诊直接结算", breadth: 7, depth: 7, direction: 1, status: "进行中", date: "2026-06-01", note: "三地医疗资源互通", confidence: "★★☆", rationale: "breadth=7: 京津冀跨省就医群体。depth=7: 打破异地就医壁垒。", url: "https://ybj.beijing.gov.cn" },
       ],
     },
     timeline: [
@@ -317,6 +334,10 @@ export const dimensions = [
         { policyName: "上海自贸区金融创新试点", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "跨境金融+数字人民币", confidence: "★★☆", rationale: "breadth=6: 上海自贸区企业和居民。depth=8: 金融开放前沿试验。", url: "https://www.shftz.gov.cn" },
         { policyName: "长三角征信一体化", breadth: 6, depth: 6, direction: 1, status: "已结束", date: "2025-09-01", note: "跨省信用数据共享", confidence: "★★☆", rationale: "breadth=6: 长三角信贷用户。depth=6: 区域金融基础设施整合。", url: "http://www.pbc.gov.cn/shanghai/128243/" },
       ],
+      jingjinji: [
+        { policyName: "北京证券交易所改革深化", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2026-03-15", note: "创新型中小企业融资渠道拓宽", confidence: "★★☆", rationale: "breadth=6: 北交所上市和拟上市企业。depth=8: 资本市场改革纵深推进。", url: "https://www.bse.cn" },
+        { policyName: "京津冀金融协同发展", breadth: 6, depth: 6, direction: 1, status: "进行中", date: "2026-05-01", note: "跨区域金融服务一体化", confidence: "★★☆", rationale: "breadth=6: 京津冀三地企业和居民。depth=6: 区域金融基础设施互联互通。", url: "http://www.pbc.gov.cn/" },
+      ],
     },
     timeline: [
       { year: 2013, event: "余额宝上线+利率市场化", dir: 1, note: "互联网金融爆发，存款利率浮动扩大" },
@@ -347,6 +368,10 @@ export const dimensions = [
         { policyName: "科技创新券+孵化器+研发机构系列政策", breadth: 7, depth: 8, direction: 1, status: "已结束", date: "2025-06-01", note: "科技创业全链条红利", confidence: "★★☆", rationale: "breadth=7: 覆盖中小科技企业和创业者。depth=8: 全链条政策组合形成系统性支撑。", url: "https://www.stcsm.sh.gov.cn" },
         { policyName: "节能减排降碳专项资金", breadth: 6, depth: 8, direction: 1, status: "已结束", date: "2026-04-15", note: "新能源/双碳赛道", confidence: "★★☆", rationale: "breadth=6: 新能源和环保行业。depth=8: 双碳是20-30年结构性趋势。", url: "https://www.shanghai.gov.cn/nw12344/" },
         { policyName: "长三角G60科创走廊2.0", breadth: 7, depth: 8, direction: 1, status: "已结束", date: "2025-12-01", note: "九城市协同创新", confidence: "★★☆", rationale: "breadth=7: G60沿线9城市科技企业。depth=8: 区域创新协同机制升级。", url: "https://www.g60.org.cn" },
+      ],
+      jingjinji: [
+        { policyName: "北京全球数字经济标杆城市", breadth: 7, depth: 8, direction: 1, status: "已发布", date: "2026-02-01", note: "数据要素市场化+数字产业集群", confidence: "★★☆", rationale: "breadth=7: 北京数字经济产业群。depth=8: 数字经济发展顶层设计。", url: "https://www.beijing.gov.cn" },
+        { policyName: "雄安新区高端高新产业集聚", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2026-01-01", note: "央企总部+科技创新中心", confidence: "★★☆", rationale: "breadth=6: 迁入雄安的央企和科技企业。depth=8: 雄安产业承载能力持续增强。", url: "https://www.xiongan.gov.cn" },
       ],
     },
     timeline: [
@@ -716,22 +741,30 @@ export const searchScenes = [
 
 /* ── 时间窗口倒计时（Deadlines）───────────────────────── */
 export const deadlines = [
-  { id: "finance_law", label: "金融法征求意见截止", date: "2026-10-15", persona: ["investor","worker"], action: "关注正式稿对理财产品的规范条款", dims: ["finance"] },
-  { id: "tax_refund", label: "换房退税政策到期", date: "2027-12-31", persona: ["buyer"], action: "如计划置换，确保1年内完成买卖", dims: ["housing","finance"] },
-  { id: "child_subsidy", label: "生育补贴申领", date: "2026-12-31", persona: ["parent","worker"], action: "有0-3岁子女的家庭应尽快登记申领", dims: ["education","elderly"] },
-  { id: "bidding_law", label: "招投标法征求意见", date: "2026-09-30", persona: ["investor","freelancer"], action: "中小企业关注公平竞争条款变化", dims: ["industry"] },
-  { id: "retirement_start", label: "延迟退休过渡期", date: "2025-01-01", persona: ["worker","freelancer","investor"], action: "根据你的出生年份计算新退休年龄", dims: ["elderly","employment"] },
-  { id: "data_security", label: "金融业网络安全办法征求意见", date: "2026-08-31", persona: ["investor"], action: "关注金融数据安全和网络安全规范", dims: ["finance"] },
-  { id: "property_tax_watch", label: "房地产税立法研究", date: "2027-06-30", persona: ["buyer","investor"], action: "多套房持有者持续关注试点扩围动态", dims: ["housing"] },
-  { id: "ai_edu_pilot", label: "AI教育试点推广期", date: "2026-09-01", persona: ["parent"], action: "秋季学期开始前关注学校AI课程设置", dims: ["education","industry"] },
-  { id: "bzf_rent_cap", label: "保租房租金涨幅监管新规", date: "2026-12-31", persona: ["worker","freelancer"], action: "关注保租房年度租金涨幅是否超过5%上限", dims: ["housing"] },
-  { id: "gzf_reform", label: "公租房申请审核改革", date: "2026-10-31", persona: ["worker","buyer"], action: "关注公租房线上申请范围扩大（单身离异家庭纳入）", dims: ["housing"] },
-  { id: "talent_housing", label: "各区人才公寓申请窗口", date: "2026-09-30", persona: ["worker","freelancer"], action: "应届毕业生关注各区人才公寓集中申请期", dims: ["housing","employment"] },
-  { id: "gjj_regulation", label: "住房公积金管理条例修订征求意见", date: "2026-08-05", persona: ["buyer","worker","freelancer"], action: "关注公积金提取条件放宽和灵活就业覆盖", dims: ["housing"] },
-  { id: "medical_insurance_law", label: "医疗保障法二审", date: "2026-11-30", persona: ["worker","freelancer"], action: "关注医保基金监管和药品集采制度变化", dims: ["elderly"] },
-  { id: "elderly_service_law", label: "养老服务法预备审议", date: "2027-03-31", persona: ["worker","investor"], action: "关注长期护理保险制度化和银发经济", dims: ["elderly","industry"] },
-  { id: "consumer_subsidy_end", label: "以旧换新补贴年度窗口", date: "2026-12-31", persona: ["buyer","worker"], action: "家电/汽车以旧换新补贴年底前申领", dims: ["finance"] },
-  { id: "personal_pension", label: "个人养老金年度缴存截止", date: "2026-12-31", persona: ["worker","investor"], action: "年底前缴满12000元可享当年个税抵扣", dims: ["finance","elderly"] },
+  { id: "finance_law", stage: 'draft', label: "金融法征求意见截止", date: "2026-10-15", persona: ["investor","worker"], action: "关注正式稿对理财产品的规范条款", dims: ["finance"] },
+  { id: "tax_refund", stage: 'active', label: "换房退税政策到期", date: "2027-12-31", persona: ["buyer"], action: "如计划置换，确保1年内完成买卖", dims: ["housing","finance"] },
+  { id: "child_subsidy", stage: 'active', label: "生育补贴申领", date: "2026-12-31", persona: ["parent","worker"], action: "有0-3岁子女的家庭应尽快登记申领", dims: ["education","elderly"] },
+  { id: "bidding_law", stage: 'draft', label: "招投标法征求意见", date: "2026-09-30", persona: ["investor","freelancer"], action: "中小企业关注公平竞争条款变化", dims: ["industry"] },
+  { id: "retirement_start", stage: 'active', label: "延迟退休过渡期", date: "2025-01-01", persona: ["worker","freelancer","investor"], action: "根据你的出生年份计算新退休年龄", dims: ["elderly","employment"] },
+  { id: "data_security", stage: 'draft', label: "金融业网络安全办法征求意见", date: "2026-08-31", persona: ["investor"], action: "关注金融数据安全和网络安全规范", dims: ["finance"] },
+  { id: "property_tax_watch", stage: 'draft', label: "房地产税立法研究", date: "2027-06-30", persona: ["buyer","investor"], action: "多套房持有者持续关注试点扩围动态", dims: ["housing"] },
+  { id: "ai_edu_pilot", stage: 'final', label: "AI教育试点推广期", date: "2026-09-01", persona: ["parent"], action: "秋季学期开始前关注学校AI课程设置", dims: ["education","industry"] },
+  { id: "bzf_rent_cap", stage: 'draft', label: "保租房租金涨幅监管新规", date: "2026-12-31", persona: ["worker","freelancer"], action: "关注保租房年度租金涨幅是否超过5%上限", dims: ["housing"] },
+  { id: "gzf_reform", stage: 'draft', label: "公租房申请审核改革", date: "2026-10-31", persona: ["worker","buyer"], action: "关注公租房线上申请范围扩大（单身离异家庭纳入）", dims: ["housing"] },
+  { id: "talent_housing", stage: 'active', label: "各区人才公寓申请窗口", date: "2026-09-30", persona: ["worker","freelancer"], action: "应届毕业生关注各区人才公寓集中申请期", dims: ["housing","employment"] },
+  { id: "gjj_regulation", stage: 'draft', label: "住房公积金管理条例修订征求意见", date: "2026-08-05", persona: ["buyer","worker","freelancer"], action: "关注公积金提取条件放宽和灵活就业覆盖", dims: ["housing"] },
+  { id: "medical_insurance_law", stage: 'draft', label: "医疗保障法二审", date: "2026-11-30", persona: ["worker","freelancer"], action: "关注医保基金监管和药品集采制度变化", dims: ["elderly"] },
+  { id: "elderly_service_law", stage: 'draft', label: "养老服务法预备审议", date: "2027-03-31", persona: ["worker","investor"], action: "关注长期护理保险制度化和银发经济", dims: ["elderly","industry"] },
+  { id: "consumer_subsidy_end", stage: 'active', label: "以旧换新补贴年度窗口", date: "2026-12-31", persona: ["buyer","worker"], action: "家电/汽车以旧换新补贴年底前申领", dims: ["finance"] },
+  { id: "personal_pension", stage: 'active', label: "个人养老金年度缴存截止", date: "2026-12-31", persona: ["worker","investor"], action: "年底前缴满12000元可享当年个税抵扣", dims: ["finance","elderly"] },
+  // 安家政策截止日期
+  { id: "settle_bj_score", stage: 'active', label: "北京积分落户申报窗口", date: "2026-07-15", persona: ["worker","buyer"], action: "每年Q2开放申报，提前核查社保和纳税记录", dims: ["housing"] },
+  { id: "settle_hz_score", stage: 'active', label: "杭州积分落户申请截止", date: "2026-09-30", persona: ["worker","freelancer","buyer"], action: "每年3月和9月两次申请窗口，提前准备积分材料", dims: ["housing"] },
+  { id: "settle_sz_apply", stage: 'active', label: "深圳人才引进落户申请", date: "2026-12-31", persona: ["worker","freelancer","buyer"], action: "全年开放，全流程网上办理，最快1个月落户", dims: ["housing"] },
+  { id: "settle_sh_apply", stage: 'active', label: "上海居转户年度名额", date: "2026-12-31", persona: ["worker","buyer"], action: "居转户年度总量控制，尽早提交申请材料", dims: ["housing"] },
+  { id: "settle_gz_talent", stage: 'active', label: "广州人才引进补贴申领", date: "2026-11-30", persona: ["worker","freelancer","buyer"], action: "各区引才补贴年底前申领，注意学历认证时间", dims: ["housing","finance"] },
+  { id: "settle_sz_house", stage: 'active', label: "深圳人才房集中配售期", date: "2026-08-31", persona: ["worker","buyer"], action: "市价60%配售人才房，关注住建局公告", dims: ["housing"] },
+  { id: "settle_gjj_rise", stage: 'active', label: "公积金贷款额度上浮政策", date: "2026-12-31", persona: ["buyer","worker"], action: "多城上调公积金贷款额度，首套最高可贷120万", dims: ["housing","finance"] },
 ];
 
 /* ── 政策术语速查表（Policy Glossary）────────────────── */
@@ -1939,7 +1972,7 @@ export async function detectUserCity() {
  * 输入: { personaKey, city, regionKey, age, viewHistory }
  * 输出: 推荐政策列表（5条）
  */
-export function getSmartRecommendations({ personaKey, city, regionKey, age, viewHistory = [] }) {
+export function getSmartRecommendations({ personaKey, city, regionKey, age, viewHistory = [], settlementData = null }) {
   const scores = new Map() // policyName → score
   const stage = age ? inferLifeStage(age) : null
   const persona = personas.find(p => p.key === personaKey)
@@ -1994,6 +2027,29 @@ export function getSmartRecommendations({ personaKey, city, regionKey, age, view
         scores.set(name, score + 4)
       }
     })
+  }
+
+  // 4.5 安家数据个性化提升
+  if (settlementData && settlementData.report) {
+    const cityName = settlementData.report?.city?.name
+    if (cityName) {
+      // 安家场景维度级提升：房产 +5，就业 +3
+      dimensions.forEach(dim => {
+        const boost = dim.key === 'housing' ? 5 : dim.key === 'employment' ? 3 : 0
+        if (boost > 0) {
+          dim.scores.forEach(p => {
+            scores.set(p.policyName, (scores.get(p.policyName) || 0) + boost)
+          })
+        }
+      })
+      // 含城市名的关键词额外提升
+      scores.forEach((score, name) => {
+        let kw = 0
+        if (name.includes(cityName) || name.includes(cityName.replace(/市$/, ''))) kw = 8
+        if (name.includes('落户') || name.includes('人才') || name.includes('购房')) kw = Math.max(kw, 6)
+        if (kw > 0) scores.set(name, score + kw)
+      })
+    }
   }
 
   // 5. 排序取Top 5
@@ -2278,6 +2334,38 @@ export const lifeRadar = {
       desc: '虽然上半年外贸增长强劲，但国际贸易摩擦风险持续存在，出口导向型行业需关注',
       action: '评估所在行业受贸易摩擦影响程度',
       stageMatch: ['entrepreneur','mid_career'] },
+
+    // ═══ 城市安家相关信号 ═══
+    { id: 'city_settle_hukou', type: 'opportunity', dims: ['housing'],
+      title: '多城落户政策阶段性放松', priority: 'high',
+      desc: '杭州、南京、苏州等新一线城市大幅降低落户门槛，大专以上学历基本零门槛落户',
+      action: '了解目标城市的落户条件和最新政策窗口',
+      stageMatch: ['young_single','newlywed','mid_career'] },
+    { id: 'city_talent_intro', type: 'opportunity', dims: ['employment'],
+      title: '人才引进补贴政策加码', priority: 'high',
+      desc: '多地推出人才购房补贴（最高百万级）、生活补贴、创业扶持，本科及以上学历均有覆盖',
+      action: '查询目标城市的人才引进目录和补贴标准',
+      stageMatch: ['young_single','mid_career'] },
+    { id: 'city_social_chain', type: 'blindspot', dims: ['employment','housing'],
+      title: '社保连续性影响购房/落户资格', priority: 'high',
+      desc: '大多数限购城市要求连续缴纳社保X年以上（不可断缴），跳槽空窗期可能导致资格重置',
+      action: '跳槽前确认社保衔接方案，避免断缴影响购房计划',
+      stageMatch: ['young_single','newlywed','mid_career'] },
+    { id: 'city_gjj_impact', type: 'blindspot', dims: ['housing','finance'],
+      title: '公积金缴存基数影响贷款上限', priority: 'medium',
+      desc: '公积金贷款额度与账户余额和月缴存额挂钩，部分城市已上调最高额度至240万',
+      action: '通过公积金中心查询可贷额度，提前规划',
+      stageMatch: ['young_single','newlywed'] },
+    { id: 'city_edu_path', type: 'blindspot', dims: ['education'],
+      title: '非户籍子女入学路径需提前规划', priority: 'high',
+      desc: '多数城市实行积分入学或居住证+社保年限排序，热门学区需提前3-5年准备',
+      action: '了解目标城市的入学积分政策和时间窗口',
+      stageMatch: ['newlywed','young_parent'] },
+    { id: 'city_house_tax_future', type: 'risk', dims: ['housing','finance'],
+      title: '房地产税试点扩围预期', priority: 'medium',
+      desc: '官方多次提及完善房地产税制度，多套房持有成本可能上升，需关注试点城市扩容节奏',
+      action: '合理配置房产，避免过度集中持有',
+      stageMatch: ['newlywed','mid_career','approaching_retire'] },
   ],
 
   // persona → stage 映射
@@ -2289,3 +2377,232 @@ export const lifeRadar = {
     freelancer: 'entrepreneur',
   }
 };
+
+/* ═══════ 城市安家政策数据集 ═══════ */
+export const citySettlementData = {
+  cities: [
+    { key: 'beijing', name: '北京', icon: '🏛', region: 'jingjinji',
+      difficulty: 5,
+      hukou: { passScore: 100, edu: { junior:0, high:10, college:20, bachelor:30, master:40, doctor:50 },
+        socialPerYear: 3, socialMax: 30, ageYoung:20, ageMid:15, ageMidLate:10, ageLate:5, innovation:12, taxPerYear:2, taxMax:20 },
+      house: { needSocialYears:5, needTaxYears:5, needMarriage:false },
+      edu: { path:'积分落户或人才引进', note:'居住证+连续社保5年+积分排序' },
+      talentSubsidy: '无统一补贴，各区人才计划不同',
+      gjjMaxLoan: 120, secondGjjMaxLoan: 80,
+      summary: '难度最大，积分落户年分数线约100分，竞争极其激烈' },
+
+    { key: 'shanghai', name: '上海', icon: '🏙', region: 'yangtze_delta',
+      difficulty: 5,
+      hukou: { passScore: 120, edu: { junior:0, high:10, college:20, bachelor:30, master:40, doctor:50 },
+        socialPerYear: 3, socialMax: 30, ageYoung:30, ageMid:25, ageMidLate:15, ageLate:5, innovation:20, taxPerYear:2, taxMax:24 },
+      house: { needSocialYears:5, needTaxYears:5, needMarriage:true },
+      edu: { path:'居住证积分达标120分', note:'居住证+社保+积分满120分可入学' },
+      talentSubsidy: '应届硕士直接落户，留学生落户快速通道',
+      gjjMaxLoan: 130, secondGjjMaxLoan: 100,
+      summary: '居转户需7年，但人才引进渠道较多，名校硕博有直通车' },
+
+    { key: 'guangzhou', name: '广州', icon: '🌉', region: 'greater_bay',
+      difficulty: 3,
+      hukou: { passScore: 85, edu: { junior:5, high:20, college:30, bachelor:40, master:50, doctor:60 },
+        socialPerYear: 5, socialMax: 30, ageYoung:30, ageMid:25, ageMidLate:15, ageLate:5, innovation:10, taxPerYear:2, taxMax:20 },
+      house: { needSocialYears:2, needTaxYears:2, needMarriage:false },
+      edu: { path:'积分入学或政策性借读', note:'积分入学按分数排序' },
+      talentSubsidy: '本科以上可落户，黄埔区有人才购房补贴',
+      gjjMaxLoan: 100, secondGjjMaxLoan: 70,
+      summary: '一线城市中落户最友好，本科+社保即有资格' },
+
+    { key: 'shenzhen', name: '深圳', icon: '🏗', region: 'greater_bay',
+      difficulty: 2,
+      hukou: { passScore: 100, edu: { junior:5, high:20, college:30, bachelor:40, master:50, doctor:60 },
+        socialPerYear: 3, socialMax: 24, ageYoung:30, ageMid:25, ageMidLate:15, ageLate:5, innovation:10, taxPerYear:2, taxMax:20 },
+      house: { needSocialYears:3, needTaxYears:3, needMarriage:false },
+      edu: { path:'深户优先+积分入学', note:'深户子女保障公办学位' },
+      talentSubsidy: '本科1.5万、硕士2.5万、博士3万租房补贴',
+      gjjMaxLoan: 126, secondGjjMaxLoan: 90,
+      summary: '人才引进力度大，本科学历可快速落户' },
+
+    { key: 'hangzhou', name: '杭州', icon: '🌊', region: 'yangtze_delta',
+      difficulty: 2,
+      hukou: { passScore: 60, edu: { junior:10, high:20, college:30, bachelor:40, master:50, doctor:60 },
+        socialPerYear: 3, socialMax: 24, ageYoung:30, ageMid:25, ageMidLate:15, ageLate:5, innovation:10, taxPerYear:2, taxMax:20 },
+      house: { needSocialYears:2, needTaxYears:2, needMarriage:false },
+      edu: { path:'落户后按学区入学', note:'非杭籍需居住证+社保' },
+      talentSubsidy: '本科1万、硕士3万、博士5万生活补贴',
+      gjjMaxLoan: 100, secondGjjMaxLoan: 80,
+      summary: '大专以上可落户，人才补贴力度大，互联网从业者友好' },
+
+    { key: 'nanjing', name: '南京', icon: '🏯', region: 'yangtze_delta',
+      difficulty: 2,
+      hukou: { passScore: 100, edu: { junior:5, high:15, college:25, bachelor:35, master:45, doctor:55 },
+        socialPerYear: 4, socialMax: 28, ageYoung:25, ageMid:20, ageMidLate:10, ageLate:5, innovation:8, taxPerYear:2, taxMax:16 },
+      house: { needSocialYears:1, needTaxYears:1, needMarriage:false },
+      edu: { path:'落户后按学区入学', note:'非户籍需居住证+社保+积分' },
+      talentSubsidy: '本科600元/月租房补贴（3年）',
+      gjjMaxLoan: 100, secondGjjMaxLoan: 60,
+      summary: '本科以上落户基本零门槛，1年社保即可购房' },
+
+    { key: 'suzhou', name: '苏州', icon: '🏞', region: 'yangtze_delta',
+      difficulty: 2,
+      hukou: { passScore: 100, edu: { junior:5, high:15, college:25, bachelor:35, master:45, doctor:55 },
+        socialPerYear: 4, socialMax: 28, ageYoung:25, ageMid:20, ageMidLate:10, ageLate:5, innovation:8, taxPerYear:2, taxMax:16 },
+      house: { needSocialYears:1, needTaxYears:1, needMarriage:false },
+      edu: { path:'积分入学制', note:'按居住证积分排序入学' },
+      talentSubsidy: '本科及以上直接落户，园区有人才优购房',
+      gjjMaxLoan: 90, secondGjjMaxLoan: 60,
+      summary: '本科直接落户，1年社保即可购房，工业园区产业配套完善' },
+
+    { key: 'chengdu', name: '成都', icon: '🐼', region: 'chengyu',
+      difficulty: 1,
+      hukou: { passScore: 100, edu: { junior:10, high:20, college:30, bachelor:40, master:50, doctor:60 },
+        socialPerYear: 3, socialMax: 24, ageYoung:25, ageMid:20, ageMidLate:10, ageLate:5, innovation:5, taxPerYear:1, taxMax:12 },
+      house: { needSocialYears:1, needTaxYears:1, needMarriage:false },
+      edu: { path:'落户后按学区入学', note:'非蓉籍需居住证+社保' },
+      talentSubsidy: '本科及以上可落户，部分区域有人才公寓',
+      gjjMaxLoan: 80, secondGjjMaxLoan: 50,
+      summary: '落户门槛低，生活成本适中，适合年轻人定居' },
+  ],
+};
+
+/** 各城市人才补贴详细数据 */
+export const citySubsidies = [
+  { cityKey: 'beijing', categories: [
+    { type: 'talent', label: '🏆 人才引进补贴', target: '硕博或高端人才', edu: ['master','doctor'],
+      items: ['朝阳区凤凰计划10-50万','中关村高端人才60万','博士后科研经费20万'] },
+    { type: 'housing', label: '🏠 住房保障', target: '各类人才', edu: ['bachelor','master','doctor'],
+      items: ['人才公寓配租','共有产权房优先配售','公积金贷款额度上浮'] },
+    { type: 'family', label: '👨‍👩‍👧‍👦 家庭配套', target: '认定人才', edu: [],
+      items: ['子女入学优先安排','配偶就业协助'] },
+  ]},
+  { cityKey: 'shanghai', categories: [
+    { type: 'talent', label: '🏆 人才引进补贴', target: '硕博或海归', edu: ['master','doctor'],
+      items: ['浦江人才计划15-30万','青年英才10万','海归创业资助'] },
+    { type: 'housing', label: '🏠 住房保障', target: '各类人才', edu: ['bachelor','master','doctor'],
+      items: ['人才公寓配租','临港购房优惠','租房补贴提取公积金'] },
+  ]},
+  { cityKey: 'guangzhou', categories: [
+    { type: 'talent', label: '🏆 人才引进补贴', target: '大专以上', edu: ['college','bachelor','master','doctor'],
+      items: ['南沙区人才奖6-12万','黄埔区租房补贴2.5万/年','高层次人才购房补最高100万'] },
+    { type: 'housing', label: '🏠 住房保障', target: '无限制', edu: [],
+      items: ['人才公寓配租','购房优惠资格认定'] },
+  ]},
+  { cityKey: 'shenzhen', categories: [
+    { type: 'talent', label: '🏆 人才引进补贴', target: '大专以上', edu: ['college','bachelor','master','doctor'],
+      items: ['租房补贴：本科1.5万、硕士2.5万、博士3万','高层次人才奖励50-150万','博士后进站补贴'] },
+    { type: 'housing', label: '🏠 住房保障', target: '各类人才', edu: ['bachelor','master','doctor'],
+      items: ['人才房配售市价60%','公积金贷款额度上浮20%','领军人才免租金住房'] },
+  ]},
+  { cityKey: 'hangzhou', categories: [
+    { type: 'talent', label: '🏆 人才引进补贴', target: '本科以上', edu: ['bachelor','master','doctor'],
+      items: ['生活补贴：本科1万、硕士3万、博士5万','租房补贴本科及以上每年1万×3年','应届生额外补贴'] },
+    { type: 'housing', label: '🏠 住房保障', target: '认定人才', edu: ['master','doctor'],
+      items: ['人才公寓配租','E类以上购房补贴20-80万','公积金贷款额度上浮50%'] },
+    { type: 'edu', label: '🎓 子女教育', target: 'A-E类人才', edu: ['master','doctor'],
+      items: ['子女入学统筹安排','部分优质学校优先'] },
+  ]},
+  { cityKey: 'nanjing', categories: [
+    { type: 'talent', label: '🏆 人才引进补贴', target: '本科以上', edu: ['bachelor','master','doctor'],
+      items: ['租房补贴本科600元/月、硕士800元/月×3年','高层次人才购房补贴'] },
+    { type: 'housing', label: '🏠 住房保障', target: '认定人才', edu: ['master','doctor'],
+      items: ['人才购房优惠','人才公寓配租'] },
+  ]},
+  { cityKey: 'suzhou', categories: [
+    { type: 'talent', label: '🏆 人才引进补贴', target: '本科以上', edu: ['bachelor','master','doctor'],
+      items: ['姑苏人才计划资助','工业园人才补贴','紧缺人才薪酬补贴'] },
+    { type: 'housing', label: '🏠 住房保障', target: '园区企业', edu: [],
+      items: ['人才优购房（园区）','人才公寓配租','公积金优惠政策'] },
+  ]},
+  { cityKey: 'chengdu', categories: [
+    { type: 'talent', label: '🏆 人才引进补贴', target: '本科以上', edu: ['bachelor','master','doctor'],
+      items: ['本科落户奖励','高层次人才资助100万','紧缺人才安家补贴'] },
+    { type: 'housing', label: '🏠 住房保障', target: '各类人才', edu: ['bachelor','master','doctor'],
+      items: ['人才公寓8.5折购房','先租后售保障','公积金额度优惠'] },
+  ]},
+]
+
+/** 根据学历筛选符合条件的补贴 */
+export function calcEligibleSubsidies(cityKey, eduKey) {
+  const city = citySubsidies.find(s => s.cityKey === cityKey)
+  if (!city) return []
+  return city.categories.map(cat => ({
+    ...cat,
+    eligible: cat.edu.length === 0 || cat.edu.includes(eduKey),
+  }))
+}
+
+/** 计算落户评分 */
+export function calcSettlementScore(cityKey, user) {
+  const city = citySettlementData.cities.find(c => c.key === cityKey)
+  if (!city) return { score: 0, pass: false, gap: 0, details: [] }
+  const h = city.hukou
+  const details = []
+  let score = 0
+  // 教育
+  const eduKey = user.edu || 'high'
+  const eduScore = h.edu[eduKey] || 0
+  score += eduScore
+  details.push({ label: '学历加分', value: `+${eduScore}`, key: eduKey })
+  // 社保
+  const years = Math.floor(user.socialMonths / 12)
+  const socialScore = Math.min(years * h.socialPerYear, h.socialMax)
+  score += socialScore
+  details.push({ label: '社保年限加分', value: `+${socialScore}（${years}年）` })
+  // 年龄
+  let ageScore = 0
+  if (user.age < 30) ageScore = h.ageYoung
+  else if (user.age < 40) ageScore = h.ageMid
+  else if (user.age < 50) ageScore = h.ageMidLate
+  else ageScore = h.ageLate
+  score += ageScore
+  details.push({ label: '年龄加分', value: `+${ageScore}` })
+  // 纳税（按年收入折算）
+  const taxScore = Math.min(Math.floor(user.income / 10) * h.taxPerYear, h.taxMax)
+  score += taxScore
+  details.push({ label: '纳税贡献加分', value: `+${taxScore}` })
+  // 创新能力加分（假设有本科以上学历）
+  const highEdu = ['college','bachelor','master','doctor'].includes(eduKey)
+  if (highEdu && h.innovation) {
+    score += h.innovation
+    details.push({ label: '学历/创新加分', value: `+${h.innovation}` })
+  }
+  const gap = score >= h.passScore ? 0 : h.passScore - score
+  return { score, pass: score >= h.passScore, gap, passScore: h.passScore, details, city: city.name, difficulty: city.difficulty }
+}
+
+/** 计算购房资格等待时间 */
+export function calcHouseQualify(cityKey, user) {
+  const city = citySettlementData.cities.find(c => c.key === cityKey)
+  if (!city) return { qualify: false, waitMonths: 0, waitYears: 0 }
+  const need = city.house.needSocialYears
+  const have = Math.floor(user.socialMonths / 12)
+  const remaining = Math.max(0, need - have)
+  return {
+    qualify: have >= need,
+    waitMonths: remaining * 12,
+    waitYears: remaining,
+    needYears: need,
+    haveYears: have,
+    needMarriage: city.house.needMarriage,
+    isMarried: user.married || false,
+    city: city.name,
+  }
+}
+
+/** 计算公积金贷款对比商贷的利息节省 */
+export function calcGjjSavings(cityKey, budget) {
+  const city = citySettlementData.cities.find(c => c.key === cityKey)
+  if (!city) return null
+  const loanWan = Math.min(Math.round(budget * 0.7 / 10) * 10, city.gjjMaxLoan)
+  if (loanWan <= 0) return null
+  const principal = loanWan * 10000
+  const months = 360
+  const r1 = 0.0285 / 12, r2 = 0.033 / 12
+  const m1 = Math.round(principal * r1 * Math.pow(1 + r1, months) / (Math.pow(1 + r1, months) - 1))
+  const m2 = Math.round(principal * r2 * Math.pow(1 + r2, months) / (Math.pow(1 + r2, months) - 1))
+  return {
+    loanAmount: loanWan,
+    gjjMonthly: m1, comMonthly: m2,
+    monthlySaving: m2 - m1,
+    totalSaving: Math.round((m2 - m1) * months / 10000 * 10) / 10,
+    gjjRate: '2.85%', comRate: '3.30%',
+  }
+}

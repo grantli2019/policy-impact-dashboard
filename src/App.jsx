@@ -4,7 +4,7 @@ import {
   dimensions, methodology, rubric, personas, weeklyUpdates, regions,
   calcDimensionScore, calcOverallIndex, getIndexLevel, keyFindings,
   getDimensionsForRegion, getTimelineForDimension, regionToolParams,
-  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, dashboardRecommendations, newsLianboUpdates, lifeRadar, searchScenes,
+  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, newsLianboUpdates, lifeRadar, searchScenes,
   detectUserCity, getSmartRecommendations, getRecommendReason, cityToRegion, inferLifeStage, lifeStages,
 } from './data/impactData'
 import './App.css'
@@ -1431,9 +1431,7 @@ function OnboardingTour({ onClose }) {
 function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
   const visits = (() => { try { return JSON.parse(localStorage.getItem("visit_stats") || "{}") } catch { return {} } })()
   const persona = personas.find(p => p.key === personaKey)
-  const recs = dashboardRecommendations[personaKey] || { topics: [], scenarios: [] }
-  const relatedTopics = specialTopics.filter(t => recs.topics.includes(t.id))
-  const relatedScenarios = decisionScenarios.filter(s => recs.scenarios.includes(s.id))
+
   const progress = (() => { try { return JSON.parse(localStorage.getItem("action_progress") || "{}") } catch { return {} } })()
   const done = progress[personaKey] || []
   const plans = actionPlans[personaKey] || []
@@ -1446,6 +1444,12 @@ function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
   const overallLevel = getIndexLevel(overallIndex)
   const doneBenefit = plans.filter(p => done.includes(p.id)).reduce((a, p) => a + (p.benefit || 0), 0)
   const firstVisit = visits.firstDate || new Date().toISOString().slice(0, 10)
+  const [folded, setFolded] = useState({ ledger: true, actions: true, bookmarks: true, history: true, settle: true })
+  const toggleFolded = name => setFolded(f => ({ ...f, [name]: !f[name] }))
+  const historyCount = (() => { try { return JSON.parse(localStorage.getItem('view_history') || '[]').length } catch { return 0 } })()
+  const settlementSaved = (() => { try { return JSON.parse(localStorage.getItem('settlement_data')) } catch { return null } })()
+  const settlementActions = (() => { try { return JSON.parse(localStorage.getItem('settlement_actions')) } catch { return null } })()
+  const [settlementDone, setSettlementDone] = useState(() => { try { return JSON.parse(localStorage.getItem('settlement_actions_done') || '[]') } catch { return [] } })
 
   return (
     <div className="dashboard-view">
@@ -1485,101 +1489,153 @@ function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
         <div className="dash-stat"><span className="ds-num">{bookmarks.length}</span><span className="ds-label">收藏政策</span></div>
       </div>
 
-      {/* Dividend Ledger */}
-      <div className="dash-section">
-        <h3>💰 我的政策红利账本</h3>
-        <div className="ledger-grid">
-          <div className="ledger-card ledger-confirm"><span className="lc-label">已确认红利</span><span className="lc-value">+{confirmedTotal.toLocaleString()}元/年</span></div>
-          <div className="ledger-card ledger-risk"><span className="lc-label">潜在风险</span><span className="lc-value">{riskTotal.toLocaleString()}元/年</span></div>
-          <div className="ledger-card ledger-action"><span className="lc-label">行动收益</span><span className="lc-value">+{(doneBenefit/10000).toFixed(1)}万</span></div>
-          <div className="ledger-card ledger-net"><span className="lc-label">净收益</span><span className="lc-value">{(confirmedTotal+riskTotal>=0?'+':'')}{(confirmedTotal+riskTotal).toLocaleString()}元</span></div>
+      {/* Settlement Progress */}
+      {settlementSaved && (
+        <div className="dash-settlement-card" onClick={() => onSwitchTab('tools')}>
+          <span className="dsc-icon">{settlementSaved.report?.city?.icon}</span>
+          <div className="dsc-body">
+            <span className="dsc-title">🏡 安家进度 · {settlementSaved.report?.city?.name}</span>
+            <div className="dsc-metrics">
+              <span className={`dsc-metric ${settlementSaved.report?.score?.pass ? 'dsc-ok' : 'dsc-progress'}`}>
+                落户 {settlementSaved.report?.score?.score}/{settlementSaved.report?.score?.passScore}分
+              </span>
+              <span className={`dsc-metric ${settlementSaved.report?.qualify?.qualify ? 'dsc-ok' : 'dsc-progress'}`}>
+                购房 {settlementSaved.report?.qualify?.qualify ? '✅' : '还需' + settlementSaved.report?.qualify?.waitYears + '年'}
+              </span>
+            </div>
+          </div>
+          <span className="dsc-arrow">→</span>
         </div>
+      )}
+
+      {/* 安家行动清单 */}
+      {settlementActions && settlementActions.actions.length > 0 && (
+        <div className="dash-fold">
+          <div className="dash-fold-hd" onClick={() => toggleFolded('settle')}>
+            <span>🎯 安家行动清单 · {settlementActions.cityKey}</span>
+            <span className="dash-fold-preview">{settlementDone.filter(id => settlementActions.actions.some(a => a.id === id)).length}/{settlementActions.actions.length} 已完成</span>
+            <span className="dash-fold-icon">{folded.settle ? '▸' : '▾'}</span>
+          </div>
+          {!folded.settle && (
+            <div className="settle-action-list">
+              {settlementActions.actions.map(a => {
+                const done = settlementDone.includes(a.id)
+                return (
+                  <div key={a.id} className={`sal-item ${done ? 'sal-done' : ''}`}>
+                    <span className="sal-check" onClick={() => {
+                      const next = done ? settlementDone.filter(x => x !== a.id) : [...settlementDone, a.id]
+                      setSettlementDone(next)
+                      try { localStorage.setItem('settlement_actions_done', JSON.stringify(next)) } catch {}
+                    }}>{done ? '✅' : '⬜'}</span>
+                    <div className="sal-body">
+                      <span className="sal-title">{a.title}</span>
+                      <span className={`sal-priority sal-${a.priority}`}>{a.priority === 'high' ? '🔴 优先' : a.priority === 'medium' ? '🟡 重要' : '🟢 可选'}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Dividend Ledger */}
+      <div className="dash-fold">
+        <div className="dash-fold-hd" onClick={() => toggleFolded('ledger')}>
+          <span>💰 我的政策红利账本</span>
+          <span className="dash-fold-preview">{confirmedTotal > 0 ? `+${(confirmedTotal/10000).toFixed(1)}万` : '0'} / {riskTotal < 0 ? `${(riskTotal/10000).toFixed(1)}万` : '无风险'}</span>
+          <span className="dash-fold-icon">{folded.ledger ? '▸' : '▾'}</span>
+        </div>
+        {!folded.ledger && (
+          <div className="ledger-grid">
+            <div className="ledger-card ledger-confirm"><span className="lc-label">已确认红利</span><span className="lc-value">+{confirmedTotal.toLocaleString()}元/年</span></div>
+            <div className="ledger-card ledger-risk"><span className="lc-label">潜在风险</span><span className="lc-value">{riskTotal.toLocaleString()}元/年</span></div>
+            <div className="ledger-card ledger-action"><span className="lc-label">行动收益</span><span className="lc-value">+{(doneBenefit/10000).toFixed(1)}万</span></div>
+            <div className="ledger-card ledger-net"><span className="lc-label">净收益</span><span className="lc-value">{(confirmedTotal+riskTotal>=0?'+':'')}{(confirmedTotal+riskTotal).toLocaleString()}元</span></div>
+          </div>
+        )}
       </div>
 
       {/* Action Progress */}
       {plans.length > 0 && (
-        <div className="dash-section">
-          <h3>📋 行动进度 ({done.length}/{plans.length})</h3>
-          <div className="action-progress-list">
-            {plans.map(p => (
-              <div key={p.id} className={`apl-item ${done.includes(p.id) ? 'apl-done' : ''}`}>
-                <span className="apl-check">{done.includes(p.id) ? '✅' : '⬜'}</span>
-                <span className="apl-title">{p.title}</span>
-                {p.benefit > 0 && <span className="apl-benefit">+{(p.benefit/10000).toFixed(1)}万</span>}
-              </div>
-            ))}
+        <div className="dash-fold">
+          <div className="dash-fold-hd" onClick={() => toggleFolded('actions')}>
+            <span>📋 行动进度</span>
+            <span className="dash-fold-preview">{done.length}/{plans.length} 已完成</span>
+            <span className="dash-fold-icon">{folded.actions ? '▸' : '▾'}</span>
           </div>
+          {!folded.actions && (
+            <div className="action-progress-list">
+              {plans.map(p => (
+                <div key={p.id} className={`apl-item ${done.includes(p.id) ? 'apl-done' : ''}`}>
+                  <span className="apl-check">{done.includes(p.id) ? '✅' : '⬜'}</span>
+                  <span className="apl-title">{p.title}</span>
+                  {p.benefit > 0 && <span className="apl-benefit">+{(p.benefit/10000).toFixed(1)}万</span>}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       {/* Bookmarks */}
       {bookmarks.length > 0 && (
-        <div className="dash-section">
-          <h3>🔖 我收藏的政策</h3>
-          <div className="dash-bookmarks">{bookmarks.map(b => <div key={b} className="dash-bm-item" onClick={() => onSwitchTab("dimensions")}>{b}</div>)}</div>
+        <div className="dash-fold">
+          <div className="dash-fold-hd" onClick={() => toggleFolded('bookmarks')}>
+            <span>🔖 我收藏的政策</span>
+            <span className="dash-fold-preview">{bookmarks.length} 项</span>
+            <span className="dash-fold-icon">{folded.bookmarks ? '▸' : '▾'}</span>
+          </div>
+          {!folded.bookmarks && (
+            <div className="dash-bookmarks">{bookmarks.map(b => <div key={b} className="dash-bm-item" onClick={() => onSwitchTab("dimensions")}>{b}</div>)}</div>
+          )}
         </div>
       )}
 
       {/* View History */}
-      {(() => {
-        try {
-          const hist = JSON.parse(localStorage.getItem('view_history') || '[]')
-          const recent = hist.slice(0, 5)
-          return (
-            <div className="dash-section">
-              <h3>📖 最近浏览</h3>
-              {recent.length > 0 ? (
-                <div className="dash-history-list">
-                  {recent.map((h, i) => (
-                    <div key={i} className="dash-history-item" onClick={() => onSwitchTab("dimensions")}>
-                      <span className="dhi-name">{h.policyName}</span>
-                      <span className="dhi-dim">{h.dimName}</span>
-                      <span className="dhi-time">{new Date(h.timestamp).toLocaleDateString('zh-CN', {month:'short',day:'numeric'})}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="dash-history-empty">
-                  <p>还没有浏览记录</p>
-                  <button className="dhe-btn" onClick={() => onSwitchTab("dimensions")}>去浏览政策 →</button>
-                </div>
-              )}
-            </div>
-          )
-        } catch { return null }
-      })()}
-
-      {/* Radar Widget */}
-      <div className="dashboard-radar-widget" onClick={() => onSwitchTab('radar')}>
-        <span className="drw-icon">📡</span>
-        <div className="drw-text">
-          <h4 className="drw-title">人生雷达</h4>
-          <p className="drw-desc">扫描政策机会和盲区，发现你可能忽略的重要政策</p>
+      <div className="dash-fold">
+        <div className="dash-fold-hd" onClick={() => toggleFolded('history')}>
+          <span>📖 最近浏览</span>
+          <span className="dash-fold-preview">{historyCount} 项</span>
+          <span className="dash-fold-icon">{folded.history ? '▸' : '▾'}</span>
         </div>
-        <span className="drw-arrow">开启扫描 →</span>
+        {!folded.history && (() => {
+          try {
+            const hist = JSON.parse(localStorage.getItem('view_history') || '[]')
+            const recent = hist.slice(0, 5)
+            return recent.length > 0 ? (
+              <div className="dash-history-list">
+                {recent.map((h, i) => (
+                  <div key={i} className="dash-history-item" onClick={() => onSwitchTab("dimensions")}>
+                    <span className="dhi-name">{h.policyName}</span>
+                    <span className="dhi-dim">{h.dimName}</span>
+                    <span className="dhi-time">{new Date(h.timestamp).toLocaleDateString('zh-CN', {month:'short',day:'numeric'})}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="dash-history-empty">
+                <p>还没有浏览记录</p>
+                <button className="dhe-btn" onClick={() => onSwitchTab("dimensions")}>去浏览政策 →</button>
+              </div>
+            )
+          } catch { return null }
+        })()}
       </div>
 
-      {/* Policy Calendar */}
-      <div className="dash-section">
-        <PolicyCalendar personaKey={personaKey} />
+      {/* Compact Radar */}
+      <div className="dash-mini-radar" onClick={() => onSwitchTab('radar')}>
+        <span className="dmr-icon">📡</span>
+        <span className="dmr-text">人生雷达 — 扫描政策机会和盲区</span>
+        <span className="dmr-arrow">开启 →</span>
       </div>
 
-      {/* Recommendations */}
-      <div className="dash-section">
-        <h3>🎯 为你推荐</h3>
-        <div className="dash-recs">
-          {relatedTopics.map(t => (
-            <div key={t.id} className="dash-rec-card" onClick={() => onSwitchTab("topics")}>
-              <span className="drc-icon">{t.icon}</span><span className="drc-title">{t.title}</span>
-            </div>
-          ))}
-          {relatedScenarios.map(s => (
-            <div key={s.id} className="dash-rec-card" onClick={() => onSwitchTab("topics")}>
-              <span className="drc-icon">{s.icon}</span><span className="drc-title">{s.title}</span>
-            </div>
-          ))}
-        </div>
+      {/* Compact Calendar */}
+      <div className="dash-inline-calendar">
+        <span className="dic-label">📅 即将到来</span>
+        <PolicyCalendar personaKey={personaKey} compact={true} />
       </div>
+
     </div>
   )
 }
@@ -1721,7 +1777,7 @@ class ErrorBoundary extends React.Component {
 
 
 /* ═══════ 政策搜索（对标企查查搜索框）═══════ */
-function PolicySearch({ onSwitchTab, variant }) {
+function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState(null)
   const [sceneMatch, setSceneMatch] = useState(null)
@@ -1901,14 +1957,14 @@ function PolicySearch({ onSwitchTab, variant }) {
                   <span>{s.icon}</span> {s.label}
                 </button>
               ))}
-              <button className="ps-scene-mini ps-scene-more" onClick={() => setSceneExpanded(e => !e)}>
-                {sceneExpanded ? '收起' : '更多 ▾'}
-              </button>
               {sceneExpanded && searchScenes.slice(4).map(s => (
                 <button key={s.id} className="ps-scene-mini" onClick={() => doSceneSearch(s)}>
                   <span>{s.icon}</span> {s.label}
                 </button>
               ))}
+              <button className="ps-scene-mini ps-scene-more" onClick={() => setSceneExpanded(e => !e)}>
+                {sceneExpanded ? '收起 ⬆' : '更多 ▾'}
+              </button>
             </div>
           </div>
         </div>
@@ -1938,7 +1994,7 @@ function PolicySearch({ onSwitchTab, variant }) {
             <>
               <div className="ps-results-header">找到 {results.length} 条结果{sceneMatch ? <span className="ps-results-scene"> · 场景：{sceneMatch.icon} {sceneMatch.label}</span> : null}</div>
               {results.map((r, i) => (
-                <div key={i} className="ps-result-item" onClick={() => { if (r.type === 'topic') onSwitchTab('topics'); else if (r.type === 'policy') onSwitchTab('dimensions'); else onSwitchTab('overview') }}>
+                <div key={i} className="ps-result-item" onClick={() => { if (r.type === 'topic') onSwitchTab('topics'); else if (r.type === 'policy') { onSwitchTab('dimensions'); if (r.dim && onNavigateDim) onNavigateDim(r.dim); } else onSwitchTab('overview') }}>
                   <span className="ps-ri-icon">{r.icon}</span>
                   <div className="ps-ri-body">
                     <div className="ps-ri-title">{r.title}</div>
@@ -2247,13 +2303,16 @@ function NewsLianboPanel() {
 /* ═══════ 政策日历组件 ═══════ */
 function PolicyCalendar({ personaKey, compact = false, filterDims = null }) {
   const today = new Date()
+  const [stageFilter, setStageFilter] = useState(null)
+  const stageLabels = { draft: '征求意见', final: '已发布', active: '进行中' }
   const sorted = [...deadlines].sort((a, b) => new Date(a.date) - new Date(b.date))
   const filtered = sorted.filter(d => {
     if (filterDims && filterDims.length > 0) return d.dims && d.dims.some(dim => filterDims.includes(dim))
     if (personaKey) return d.persona.includes(personaKey)
     return true
   })
-  const items = compact ? filtered.slice(0, 2) : filtered
+  const stageFiltered = stageFilter ? filtered.filter(d => d.stage === stageFilter) : filtered
+  const items = compact ? stageFiltered.slice(0, 2) : stageFiltered
 
   const getDaysLeft = (dateStr) => {
     const d = new Date(dateStr)
@@ -2279,7 +2338,17 @@ function PolicyCalendar({ personaKey, compact = false, filterDims = null }) {
 
   return (
     <div className={`policy-calendar ${compact ? 'pcal-compact' : ''}`}>
-      {!compact && <h3 className="pcal-title">📅 重要日期提醒</h3>}
+      {!compact && (
+        <>
+          <div className="pcal-stage-tabs">
+            <button className={`pcal-stage-tab ${!stageFilter ? 'active' : ''}`} onClick={() => setStageFilter(null)}>全部</button>
+            <button className={`pcal-stage-tab ${stageFilter === 'active' ? 'active' : ''}`} onClick={() => setStageFilter('active')}>🔵 进行中</button>
+            <button className={`pcal-stage-tab ${stageFilter === 'draft' ? 'active' : ''}`} onClick={() => setStageFilter('draft')}>🟡 征求意见</button>
+            <button className={`pcal-stage-tab ${stageFilter === 'final' ? 'active' : ''}`} onClick={() => setStageFilter('final')}>🟢 已发布</button>
+          </div>
+          <h3 className="pcal-title">📅 政策动态时间线</h3>
+        </>
+      )}
       <div className="pcal-list">
         {items.map((d, i) => {
           const days = getDaysLeft(d.date)
@@ -2291,7 +2360,7 @@ function PolicyCalendar({ personaKey, compact = false, filterDims = null }) {
                 <span className="pcal-day">{d.date.slice(8)}</span>
               </div>
               <div className="pcal-info">
-                <div className="pcal-label">{d.label}</div>
+                <div className="pcal-label">{!compact && d.stage && <span className={`pcal-stage-badge pcal-sb-${d.stage}`}>{stageLabels[d.stage]}</span>}{d.label}</div>
                 <div className="pcal-action">{d.action}</div>
                 {!compact && d.dims && (
                   <div className="pcal-dims">{d.dims.map(dim => {
@@ -2473,6 +2542,16 @@ function LifeRadar({ currentDims, personaKey, onNavigateDim, onSwitchTab }) {
     try { return JSON.parse(localStorage.getItem('radar_actions_done') || '{}') } catch { return {} }
   })
   const [floatText, setFloatText] = useState(null)
+  const [dimFilter, setDimFilter] = useState(null)
+
+  const dimOptions = {
+    housing: { icon: '🏠', label: '房产' },
+    employment: { icon: '💼', label: '就业' },
+    education: { icon: '🎓', label: '教育' },
+    elderly: { icon: '👴', label: '养老' },
+    finance: { icon: '💰', label: '金融' },
+    industry: { icon: '🏭', label: '产业' },
+  }
 
   const toggleAction = (e, stageKey, actionIdx, totalActions) => {
     e.stopPropagation()
@@ -2512,6 +2591,36 @@ function LifeRadar({ currentDims, personaKey, onNavigateDim, onSwitchTab }) {
 
   const result = stageKey ? runRadarScan(stageKey, currentDims) : null
   const currentStage = lifeRadar.stages.find(s => s.key === stageKey)
+
+  // 注入个性化安家信号
+  const settlementSaved = (() => { try { return JSON.parse(localStorage.getItem('settlement_data')) } catch { return null } })()
+  if (result && settlementSaved && ['young_single','newlywed','young_parent','mid_career'].includes(stageKey)) {
+    const s = settlementSaved.report
+    if (s?.score && !s.score.pass) {
+      result.opportunities.unshift({
+        id: 'p_settle_score', type: 'opportunity', dims: ['housing'],
+        title: `📍 ${s.city?.name}落户评估：还差${s.score.gap}分达标，建议尽快申请`,
+        priority: 'high', desc: `你的评分${s.score.score}/${s.score.passScore}分，重点提升社保年限和学历`,
+        action: '打开安家计算器查看提升方案',
+      })
+    }
+    if (s?.qualify && !s.qualify.qualify) {
+      result.blindSpots.unshift({
+        id: 'p_house_wait', type: 'blindspot', dims: ['housing'],
+        title: `⚠️ 距离购房社保要求还差${s.qualify.waitYears}年`,
+        priority: 'high', desc: `已缴${s.qualify.haveYears}年，需${s.qualify.needYears}年，跳槽务必注意社保衔接`,
+        action: '确保社保连续性',
+      })
+    }
+    if (s?.score?.pass && s?.qualify?.qualify) {
+      result.opportunities.unshift({
+        id: 'p_settle_ready', type: 'opportunity', dims: ['housing'],
+        title: `🎉 你在${s.city?.name}已满足落户和购房条件！`,
+        priority: 'high', desc: '政策窗口期可能变化，建议尽快启动办理流程',
+        action: '查看安家计算器详细报告',
+      })
+    }
+  }
 
   // 未选择阶段时的引导页
   if (!stageKey) {
@@ -2582,12 +2691,36 @@ function LifeRadar({ currentDims, personaKey, onNavigateDim, onSwitchTab }) {
             </div>
           </section>
 
+          {/* 维度筛选标签 */}
+          {(() => {
+            const allSignals = [...result.opportunities, ...result.blindSpots, ...result.risks]
+            const allDims = [...new Set(allSignals.flatMap(s => s.dims || []))]
+            const filteredCount = dimFilter ? allSignals.filter(s => (s.dims || []).includes(dimFilter)).length : allSignals.length
+            return allDims.length > 1 ? (
+              <section className="radar-section radar-dim-filter">
+                <div className="rdf-tabs">
+                  <button className={`rdf-tab ${!dimFilter ? 'active' : ''}`} onClick={() => setDimFilter(null)}>
+                    全部 <span className="rdf-count">{allSignals.length}</span>
+                  </button>
+                  {allDims.map(dk => dimOptions[dk] && (
+                    <button key={dk} className={`rdf-tab ${dimFilter === dk ? 'active' : ''}`} onClick={() => setDimFilter(dk)}>
+                      {dimOptions[dk].icon} {dimOptions[dk].label} <span className="rdf-count">{allSignals.filter(s => (s.dims || []).includes(dk)).length}</span>
+                    </button>
+                  ))}
+                </div>
+                {dimFilter && <p className="rdf-hint">显示 {dimOptions[dimFilter]?.icon} {dimOptions[dimFilter]?.label} 相关信号 {filteredCount} 条</p>}
+              </section>
+            ) : null
+          })()}
+
           {/* 机会区 */}
-          {result.opportunities.length > 0 && (
+          {(() => {
+            const items = dimFilter ? result.opportunities.filter(s => (s.dims || []).includes(dimFilter)) : result.opportunities
+            return items.length > 0 ? (
             <section className="radar-section radar-opportunity">
               <h3 className="radar-section-title"><span className="rst-icon">✅</span> 机会区 · 你该抓住的政策红利</h3>
               <div className="radar-signal-list">
-                {result.opportunities.map((s, i) => (
+                {items.map((s, i) => (
                   <div key={s.id || i} className={`radar-signal-card ${s.priority === 'high' ? 'signal-high' : ''}`}
                     onClick={() => s.dims?.[0] && onNavigateDim(s.dims[0])}>
                     <div className="rsc-header">
@@ -2600,47 +2733,51 @@ function LifeRadar({ currentDims, personaKey, onNavigateDim, onSwitchTab }) {
                 ))}
               </div>
             </section>
-          )}
+          ) : null})()}
 
           {/* 盲区警告 */}
-          {result.blindSpots.length > 0 && (
-            <section className="radar-section radar-blindspot">
-              <h3 className="radar-section-title"><span className="rst-icon">⚠️</span> 盲区警告 · 你可能忽略的重要政策</h3>
-              <div className="radar-signal-list">
-                {result.blindSpots.map((s, i) => (
-                  <div key={s.id || i} className={`radar-signal-card ${s.priority === 'high' ? 'signal-high' : ''}`}
-                    onClick={() => s.dims?.[0] && onNavigateDim(s.dims[0])}>
-                    <div className="rsc-header">
-                      <span className="rsc-title">{s.title}</span>
-                      {s.priority === 'high' && <span className="rsc-priority">重要</span>}
+          {(() => {
+            const items = dimFilter ? result.blindSpots.filter(s => (s.dims || []).includes(dimFilter)) : result.blindSpots
+            return items.length > 0 ? (
+              <section className="radar-section radar-blindspot">
+                <h3 className="radar-section-title"><span className="rst-icon">⚠️</span> 盲区警告 · 你可能忽略的重要政策</h3>
+                <div className="radar-signal-list">
+                  {items.map((s, i) => (
+                    <div key={s.id || i} className={`radar-signal-card ${s.priority === 'high' ? 'signal-high' : ''}`}
+                      onClick={() => s.dims?.[0] && onNavigateDim(s.dims[0])}>
+                      <div className="rsc-header">
+                        <span className="rsc-title">{s.title}</span>
+                        {s.priority === 'high' && <span className="rsc-priority">重要</span>}
+                      </div>
+                      <p className="rsc-desc">{s.desc}</p>
+                      <div className="rsc-action">→ {s.action}</div>
                     </div>
-                    <p className="rsc-desc">{s.desc}</p>
-                    <div className="rsc-action">→ {s.action}</div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+                  ))}
+                </div>
+              </section>
+            ) : null})()}
 
           {/* 风险提醒 */}
-          {result.risks.length > 0 && (
-            <section className="radar-section radar-risk">
-              <h3 className="radar-section-title"><span className="rst-icon">🔴</span> 风险提醒 · 对你不利的政策变化</h3>
-              <div className="radar-signal-list">
-                {result.risks.map((s, i) => (
-                  <div key={s.id || i} className={`radar-signal-card ${s.priority === 'high' ? 'signal-high' : ''}`}
-                    onClick={() => s.dims?.[0] && onNavigateDim(s.dims[0])}>
-                    <div className="rsc-header">
-                      <span className="rsc-title">{s.title}</span>
-                      {s.priority === 'high' && <span className="rsc-priority">重要</span>}
+          {(() => {
+            const items = dimFilter ? result.risks.filter(s => (s.dims || []).includes(dimFilter)) : result.risks
+            return items.length > 0 ? (
+              <section className="radar-section radar-risk">
+                <h3 className="radar-section-title"><span className="rst-icon">🔴</span> 风险提醒 · 对你不利的政策变化</h3>
+                <div className="radar-signal-list">
+                  {items.map((s, i) => (
+                    <div key={s.id || i} className={`radar-signal-card ${s.priority === 'high' ? 'signal-high' : ''}`}
+                      onClick={() => s.dims?.[0] && onNavigateDim(s.dims[0])}>
+                      <div className="rsc-header">
+                        <span className="rsc-title">{s.title}</span>
+                        {s.priority === 'high' && <span className="rsc-priority">重要</span>}
+                      </div>
+                      <p className="rsc-desc">{s.desc}</p>
+                      <div className="rsc-action">→ {s.action}</div>
                     </div>
-                    <p className="rsc-desc">{s.desc}</p>
-                    <div className="rsc-action">→ {s.action}</div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+                  ))}
+                </div>
+              </section>
+            ) : null})()}
 
           {/* 行动清单 */}
           {result.topActions.length > 0 && (() => {
@@ -2699,17 +2836,26 @@ function LifeRadar({ currentDims, personaKey, onNavigateDim, onSwitchTab }) {
 /* ═══════ SmartRecommendations: 首页智能推荐区 ═══════ */
 function SmartRecommendations({ personaKey, regionKey, userCity, userAge, onSwitchTab, onNavigateDim }) {
   const [recs, setRecs] = useState([])
-  const [reason, setReason] = useState('')
+  const [reasonTags, setReasonTags] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     // 读取浏览历史
     let viewHistory = []
     try { viewHistory = JSON.parse(localStorage.getItem('view_history') || '[]') } catch {}
-    const params = { personaKey, city: userCity, regionKey, age: userAge, viewHistory }
+    // 读取安家数据
+    let settlementData = null
+    try { settlementData = JSON.parse(localStorage.getItem('settlement_data')) } catch {}
+    const params = { personaKey, city: userCity, regionKey, age: userAge, viewHistory, settlementData }
     const result = getSmartRecommendations(params)
     setRecs(result)
-    setReason(getRecommendReason(params))
+    // 拆解推荐原因为标签
+    const persona = personas.find(p => p.key === personaKey)
+    const tags = []
+    if (persona) tags.push(persona.label)
+    if (userCity) tags.push(userCity.replace(/市$/, ''))
+    if (viewHistory.length > 0) tags.push(`${viewHistory.length}条浏览`)
+    setReasonTags(tags)
     setLoading(false)
   }, [personaKey, userCity, regionKey, userAge])
 
@@ -2729,7 +2875,9 @@ function SmartRecommendations({ personaKey, regionKey, userCity, userAge, onSwit
     <div className="smart-rec">
       <div className="sr-header">
         <h3 className="sr-title">🎯 为你推荐</h3>
-        <span className="sr-reason">{reason}</span>
+        <div className="sr-tags">
+          {reasonTags.map((t, i) => <span key={i} className="sr-tag">{t}</span>)}
+        </div>
       </div>
       <div className="sr-list">
         {recs.map((r, i) => (
@@ -2887,7 +3035,7 @@ function App() {
           </div>
           {activeTab !== 'overview' && (
             <div className="header-search">
-              <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="header" />
+              <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="header" onNavigateDim={(key) => { setSelectedDim(key); setTabKey(k=>k+1) }} />
             </div>
           )}
           <div className="header-actions">
@@ -2929,7 +3077,7 @@ function App() {
               <h2 className="hero-title">读懂政策，做对决策</h2>
               <p className="hero-sub">覆盖房产、就业、教育、养老、消费、行业六大维度，{totalPolicies}条权威政策实时解读</p>
               <div className="hero-search-box">
-                <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="hero" />
+                <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="hero" onNavigateDim={(key) => { setSelectedDim(key); setTabKey(k=>k+1) }} />
               </div>
             </section>
             
@@ -2941,6 +3089,8 @@ function App() {
               onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}
               onNavigateDim={(key) => { setSelectedDim(key); setTabKey(k=>k+1) }}
             />
+
+            <RegionSelector value={regionKey} onChange={handleRegionChange} />
 
             <section className="overview-dims">
               <h2 className="section-title">政策影响力总览</h2>
@@ -2996,7 +3146,7 @@ function App() {
               <span className="ore-arrow">开启扫描 →</span>
             </section>
 
-            <PolicyCalendar personaKey={personaKey} compact={true} />
+            <PolicyCalendar personaKey={personaKey} />
           </div>
         )}
         {/* ════════ 人生雷达 ════════ */}
