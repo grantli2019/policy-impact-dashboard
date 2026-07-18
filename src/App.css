@@ -2927,3 +2927,30 @@ a.policy-source-link:hover::after {
 .ps-hot-label { font-size: 0.72rem; color: var(--text-secondary); }
 .ps-hot-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 99px; background: var(--surface-alt); border: 1px solid var(--border); cursor: pointer; transition: all .15s; }
 .ps-hot-tag:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* ═══ Footer增强 ═══ */
+.footer { padding: 20px 16px; text-align: center; }
+.footer-nav { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.footer-brand { font-weight: 700; font-size: 0.95rem; }
+.footer-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.footer-link { border: none; background: none; color: var(--text-secondary); cursor: pointer; font-size: 0.8rem; padding: 4px 8px; border-radius: var(--r-sm); transition: color .15s; }
+.footer-link:hover { color: var(--primary); }
+.footer-info { font-size: 0.78rem; color: var(--text-secondary); margin: 4px 0; }
+.footer-legal { font-size: 0.7rem; color: var(--text-secondary); opacity: 0.7; margin: 2px 0; }
+
+/* ═══ 标签滚动指示器 ═══ */
+.tabs-wrap { position: relative; }
+.tabs-wrap::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 24px; background: linear-gradient(to right, transparent, var(--surface)); pointer-events: none; }
+
+/* ═══ 搜索框焦点增强 ═══ */
+.ps-input:focus { outline: none; }
+.ps-input-wrap:focus-within { box-shadow: 0 0 0 3px rgba(52,152,219,0.15); }
+
+/* ═══ 移动端优化 ═══ */
+@media (max-width: 480px) {
+  .footer-nav { flex-direction: column; gap: 6px; }
+  .footer-links { justify-content: center; }
+  .profile-header { flex-direction: column; text-align: center; }
+  .profile-score { text-align: center; }
+  .pg-label { font-size: 2.8px; }
+}

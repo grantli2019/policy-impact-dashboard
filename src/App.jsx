@@ -1824,7 +1824,7 @@ function PolicySearch({ onSwitchTab }) {
     <div className="policy-search">
       <div className="ps-input-wrap">
         <span className="ps-icon">🔍</span>
-        <input className="ps-input" type="text" placeholder="搜索政策（如：公积金、延迟退休、个税、AI教育）"
+        <input className="ps-input" aria-label="搜索政策" role="searchbox" type="text" placeholder="搜索政策（如：公积金、延迟退休、个税、AI教育）"
           value={query} onChange={e => doSearch(e.target.value)} />
         {query && <button className="ps-clear" onClick={() => { setQuery(''); setResults(null) }}>✕</button>}
       </div>
@@ -1959,7 +1959,7 @@ function PolicyMonitor() {
         <span className="monitor-count">{keywords.length}/{maxKeywords} 关键词</span>
       </div>
       <div className="monitor-input-row">
-        <input className="monitor-input" placeholder="输入关注关键词（如：公积金、利率）" value={input}
+        <input className="monitor-input" aria-label="输入关注关键词" placeholder="输入关注关键词（如：公积金、利率）" value={input}
           onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && addKeyword()} />
         <button className="monitor-add" onClick={addKeyword}>+ 关注</button>
       </div>
@@ -2022,7 +2022,7 @@ function PolicyGraph() {
       <h3 className="pg-title">🕸️ 政策关系图谱</h3>
       <p className="pg-sub">点击节点查看政策间的传导关系</p>
       <div className="pg-canvas-wrap">
-        <svg viewBox="0 0 100 100" className="pg-svg">
+        <svg viewBox="0 0 100 100" className="pg-svg" role="img" aria-label="政策关系图谱">
           {crossLinks.map((link, i) => {
             const from = nodes.find(n => n.label.includes(link.from.slice(0,4)))
             const to = nodes.find(n => n.label.includes(link.to.slice(0,4)))
@@ -2718,7 +2718,18 @@ function App() {
       </main>
 
       <footer className="footer">
-        <p>政策罗盘 · 读懂政策，做对决策 · 数据更新至 2026-07-12 · 方法论v{methodology.version} · {currentRegion.name} · {totalPolicies}条政策 · 数据来源均为政府官方网站 · 仅供参考</p>
+        <div className="footer-nav">
+          <span className="footer-brand">🧭 政策罗盘</span>
+          <div className="footer-links">
+            <button className="footer-link" onClick={() => { setActiveTab("overview"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>总览</button>
+            <button className="footer-link" onClick={() => { setActiveTab("monitor"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>政策监控</button>
+            <button className="footer-link" onClick={() => { setActiveTab("graph"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>关系图谱</button>
+            <button className="footer-link" onClick={() => { setActiveTab("api"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>API</button>
+            <button className="footer-link" onClick={() => { setActiveTab("dashboard"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>我的档案</button>
+          </div>
+        </div>
+        <p className="footer-info">读懂政策，做对决策 · 数据更新至 2026-07-17 · 方法论v{methodology.version} · {currentRegion.name} · {totalPolicies}条政策</p>
+        <p className="footer-legal">数据来源均为政府官方网站 · 仅供参考，不构成投资建议 · © 2026 政策罗盘</p>
       </footer>
     </div>
       </ErrorBoundary>
