@@ -43,7 +43,14 @@
     <title>策查查 — 读懂政策，做对决策</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- 首屏加载骨架屏 -->
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui,-apple-system,sans-serif;color:#666;flex-direction:column;gap:12px">
+        <div style="font-size:40px;animation:pulse 1.5s infinite">🧭</div>
+        <div style="font-size:14px">正在加载策查查…</div>
+      </div>
+      <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

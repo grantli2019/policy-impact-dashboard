@@ -702,19 +702,36 @@ export const policyDividends = {
   ],
 };
 
+/* ── 场景化搜索映射 ──────────────────────────────────────── */
+export const searchScenes = [
+  { id: 'buy_house', label: '我要买房', icon: '🏠', desc: '公积金、限购、房贷、退税', keywords: ['公积金','限购','房贷','购房','LPR','首付','沪七条','公积金管理'], dims: ['housing','finance'] },
+  { id: 'change_job', label: '跳槽换工作', icon: '💼', desc: '社保、劳动权益、失业', keywords: ['社保','劳动','N+1','失业','灵活就业','户籍','社保脱钩'], dims: ['employment'] },
+  { id: 'have_baby', label: '生娃养娃', icon: '👶', desc: '生育、产假、托育、学区', keywords: ['生育','产假','托育','学区','补贴','婴幼儿','生育津贴'], dims: ['education','elderly'] },
+  { id: 'retire_plan', label: '规划养老', icon: '🏖️', desc: '退休、养老金、医保、护理', keywords: ['退休','养老金','医保','长期护理','延迟退休','个人养老金','弹性退休'], dims: ['elderly'] },
+  { id: 'tax_optimize', label: '个税优化', icon: '💰', desc: '个税、扣除、年终奖、汇算', keywords: ['个税','专项附加扣除','年终奖','汇算','税收征收'], dims: ['finance'] },
+  { id: 'invest', label: '投资理财', icon: '📈', desc: '利率、金融法、存款、保险', keywords: ['利率','金融法','存款','理财','保险','大额存单','商业银行法'], dims: ['finance','industry'] },
+  { id: 'start_business', label: '创业开公司', icon: '🚀', desc: '营商环境、税收、招投标', keywords: ['营商环境','小微企业','税收','电商法','招投标','统一大市场','政府采购'], dims: ['industry','finance'] },
+  { id: 'edu_plan', label: '教育规划', icon: '🎓', desc: '学区、双减、AI教育、学前教育', keywords: ['学区','双减','AI教育','教师','学前教育','教材','多校划片'], dims: ['education'] },
+];
+
 /* ── 时间窗口倒计时（Deadlines）───────────────────────── */
 export const deadlines = [
-  { id: "finance_law", label: "金融法征求意见截止", date: "2026-10-15", persona: ["investor","worker"], action: "关注正式稿对理财产品的规范条款" },
-  { id: "tax_refund", label: "换房退税政策到期", date: "2027-12-31", persona: ["buyer"], action: "如计划置换，确保1年内完成买卖" },
-  { id: "child_subsidy", label: "生育补贴申领", date: "2026-12-31", persona: ["parent","worker"], action: "有0-3岁子女的家庭应尽快登记申领" },
-  { id: "bidding_law", label: "招投标法征求意见", date: "2026-09-30", persona: ["investor","freelancer"], action: "中小企业关注公平竞争条款变化" },
-  { id: "retirement_start", label: "延迟退休过渡期", date: "2025-01-01", persona: ["worker","freelancer","investor"], action: "根据你的出生年份计算新退休年龄" },
-  { id: "data_security", label: "金融业网络安全办法征求意见", date: "2026-08-31", persona: ["investor"], action: "关注金融数据安全和网络安全规范" },
-  { id: "property_tax_watch", label: "房地产税立法研究", date: "2027-06-30", persona: ["buyer","investor"], action: "多套房持有者持续关注试点扩围动态" },
-  { id: "ai_edu_pilot", label: "AI教育试点推广期", date: "2026-09-01", persona: ["parent"], action: "秋季学期开始前关注学校AI课程设置" },
-  { id: "bzf_rent_cap", label: "保租房租金涨幅监管新规", date: "2026-12-31", persona: ["worker","freelancer"], action: "关注保租房年度租金涨幅是否超过5%上限" },
-  { id: "gzf_reform", label: "公租房申请审核改革", date: "2026-10-31", persona: ["worker","buyer"], action: "关注公租房线上申请范围扩大（单身离异家庭纳入）" },
-  { id: "talent_housing", label: "各区人才公寓申请窗口", date: "2026-09-30", persona: ["worker","freelancer"], action: "应届毕业生关注各区人才公寓集中申请期" },
+  { id: "finance_law", label: "金融法征求意见截止", date: "2026-10-15", persona: ["investor","worker"], action: "关注正式稿对理财产品的规范条款", dims: ["finance"] },
+  { id: "tax_refund", label: "换房退税政策到期", date: "2027-12-31", persona: ["buyer"], action: "如计划置换，确保1年内完成买卖", dims: ["housing","finance"] },
+  { id: "child_subsidy", label: "生育补贴申领", date: "2026-12-31", persona: ["parent","worker"], action: "有0-3岁子女的家庭应尽快登记申领", dims: ["education","elderly"] },
+  { id: "bidding_law", label: "招投标法征求意见", date: "2026-09-30", persona: ["investor","freelancer"], action: "中小企业关注公平竞争条款变化", dims: ["industry"] },
+  { id: "retirement_start", label: "延迟退休过渡期", date: "2025-01-01", persona: ["worker","freelancer","investor"], action: "根据你的出生年份计算新退休年龄", dims: ["elderly","employment"] },
+  { id: "data_security", label: "金融业网络安全办法征求意见", date: "2026-08-31", persona: ["investor"], action: "关注金融数据安全和网络安全规范", dims: ["finance"] },
+  { id: "property_tax_watch", label: "房地产税立法研究", date: "2027-06-30", persona: ["buyer","investor"], action: "多套房持有者持续关注试点扩围动态", dims: ["housing"] },
+  { id: "ai_edu_pilot", label: "AI教育试点推广期", date: "2026-09-01", persona: ["parent"], action: "秋季学期开始前关注学校AI课程设置", dims: ["education","industry"] },
+  { id: "bzf_rent_cap", label: "保租房租金涨幅监管新规", date: "2026-12-31", persona: ["worker","freelancer"], action: "关注保租房年度租金涨幅是否超过5%上限", dims: ["housing"] },
+  { id: "gzf_reform", label: "公租房申请审核改革", date: "2026-10-31", persona: ["worker","buyer"], action: "关注公租房线上申请范围扩大（单身离异家庭纳入）", dims: ["housing"] },
+  { id: "talent_housing", label: "各区人才公寓申请窗口", date: "2026-09-30", persona: ["worker","freelancer"], action: "应届毕业生关注各区人才公寓集中申请期", dims: ["housing","employment"] },
+  { id: "gjj_regulation", label: "住房公积金管理条例修订征求意见", date: "2026-08-05", persona: ["buyer","worker","freelancer"], action: "关注公积金提取条件放宽和灵活就业覆盖", dims: ["housing"] },
+  { id: "medical_insurance_law", label: "医疗保障法二审", date: "2026-11-30", persona: ["worker","freelancer"], action: "关注医保基金监管和药品集采制度变化", dims: ["elderly"] },
+  { id: "elderly_service_law", label: "养老服务法预备审议", date: "2027-03-31", persona: ["worker","investor"], action: "关注长期护理保险制度化和银发经济", dims: ["elderly","industry"] },
+  { id: "consumer_subsidy_end", label: "以旧换新补贴年度窗口", date: "2026-12-31", persona: ["buyer","worker"], action: "家电/汽车以旧换新补贴年底前申领", dims: ["finance"] },
+  { id: "personal_pension", label: "个人养老金年度缴存截止", date: "2026-12-31", persona: ["worker","investor"], action: "年底前缴满12000元可享当年个税抵扣", dims: ["finance","elderly"] },
 ];
 
 /* ── 政策术语速查表（Policy Glossary）────────────────── */
@@ -1659,6 +1676,133 @@ export const rentalQuiz = {
   },
 };
 
+/* ── 生育政策数据（Birth Policy）────────────────── */
+export const birthPolicy = {
+  maternityLeave: {
+    base: 98,
+    bonus: { difficult: 15, twins: 15, miscarriage4m: 42, miscarriage2m: 15 },
+    regional: { national: 0, yangtze_delta: 60, jingjinji: 60, greater_bay: 80, chengyu: 60 },
+  },
+  allowance: {
+    minInsuranceMonths: 12,
+    formula: (salary, days) => Math.round(salary / 30 * days),
+  },
+  medical: {
+    prenatal: { min: 2000, max: 5000, avg: 3500 },
+    delivery: {
+      normal: { min: 3000, max: 6000, avg: 4500 },
+      cesarean: { min: 5000, max: 10000, avg: 7500 },
+    },
+    reimburseRate: 0.85,
+  },
+  childcare: { annual: 3600, years: 3, total: 10800 },
+  taxDeduction: { infant: 2000, education: 2000 },
+  paternityLeave: { national: 15, yangtze_delta: 10, jingjinji: 15, greater_bay: 15, chengyu: 20 },
+  plainSummary: {
+    title: '生孩子到底能拿多少钱？',
+    keyPoints: [
+      '产假期间工资照发（生育津贴代替），不会少一分钱',
+      '产检+分娩费用报销85%，自己只掏几百到一千多',
+      '孩子出生到3岁，每年领3600元育儿补贴',
+      '每月个税多扣2000元（婴幼儿照护扣除）',
+      '爸爸也有陪产假，工资照发',
+    ],
+    commonMyths: [
+      { myth: '辞职了就没有生育津贴', truth: '错！只要在生育前连续缴纳生育保险满12个月，即使离职也能申领' },
+      { myth: '二胎三胎没有补贴', truth: '错！2024年起所有孩次都享受育儿补贴3600元/年，且产假天数相同' },
+      { myth: '生育津贴和产假工资不能同时拿', truth: '生育津贴就是产假期间的工资替代，如果津贴低于工资，单位需补差额' },
+    ],
+  },
+};
+
+/* ── 个税优化计算器数据 ────────────────────────────────────── */
+export const taxOptimizer = {
+  // 综合所得税率表（年度）
+  brackets: [
+    { min: 0, max: 36000, rate: 0.03, deduction: 0 },
+    { min: 36000, max: 144000, rate: 0.10, deduction: 2520 },
+    { min: 144000, max: 300000, rate: 0.20, deduction: 16920 },
+    { min: 300000, max: 420000, rate: 0.25, deduction: 31920 },
+    { min: 420000, max: 660000, rate: 0.30, deduction: 52920 },
+    { min: 660000, max: 960000, rate: 0.35, deduction: 85920 },
+    { min: 960000, max: Infinity, rate: 0.45, deduction: 181920 },
+  ],
+  // 免征额
+  taxFreeThreshold: 60000, // 5000元/月
+  // 专项附加扣除标准（年）
+  deductions: {
+    childrenEducation: { label: '子女教育', standard: 24000, desc: '每个子女2000元/月，从3岁到博士毕业' },
+    continuingEducation: { label: '继续教育', standard: 4800, desc: '学历教育400元/月，职业资格3600元/年' },
+    housingLoan: { label: '住房贷款利息', standard: 12000, desc: '首套房贷1000元/月，最长20年' },
+    housingRent: { label: '住房租金', standard: 18000, desc: '按城市等级1500/1100/800元/月' },
+    elderlyCare: { label: '赡养老人', standard: 36000, desc: '独生子女3000元/月，非独生分摊' },
+    infantCare: { label: '3岁以下婴幼儿照护', standard: 24000, desc: '每个婴幼儿2000元/月' },
+    seriousIllness: { label: '大病医疗', standard: 80000, desc: '年度自付超1.5万部分，最高8万' },
+  },
+  // 年终奖单独计税 vs 合并计税策略
+  bonusStrategy: {
+    standalone: '年终奖单独计税（2027年底前可选）',
+    combined: '年终奖并入综合所得',
+    tip: '年薪较高时通常单独计税更省，月薪较低时合并更省',
+  },
+  plainSummary: {
+    keyPoints: [
+      '7项专项附加扣除最多可扣12.48万/年，相当于月入1万+免税',
+      '首套房贷和租房租金只能二选一，选金额大的',
+      '年终奖单独计税政策2027年底到期，之后必须并入综合所得',
+      '子女教育和婴幼儿照护各2.4万/年，别搞混了——3岁前算照护，3岁后算教育',
+      '赡养老人扣除仅限60岁以上父母，岳父母/公婆不算',
+    ],
+    commonMyths: [
+      { myth: '月薪不到5000就不用报税', truth: '年收入超过12万或有副业收入的，即使月薪不到5000也可能需要汇算清缴' },
+      { myth: '年终奖越多越好', truth: '年终奖存在"税率跳档"陷阱，多发1元可能多缴几千税——避开3.6万/14.4万/30万等临界点' },
+      { myth: '租房和房贷可以同时扣', truth: '住房贷款利息和住房租金只能选一个，选金额高的那个' },
+    ],
+  },
+};
+
+/* ── 养老金估算器数据 ──────────────────────────────────────── */
+export const pensionCalc = {
+  // 基础参数
+  currentPensionAge: { male: 60, female: 55, femaleWorker: 50 },
+  // 渐进式延迟退休（2025起每4个月延1个月，2040年目标男63女58）
+  delaySchedule: {
+    maleTarget: 63, maleDelayMonths: 36, maleStartYear: 2025, maleStepMonths: 4,
+    femaleTarget: 58, femaleDelayMonths: 36, femaleStartYear: 2025, femaleStepMonths: 4,
+  },
+  // 个人账户计发月数
+  divisorMonths: {
+    50: 195, 55: 170, 60: 139, 63: 116, 65: 101,
+  },
+  // 社会平均工资增长率（年化）
+  avgSalaryGrowth: 0.05,
+  // 个人账户利率（年化）
+  accountRate: 0.035,
+  // 个人缴费比例
+  personalRate: 0.08,
+  // 基础养老金计发比例（每缴费1年）
+  basePensionRate: 0.01,
+  // 最低缴费年限
+  minContributionYears: 15,
+  // 即将提高的最低缴费年限
+  futureMinYears: 20,
+  // 大白话摘要
+  plainSummary: {
+    keyPoints: [
+      '养老金 = 基础养老金 + 个人账户养老金，两部分相加就是你每月能拿到的钱',
+      '基础养老金 ≈ 退休时当地平均工资 × 缴费年限 × 1%，多缴一年多拿1%',
+      '个人账户养老金 = 个人账户总额 ÷ 计发月数，60岁退休按139个月算',
+      '缴费年限比缴费基数更重要！缴满30年比高薪缴15年拿得多',
+      '延迟退休正在推进中，80后大概率63岁（男）或58岁（女）退休',
+    ],
+    commonMyths: [
+      { myth: '缴满15年就不用缴了', truth: '15年是最低门槛，缴15年退休后每月只能拿到很少的钱。而且在职期间单位必须继续缴' },
+      { myth: '养老金可以一次性取出', truth: '只有出国定居或死亡等极少数情况可以一次性取出，正常情况下只能按月领取' },
+      { myth: '自由职业不用缴养老保险', truth: '灵活就业者可以按个人身份参加职工养老保险，退休后待遇和企业职工一样' },
+    ],
+  },
+};
+
 /* ── 商业化: 专业版功能 ─────────────────────────────────────── */
 export const premiumFeatures = [
   { id: "ai_advisor", icon: "🤖", title: "AI 政策顾问", desc: "基于大语言模型的个性化政策解读，7×24小时在线问答", badge: "即将上线" },
@@ -1703,6 +1847,189 @@ export const dashboardRecommendations = {
   investor: { topics: ["rental_housing", "tax_settlement"], scenarios: ["retire_plan"] },
   freelancer: { topics: ["workplace_rights", "medicare_guide"], scenarios: ["start_business"] },
 };
+
+/* ── 智能推荐: 城市映射 + 画像增强 + 推荐引擎 ────────────────── */
+
+// 城市码到区域映射（IP定位后自动匹配区域）
+export const cityToRegionMap = {
+  // 长三角
+  '上海': 'yangtze_delta', '上海市': 'yangtze_delta',
+  '南京': 'yangtze_delta', '苏州': 'yangtze_delta', '无锡': 'yangtze_delta',
+  '常州': 'yangtze_delta', '南通': 'yangtze_delta', '扬州': 'yangtze_delta',
+  '杭州': 'yangtze_delta', '宁波': 'yangtze_delta', '温州': 'yangtze_delta',
+  '合肥': 'yangtze_delta', '芜湖': 'yangtze_delta',
+  // 京津冀
+  '北京': 'jingjinji', '北京市': 'jingjinji',
+  '天津': 'jingjinji', '天津市': 'jingjinji',
+  '石家庄': 'jingjinji', '唐山': 'jingjinji', '保定': 'jingjinji',
+  // 大湾区
+  '广州': 'greater_bay', '深圳市': 'greater_bay', '深圳': 'greater_bay',
+  '东莞': 'greater_bay', '佛山': 'greater_bay', '珠海': 'greater_bay',
+  '中山': 'greater_bay', '惠州': 'greater_bay',
+  // 成渝
+  '成都': 'chengyu', '重庆': 'chengyu', '重庆市': 'chengyu',
+  '绵阳': 'chengyu', '德阳': 'chengyu', '宜宾': 'chengyu',
+};
+
+// 人生阶段定义（用于推荐算法）
+export const lifeStages = [
+  { key: 'student', label: '在校生/应届', icon: '🎓', ageRange: [18, 24], 
+    focusDims: ['employment', 'education', 'finance'],
+    hotTopics: ['社保脱钩', '就业补贴', '人才购房'] },
+  { key: 'young_single', label: '单身青年', icon: '🧑', ageRange: [25, 30],
+    focusDims: ['employment', 'housing', 'finance'],
+    hotTopics: ['公积金', '个税扣除', '限购松绑'] },
+  { key: 'newlywed', label: '新婚备孕', icon: '💑', ageRange: [28, 35],
+    focusDims: ['housing', 'education', 'elderly'],
+    hotTopics: ['生育津贴', '首套房', '学区'] },
+  { key: 'young_parent', label: '学龄家长', icon: '👨‍👩‍👧', ageRange: [30, 40],
+    focusDims: ['education', 'housing', 'finance'],
+    hotTopics: ['双减', '学区', '个税扣除', '多校划片'] },
+  { key: 'mid_career', label: '事业上升期', icon: '💼', ageRange: [35, 50],
+    focusDims: ['finance', 'employment', 'housing'],
+    hotTopics: ['个税优化', '养老金', '房产配置'] },
+  { key: 'approaching_retire', label: '临近退休', icon: '👴', ageRange: [50, 65],
+    focusDims: ['elderly', 'finance', 'employment'],
+    hotTopics: ['延迟退休', '养老金', '医保', '长期护理'] },
+];
+
+// 根据年龄推断人生阶段
+export function inferLifeStage(age) {
+  if (!age || age < 18) return lifeStages[0]
+  const stage = lifeStages.find(s => age >= s.ageRange[0] && age <= s.ageRange[1])
+  return stage || lifeStages[lifeStages.length - 1]
+}
+
+// 根据城市名推断区域
+export function cityToRegion(cityName) {
+  if (!cityName) return 'national'
+  // 去除"市"后缀
+  const clean = cityName.replace(/市$/, '')
+  // 直接匹配
+  if (cityToRegionMap[clean]) return cityToRegionMap[clean]
+  if (cityToRegionMap[cityName]) return cityToRegionMap[cityName]
+  // 模糊匹配
+  const found = Object.keys(cityToRegionMap).find(k => k.includes(clean) || clean.includes(k))
+  return found ? cityToRegionMap[found] : 'national'
+}
+
+// IP地理定位函数（纯前端，调用免费API）
+export async function detectUserCity() {
+  // 尝试多个免费IP定位服务，容错
+  const services = [
+    { url: 'https://ipapi.co/json/', field: 'city' },
+    { url: 'https://ipinfo.io/json', field: 'city' },
+    { url: 'https://api.ip.sb/geoip', field: 'city' },
+  ]
+  for (const svc of services) {
+    try {
+      const res = await fetch(svc.url, { signal: AbortSignal.timeout(3000) })
+      if (!res.ok) continue
+      const data = await res.json()
+      const city = data[svc.field]
+      const region = data.region || data.region_name || data.province || ''
+      if (city) return { city, region, country: data.country || 'CN' }
+    } catch { continue }
+  }
+  return null // 所有服务失败
+}
+
+/*
+ * 智能推荐引擎
+ * 输入: { personaKey, city, regionKey, age, viewHistory }
+ * 输出: 推荐政策列表（5条）
+ */
+export function getSmartRecommendations({ personaKey, city, regionKey, age, viewHistory = [] }) {
+  const scores = new Map() // policyName → score
+  const stage = age ? inferLifeStage(age) : null
+  const persona = personas.find(p => p.key === personaKey)
+  const personaWeights = persona?.weights || {}
+
+  // 1. 基于画像权重给维度政策打分
+  dimensions.forEach(dim => {
+    const weight = personaWeights[dim.key] || 0.15
+    dim.scores.forEach(p => {
+      const baseScore = (p.direction > 0 ? 8 : p.direction < 0 ? 3 : 5) * weight
+      scores.set(p.policyName, (scores.get(p.policyName) || 0) + baseScore)
+    })
+  })
+
+  // 2. 基于人生阶段给热点政策加分
+  if (stage) {
+    stage.hotTopics.forEach(topic => {
+      scores.forEach((score, name) => {
+        if (name.toLowerCase().includes(topic.toLowerCase())) {
+          scores.set(name, score + 5)
+        }
+      })
+    })
+  }
+
+  // 3. 基于浏览历史给相关政策加分（协同过滤模拟）
+  const viewedDims = new Set()
+  viewHistory.forEach(h => {
+    if (h.dim) viewedDims.add(h.dim)
+    // 浏览过的政策相关词加分
+    scores.forEach((score, name) => {
+      if (h.policyName && name.includes(h.policyName.slice(0, 4))) {
+        scores.set(name, score + 3)
+      }
+    })
+  })
+  // 用户浏览过的维度政策加分
+  if (viewedDims.size > 0) {
+    dimensions.forEach(dim => {
+      if (viewedDims.has(dim.key)) {
+        dim.scores.forEach(p => {
+          scores.set(p.policyName, (scores.get(p.policyName) || 0) + 2)
+        })
+      }
+    })
+  }
+
+  // 4. 城市匹配加分（区域性政策）
+  if (city) {
+    scores.forEach((score, name) => {
+      if (name.includes(city) || name.includes(city.replace(/市$/, ''))) {
+        scores.set(name, score + 4)
+      }
+    })
+  }
+
+  // 5. 排序取Top 5
+  const ranked = [...scores.entries()]
+    .map(([name, score]) => {
+      const dim = dimensions.find(d => d.scores.some(p => p.policyName === name))
+      const policy = dim?.scores.find(p => p.policyName === name)
+      return {
+        title: name,
+        dim: dim?.key || '',
+        dimIcon: dim?.icon || '📋',
+        dimName: dim?.name || '',
+        sentiment: policy?.direction > 0 ? '利好' : policy?.direction < 0 ? '利空' : '中性',
+        note: policy?.note || '',
+        url: policy?.url || '',
+        score,
+      }
+    })
+    .filter(r => r.dim) // 过滤掉找不到维度的
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5)
+
+  return ranked
+}
+
+// 获取推荐原因描述
+export function getRecommendReason({ personaKey, age, city, viewHistory = [] }) {
+  const reasons = []
+  const persona = personas.find(p => p.key === personaKey)
+  if (persona) reasons.push(`你是${persona.label}，关注${persona.desc}`)
+  const stage = age ? inferLifeStage(age) : null
+  if (stage) reasons.push(`处于「${stage.label}」阶段`)
+  if (city) reasons.push(`所在城市：${city}`)
+  if (viewHistory.length > 0) reasons.push(`基于你的${viewHistory.length}条浏览记录`)
+  return reasons.length > 0 ? reasons.join(' · ') : '基于政策影响力排序'
+}
 
 /* ── 新闻联播政策速递（06-18 ~ 06-25）────────── */
 export const newsLianboUpdates = [
@@ -1756,3 +2083,209 @@ export const newsLianboUpdates = [
   { date: "06-24", title: "链博会与会嘉宾：中国开辟全球供应链合作新机遇", dim: "industry", sentiment: "中性", data: ["676家", "200个"], summary: "第四届链博会吸引了676家企业和行业机构参展，超200个境外团组专程来华观展洽谈。多国与会嘉宾表示，中国正不断为全球供应链开放合作带来新机遇。 本届链博会第一天，记者遇到了一位来自澳大利亚的参展嘉宾。", source: "新闻联播 20260624" },
   { date: "06-25", title: "暑期档电影片单发布2026年电影票房超170亿元", dim: "finance", sentiment: "中性", data: ["170亿元", "超过2680亿元"], summary: "2026年暑期档电影片单今天（6月25日）发布，暑期档影片涵盖革命历史、科幻、喜剧、动画等多种类型，为观众带来多样化的观影选择，助力观影热情持续走高。截至昨晚（6月24日），2026年度电影票房已超1", source: "新闻联播 20260625" }
 ];
+
+/* ── 人生雷达数据 ──────────────────────────────────────────── */
+export const lifeRadar = {
+  // 人生阶段（比 persona 更细粒度）
+  stages: [
+    {
+      key: 'young_single', icon: '🧑', label: '初入社会', ageRange: '22-28',
+      desc: '刚毕业/单身/租房/攒第一桶金',
+      weights: { housing: 0.10, employment: 0.30, education: 0.15, elderly: 0.05, finance: 0.25, industry: 0.15 },
+      blindSpotHints: ['公积金缴存基数影响未来贷款额度', '社保断缴影响购房资格']
+    },
+    {
+      key: 'newlywed', icon: '💑', label: '新婚/备孕', ageRange: '25-35',
+      desc: '买房/结婚/准备生育',
+      weights: { housing: 0.35, employment: 0.20, education: 0.15, elderly: 0.10, finance: 0.15, industry: 0.05 },
+      blindSpotHints: ['生育津贴和产假政策', '首套房契税优惠']
+    },
+    {
+      key: 'young_parent', icon: '👨\u200d👩\u200d👧', label: '学龄家长', ageRange: '30-42',
+      desc: '孩子上学/学区/课外教育',
+      weights: { housing: 0.15, employment: 0.15, education: 0.40, elderly: 0.10, finance: 0.10, industry: 0.10 },
+      blindSpotHints: ['多校划片政策变化', '双减政策后续调整']
+    },
+    {
+      key: 'mid_career', icon: '👔', label: '事业上升期', ageRange: '30-45',
+      desc: '升职加薪/副业/投资',
+      weights: { housing: 0.15, employment: 0.30, education: 0.10, elderly: 0.10, finance: 0.25, industry: 0.10 },
+      blindSpotHints: ['个税专项附加扣除项最大化', '个人养老金账户节税']
+    },
+    {
+      key: 'approaching_retire', icon: '🏖️', label: '临近退休', ageRange: '50-65',
+      desc: '规划养老/医疗保障',
+      weights: { housing: 0.10, employment: 0.10, education: 0.05, elderly: 0.45, finance: 0.20, industry: 0.10 },
+      blindSpotHints: ['延迟退休具体实施时间表', '长期护理保险试点']
+    },
+    {
+      key: 'entrepreneur', icon: '🚀', label: '创业者', ageRange: '25-50',
+      desc: '开公司/个体经营',
+      weights: { housing: 0.05, employment: 0.15, education: 0.05, elderly: 0.10, finance: 0.30, industry: 0.35 },
+      blindSpotHints: ['小微企业税收优惠', '营商环境改革新举措']
+    },
+  ],
+
+  // 雷达信号（每条定义一个政策信号）
+  signals: [
+    // ═══ 机会类 (opportunity) ═══
+    { id: 'gjj_loose', type: 'opportunity', dims: ['housing'],
+      title: '公积金政策历史最宽松', priority: 'high',
+      desc: '公积金提取条件放宽、覆盖灵活就业者，首套最高贷240万',
+      action: '立即确认你的公积金额度和提取条件',
+      stageMatch: ['young_single','newlywed','mid_career'] },
+    { id: 'house_tax_pause', type: 'opportunity', dims: ['housing'],
+      title: '房地产税试点暂缓', priority: 'medium',
+      desc: '短期内不会新增房产持有成本，可安心持有',
+      action: '关注立法动态，暂不需调整房产配置',
+      stageMatch: ['newlywed','mid_career','approaching_retire'] },
+    { id: 'swap_house_refund', type: 'opportunity', dims: ['housing'],
+      title: '换房退税延续至2027年底', priority: 'high',
+      desc: '卖掉旧房买新房，已缴个税可全额退还，改善型置换窗口期',
+      action: '评估是否需要置换，计算退税金额',
+      stageMatch: ['newlywed','mid_career','approaching_retire'] },
+    { id: 'lpr_low', type: 'opportunity', dims: ['finance','housing'],
+      title: '房贷利率创历史新低约3.1%', priority: 'high',
+      desc: '个人住房贷款利率降至约3.1%，企业贷款利率约3.0%，融资成本极低',
+      action: '考虑是否需要贷款购房或置换',
+      stageMatch: ['young_single','newlywed','mid_career','entrepreneur'] },
+    { id: 'gdp_growth', type: 'opportunity', dims: ['employment'],
+      title: '上半年GDP增长4.7%经济稳健', priority: 'medium',
+      desc: '经济总量达69.6万亿元，就业形势总体稳定',
+      action: '把握就业市场机遇，关注高薪行业',
+      stageMatch: ['young_single','mid_career','entrepreneur'] },
+    { id: 'consumption_subsidy', type: 'opportunity', dims: ['finance'],
+      title: '以旧换新补贴1875亿元已下达', priority: 'medium',
+      desc: '第三批625亿元超长期特别国债支持消费品以旧换新，家电汽车可领补贴',
+      action: '查看家电/汽车以旧换新补贴申领方式',
+      stageMatch: ['young_single','newlywed','mid_career','approaching_retire'] },
+    { id: 'ne_vehicle', type: 'opportunity', dims: ['finance','industry'],
+      title: '新能源车注册占比近半', priority: 'medium',
+      desc: '上半年新注册新能源车519.5万辆，占比近半，充电基础设施加速布局',
+      action: '考虑置换新能源车，享受购置税减免',
+      stageMatch: ['young_single','newlywed','mid_career'] },
+    { id: 'ai_industry_boom', type: 'opportunity', dims: ['industry','employment'],
+      title: 'AI产业规模突破1.2万亿', priority: 'high',
+      desc: '人工智能产业高速发展，带来大量就业机会和投资风口',
+      action: '关注AI相关岗位或创业方向',
+      stageMatch: ['young_single','mid_career','entrepreneur'] },
+    { id: 'social_insurance_expand', type: 'opportunity', dims: ['elderly'],
+      title: '基本医保参保人数达13.19亿', priority: 'medium',
+      desc: '医保基金收入增长8.49%，保障覆盖面持续扩大',
+      action: '确认医保待遇享受情况',
+      stageMatch: ['approaching_retire','young_parent','newlywed'] },
+    { id: 'trade_strong', type: 'opportunity', dims: ['industry'],
+      title: '上半年进出口增长16.9%', priority: 'medium',
+      desc: '外贸规模首破25万亿元，出口导向型企业迎来良好机遇',
+      action: '关注外贸相关行业就业机会',
+      stageMatch: ['entrepreneur','mid_career'] },
+
+    // ═══ 盲区类 (blindspot) ═══
+    { id: 'pension_account', type: 'blindspot', dims: ['elderly','finance'],
+      title: '个人养老金账户每年可省税5400元', priority: 'high',
+      desc: '多数人不知道的个人养老金税收优惠，年缴12000元可抵扣个税，退休后领取时仅按3%缴税',
+      action: '立即开通个人养老金账户并缴存',
+      stageMatch: ['mid_career','approaching_retire','young_single'] },
+    { id: 'edu_ai_policy', type: 'blindspot', dims: ['education','industry'],
+      title: 'AI教育工具合规新要求', priority: 'medium',
+      desc: '生成式AI管理办法要求校园AI应用需符合算法备案要求，家长需关注',
+      action: '了解孩子使用的AI学习工具是否合规',
+      stageMatch: ['young_parent'] },
+    { id: 'gjj_base_affects_loan', type: 'blindspot', dims: ['housing','finance'],
+      title: '公积金缴存基数影响未来贷款额度', priority: 'high',
+      desc: '很多人不知道公积金贷款额度与缴存基数挂钩，低基数缴存可能导致未来贷款额度不足',
+      action: '查看公积金缴存基数，必要时申请调整',
+      stageMatch: ['young_single','newlywed'] },
+    { id: 'social_insurance_break', type: 'blindspot', dims: ['employment','housing'],
+      title: '社保断缴影响购房资格', priority: 'high',
+      desc: '跳槽或离职期间社保断缴可能导致购房资格重新计算，影响购房计划',
+      action: '换工作前确认社保连续性，必要时代缴',
+      stageMatch: ['young_single','newlywed'] },
+    { id: 'tax_deduction_max', type: 'blindspot', dims: ['finance'],
+      title: '个税专项附加扣除项可能没填全', priority: 'medium',
+      desc: '子女教育、继续教育、大病医疗、住房贷款、住房租金、赡养老人、婴幼儿照护等7项扣除，很多人没填全',
+      action: '检查个税APP中的专项附加扣除是否完整',
+      stageMatch: ['mid_career','young_parent','newlywed'] },
+    { id: 'delayed_retire_timeline', type: 'blindspot', dims: ['elderly','employment'],
+      title: '延迟退休具体时间表尚未公布', priority: 'medium',
+      desc: '渐进式延迟退休已在立法规划中，但具体实施时间表和对各年龄段的影响尚未明确',
+      action: '持续关注延迟退休立法进展',
+      stageMatch: ['mid_career','approaching_retire'] },
+    { id: 'care_insurance_pilot', type: 'blindspot', dims: ['elderly'],
+      title: '长期护理保险试点城市扩围', priority: 'medium',
+      desc: '长期护理保险被称为社保第六险，试点城市已扩至49个，但多数人不知道如何申请',
+      action: '确认你所在城市是否在试点范围内',
+      stageMatch: ['approaching_retire','mid_career'] },
+    { id: 'multi_school_zone', type: 'blindspot', dims: ['education'],
+      title: '多校划片政策可能改变学区价值', priority: 'high',
+      desc: '部分城市推进多校划片，学区房价值可能大幅变化，影响教育规划和房产配置',
+      action: '了解所在区域是否实施多校划片',
+      stageMatch: ['young_parent'] },
+    { id: 'small_business_tax', type: 'blindspot', dims: ['finance','industry'],
+      title: '小微企业年应纳税所得额优惠', priority: 'high',
+      desc: '小微企业年应纳税所得额不超过300万元的部分，实际税负仅5%，很多创业者不知道',
+      action: '确认企业是否符合小微企业标准并享受优惠',
+      stageMatch: ['entrepreneur'] },
+    { id: 'freelancer_social_insurance', type: 'blindspot', dims: ['employment','elderly'],
+      title: '灵活就业者可参加职工社保', priority: 'medium',
+      desc: '很多自由职业者不知道可以以灵活就业身份参加职工养老和医疗保险',
+      action: '到社保局办理灵活就业参保',
+      stageMatch: ['young_single','entrepreneur'] },
+
+    // ═══ 风险类 (risk) ═══
+    { id: 'house_tax_future', type: 'risk', dims: ['housing'],
+      title: '房地产税立法研究未停', priority: 'high',
+      desc: '虽暂缓试点但立法研究持续推进，多套房持有成本未来可能显著增加',
+      action: '评估房产配置，考虑是否需要优化',
+      stageMatch: ['mid_career','approaching_retire','newlywed'] },
+    { id: 'retire_delay', type: 'risk', dims: ['elderly','employment'],
+      title: '延迟退休方案推进中', priority: 'high',
+      desc: '渐进式延迟退休已在立法规划中，将影响退休时间和养老金计算方式',
+      action: '重新测算退休时间和养老金缺口',
+      stageMatch: ['mid_career','approaching_retire'] },
+    { id: 'job_market_pressure', type: 'risk', dims: ['employment'],
+      title: 'AI替代部分岗位风险', priority: 'medium',
+      desc: 'AI产业高速发展同时，部分重复性岗位面临替代风险，需关注职业转型',
+      action: '评估岗位被AI替代的可能性，提前学习新技能',
+      stageMatch: ['young_single','mid_career'] },
+    { id: 'house_price_risk', type: 'risk', dims: ['housing'],
+      title: '政策底不等于市场底', priority: 'medium',
+      desc: '历史经验显示限购大幅松绑往往出现在市场下行期，短期资产升值预期不宜过高',
+      action: '购房需结合供需和经济基本面判断，避免追涨',
+      stageMatch: ['newlywed','mid_career'] },
+    { id: 'edu_burden', type: 'risk', dims: ['education'],
+      title: '双减政策后续调整不确定', priority: 'medium',
+      desc: '双减政策持续推进，但课外培训监管力度和方式可能调整，教育规划需保持灵活',
+      action: '关注教育政策动态，做好多元化教育规划',
+      stageMatch: ['young_parent'] },
+    { id: 'medical_cost_rise', type: 'risk', dims: ['elderly'],
+      title: '医疗费用持续上涨', priority: 'medium',
+      desc: '虽然医保覆盖面扩大，但个人自付部分和高端医疗需求仍面临费用上涨压力',
+      action: '考虑补充商业医疗保险',
+      stageMatch: ['approaching_retire','mid_career'] },
+    { id: 'interest_rate_risk', type: 'risk', dims: ['finance'],
+      title: '无风险收益持续下行', priority: 'medium',
+      desc: '存款利率市场化加速，大额存单利率持续走低，传统理财收益缩水',
+      action: '调整理财策略，考虑多元化资产配置',
+      stageMatch: ['mid_career','approaching_retire','entrepreneur'] },
+    { id: 'ecommerce_law', type: 'risk', dims: ['industry'],
+      title: '电子商务法修正征求意见', priority: 'low',
+      desc: '电商法修正可能影响线上经营者，合规要求可能提高',
+      action: '关注电商法修正草案进展',
+      stageMatch: ['entrepreneur'] },
+    { id: 'trade_war_risk', type: 'risk', dims: ['industry','employment'],
+      title: '外部贸易环境不确定性', priority: 'medium',
+      desc: '虽然上半年外贸增长强劲，但国际贸易摩擦风险持续存在，出口导向型行业需关注',
+      action: '评估所在行业受贸易摩擦影响程度',
+      stageMatch: ['entrepreneur','mid_career'] },
+  ],
+
+  // persona → stage 映射
+  personaStageMap: {
+    worker: 'mid_career',
+    buyer: 'newlywed',
+    parent: 'young_parent',
+    investor: 'mid_career',
+    freelancer: 'entrepreneur',
+  }
+};

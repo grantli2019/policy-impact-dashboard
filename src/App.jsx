@@ -4,12 +4,12 @@ import {
   dimensions, methodology, rubric, personas, weeklyUpdates, regions,
   calcDimensionScore, calcOverallIndex, getIndexLevel, keyFindings,
   getDimensionsForRegion, getTimelineForDimension, regionToolParams,
-  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, dashboardRecommendations, newsLianboUpdates,
+  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, dashboardRecommendations, newsLianboUpdates, lifeRadar, searchScenes,
+  detectUserCity, getSmartRecommendations, getRecommendReason, cityToRegion, inferLifeStage, lifeStages,
 } from './data/impactData'
 import './App.css'
-import Tools from './Tools'
-
 // Lazy-loaded components
+const Tools = lazy(() => import('./Tools'));
 const ShareCard = lazy(() => import('./components/ShareCard'));
 
 /* ═══════ 工具函数 ═══════ */
@@ -23,6 +23,31 @@ function timeAgo(dateStr) {
 
 /* ═══════ 画像选择器 ═══════ */
 function PersonaModal({ onSelect, onSkip }) {
+  const [first, setFirst] = useState(null)
+  if (first) {
+    return (
+      <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="添加第二身份" onClick={() => onSelect(first)}>
+        <div className="modal-box" onClick={e => e.stopPropagation()}>
+          <h2 className="modal-title">🧭 选择第二身份（可选）</h2>
+          <p className="modal-sub">你已选择「{personas.find(p=>p.key===first)?.icon} {personas.find(p=>p.key===first)?.label}」，可以再选一个身份组合分析</p>
+          <div className="persona-grid">
+            {personas.filter(p => p.key !== first).map(p => (
+              <button key={p.key} className="persona-btn" onClick={() => {
+                const composite = first + '+' + p.key
+                localStorage.setItem('composite_persona', composite)
+                onSelect(first)
+              }}>
+                <span className="persona-icon">{p.icon}</span>
+                <span className="persona-label">{p.label}</span>
+                <span className="persona-desc">{p.desc}</span>
+              </button>
+            ))}
+          </div>
+          <button className="skip-btn" onClick={() => { localStorage.removeItem('composite_persona'); onSelect(first) }}>不需要，就用单一身份</button>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="选择用户画像" onClick={onSkip}>
       <div className="modal-box" onClick={e => e.stopPropagation()}>
@@ -30,7 +55,7 @@ function PersonaModal({ onSelect, onSkip }) {
         <p className="modal-sub">选一个最符合你的身份，我们会根据你的身份调整各维度权重，让分析更贴合你的实际情况</p>
         <div className="persona-grid">
           {personas.map(p => (
-            <button key={p.key} className="persona-btn" onClick={() => onSelect(p.key)}>
+            <button key={p.key} className="persona-btn" onClick={() => setFirst(p.key)}>
               <span className="persona-icon">{p.icon}</span>
               <span className="persona-label">{p.label}</span>
               <span className="persona-desc">{p.desc}</span>
@@ -1495,6 +1520,50 @@ function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
         </div>
       )}
 
+      {/* View History */}
+      {(() => {
+        try {
+          const hist = JSON.parse(localStorage.getItem('view_history') || '[]')
+          const recent = hist.slice(0, 5)
+          return (
+            <div className="dash-section">
+              <h3>📖 最近浏览</h3>
+              {recent.length > 0 ? (
+                <div className="dash-history-list">
+                  {recent.map((h, i) => (
+                    <div key={i} className="dash-history-item" onClick={() => onSwitchTab("dimensions")}>
+                      <span className="dhi-name">{h.policyName}</span>
+                      <span className="dhi-dim">{h.dimName}</span>
+                      <span className="dhi-time">{new Date(h.timestamp).toLocaleDateString('zh-CN', {month:'short',day:'numeric'})}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="dash-history-empty">
+                  <p>还没有浏览记录</p>
+                  <button className="dhe-btn" onClick={() => onSwitchTab("dimensions")}>去浏览政策 →</button>
+                </div>
+              )}
+            </div>
+          )
+        } catch { return null }
+      })()}
+
+      {/* Radar Widget */}
+      <div className="dashboard-radar-widget" onClick={() => onSwitchTab('radar')}>
+        <span className="drw-icon">📡</span>
+        <div className="drw-text">
+          <h4 className="drw-title">人生雷达</h4>
+          <p className="drw-desc">扫描政策机会和盲区，发现你可能忽略的重要政策</p>
+        </div>
+        <span className="drw-arrow">开启扫描 →</span>
+      </div>
+
+      {/* Policy Calendar */}
+      <div className="dash-section">
+        <PolicyCalendar personaKey={personaKey} />
+      </div>
+
       {/* Recommendations */}
       <div className="dash-section">
         <h3>🎯 为你推荐</h3>
@@ -1516,27 +1585,6 @@ function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
 }
 
 /* ═══════ B4: 智能推荐 ═══════ */
-function SmartRecommendations({ personaKey, onSwitchTab }) {
-  const recs = recommendations[personaKey] || []
-  if (recs.length === 0) return null
-  const typeIcon = { topic: "📖", scenario: "🎮", deadline: "⏰" }
-  const typeTarget = { topic: "topics", scenario: "topics", deadline: "overview" }
-  return (
-    <div className="smart-recs">
-      <h3 className="sr-title">💡 为你推荐</h3>
-      <div className="sr-cards">
-        {recs.map((r, i) => (
-          <div key={i} className="sr-card" onClick={() => onSwitchTab(typeTarget[r.type])}>
-            <span className="sr-type-icon">{typeIcon[r.type]}</span>
-            <span className="sr-text">{r.text}</span>
-            <span className="sr-go">→</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 /* ═══════ C2: 画像对比 ═══════ */
 function PersonaCompare({ currentPersonaKey }) {
   const scores = personas.map(p => ({ ...p, score: calcOverallIndex(p.key, "national") }))
@@ -1584,10 +1632,13 @@ function InvitePanel() {
 }
 /* ═══════ 主应用 ═══════ */
 /* ═══════ 动画计数器 ═══════ */
+const _counterAnimated = new Set()
 const AnimatedCounter = memo(function AnimatedCounter({ target, duration = 600 }) {
-  const [value, setValue] = useState(0)
-  const prev = useRef(0)
+  const hasAnimated = _counterAnimated.has(target)
+  const [value, setValue] = useState(hasAnimated ? target : 0)
+  const prev = useRef(hasAnimated ? target : 0)
   useEffect(() => {
+    if (hasAnimated) return
     const start = performance.now()
     const from = prev.current
     const tick = (now) => {
@@ -1596,10 +1647,10 @@ const AnimatedCounter = memo(function AnimatedCounter({ target, duration = 600 }
       const v = Math.round(from + (target - from) * ease)
       setValue(v)
       if (t < 1) requestAnimationFrame(tick)
-      else prev.current = target
+      else { prev.current = target; _counterAnimated.add(target) }
     }
     requestAnimationFrame(tick)
-  }, [target, duration])
+  }, [target, duration, hasAnimated])
   return <>{value}</>
 });
 
@@ -1673,56 +1724,142 @@ class ErrorBoundary extends React.Component {
 function PolicySearch({ onSwitchTab, variant }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState(null)
+  const [sceneMatch, setSceneMatch] = useState(null)
   const [dailyCount, setDailyCount] = useState(() => {
     try { const d = JSON.parse(localStorage.getItem('search_stats') || '{}'); const today = new Date().toISOString().slice(0,10); return d.date === today ? d.count : 0 } catch { return 0 }
   })
-  const FREE_LIMIT = 3
+  const [sceneExpanded, setSceneExpanded] = useState(false)
+  const FREE_LIMIT = 10
+
+  // Synonym map for better matching
+  const SYNONYMS = { '买房': ['购房','房贷','公积金'], '卖房': ['售房','二手房','房产交易'], '换工作': ['跳槽','离职','辞职','灵活就业'], '生娃': ['生育','产假','托育'], '孩子': ['子女','学区','托育'], '退休': ['养老','延迟退休','养老金'], '存钱': ['存款','理财','利率'], '看病': ['医保','医疗','门诊','住院'], '开公司': ['创业','营商环境','小微企业'] }
+
+  const searchTimer = useRef(null)
+  const lastCountedQuery = useRef('')
 
   const doSearch = (q) => {
     setQuery(q)
-    if (!q.trim()) { setResults(null); return }
+    // Scene matching
+    if (q.trim().length >= 2) {
+      const kw = q.toLowerCase()
+      const matched = searchScenes.find(s => s.label.toLowerCase().includes(kw) || s.keywords.some(k => k.toLowerCase().includes(kw) || kw.includes(k)))
+      setSceneMatch(matched || null)
+    } else {
+      setSceneMatch(null)
+    }
+    if (!q.trim()) { setResults(null); setSceneMatch(null); lastCountedQuery.current = ''; return }
+    // Debounce: only count and execute after 400ms pause
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => executeSearch(q), 400)
+  }
+
+  const executeSearch = (q) => {
     const today = new Date().toISOString().slice(0,10)
     const stats = (() => { try { return JSON.parse(localStorage.getItem('search_stats') || '{}') } catch { return {} } })()
     const count = stats.date === today ? stats.count : 0
-    if (count >= FREE_LIMIT) { setResults([]); return }
-    localStorage.setItem('search_stats', JSON.stringify({ date: today, count: count + 1 }))
-    setDailyCount(count + 1)
+    if (count >= FREE_LIMIT && !isPremium()) { setResults([]); return }
+    // Only count if query changed significantly (not just added 1 char)
+    const normalizedQ = q.trim().toLowerCase()
+    if (normalizedQ !== lastCountedQuery.current) {
+      localStorage.setItem('search_stats', JSON.stringify({ date: today, count: count + 1 }))
+      setDailyCount(count + 1)
+      lastCountedQuery.current = normalizedQ
+    }
 
+    // Expand query with synonyms
     const kw = q.toLowerCase()
+    const synonyms = Object.entries(SYNONYMS).reduce((acc, [key, vals]) => {
+      if (kw.includes(key) || vals.some(v => kw.includes(v))) return [...acc, key, ...vals]
+      return acc
+    }, [])
+    const allKw = [...new Set([kw, ...synonyms.map(s => s.toLowerCase())])]
     const res = []
-    // Search dimensions
     dimensions.forEach(dim => {
       dim.scores.forEach(p => {
-        if (p.policyName.toLowerCase().includes(kw) || (p.note && p.note.toLowerCase().includes(kw))) {
+        const pTitle = p.policyName.toLowerCase()
+        const pNote = (p.note || '').toLowerCase()
+        if (allKw.some(k => pTitle.includes(k) || pNote.includes(k))) {
           res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date })
         }
       })
     })
-    // Search newsLianboUpdates
     newsLianboUpdates.forEach(n => {
-      if (n.title.toLowerCase().includes(kw) || n.summary.toLowerCase().includes(kw)) {
+      const nTitle = n.title.toLowerCase()
+      const nSummary = n.summary.toLowerCase()
+      if (allKw.some(k => nTitle.includes(k) || nSummary.includes(k))) {
         const dimMeta = { housing:'🏠', employment:'💼', education:'🎓', pension:'👴', finance:'💰', industry:'🏭' }
         res.push({ type: 'news', dim: n.dim, icon: dimMeta[n.dim] || '📺', dimLabel: '新闻联播', title: n.title, desc: n.summary?.slice(0,60), sentiment: n.sentiment, data: n.data, date: n.date })
       }
     })
-    // Search weeklyUpdates
     weeklyUpdates.forEach(w => {
-      if (w.text.toLowerCase().includes(kw)) {
+      const wText = w.text.toLowerCase()
+      if (allKw.some(k => wText.includes(k))) {
         res.push({ type: 'weekly', dim: w.dim, icon: '📡', dimLabel: '本周更新', title: w.text, desc: '', sentiment: w.impact, date: w.date })
       }
     })
-    // Search keyFindings
-    keyFindings.forEach(k => {
-      if (k.title.toLowerCase().includes(kw) || k.summary.toLowerCase().includes(kw)) {
-        res.push({ type: 'finding', dim: '', icon: '🔑', dimLabel: '关键发现', title: k.title, desc: k.summary?.slice(0,60), sentiment: '', url: k.url })
+    keyFindings.forEach(k2 => {
+      const kTitle = k2.title.toLowerCase()
+      const kSummary = k2.summary.toLowerCase()
+      if (allKw.some(k => kTitle.includes(k) || kSummary.includes(k))) {
+        res.push({ type: 'finding', dim: '', icon: '🔑', dimLabel: '关键发现', title: k2.title, desc: k2.summary?.slice(0,60), sentiment: '', url: k2.url })
       }
     })
-    // Search specialTopics
     specialTopics.forEach(t => {
-      if (t.title.toLowerCase().includes(kw) || t.subtitle.toLowerCase().includes(kw) || t.tags.some(tag => tag.toLowerCase().includes(kw))) {
+      const tTitle = t.title.toLowerCase()
+      const tSub = t.subtitle.toLowerCase()
+      const tTags = t.tags.map(tag => tag.toLowerCase())
+      if (allKw.some(k => tTitle.includes(k) || tSub.includes(k) || tTags.some(tag => tag.includes(k)))) {
         res.push({ type: 'topic', dim: '', icon: t.icon, dimLabel: '专题', title: t.title, desc: t.subtitle, sentiment: '' })
       }
     })
+    // Sort by relevance: count keyword matches + bonus for policy type
+    res.forEach(r => {
+      const title = (r.title || '').toLowerCase()
+      const desc = (r.desc || '').toLowerCase()
+      let score = 0
+      allKw.forEach(k => {
+        if (title.includes(k)) score += 10
+        if (desc.includes(k)) score += 3
+      })
+      if (r.type === 'policy') score += 5 // prefer policy results
+      if (r.sentiment === '利好') score += 2
+      r._score = score
+    })
+    res.sort((a, b) => b._score - a._score)
+    setResults(res.slice(0, 20))
+  }
+
+  // Search all keywords for a scene
+  const doSceneSearch = (scene) => {
+    const today = new Date().toISOString().slice(0,10)
+    const stats = (() => { try { return JSON.parse(localStorage.getItem('search_stats') || '{}') } catch { return {} } })()
+    const count = stats.date === today ? stats.count : 0
+    if (count >= FREE_LIMIT && !isPremium()) { setResults([]); setQuery(scene.label); setSceneMatch(scene); return }
+    localStorage.setItem('search_stats', JSON.stringify({ date: today, count: count + 1 }))
+    setDailyCount(count + 1)
+
+    const res = []
+    const seen = new Set()
+    scene.keywords.forEach(kw => {
+      const k = kw.toLowerCase()
+      dimensions.forEach(dim => {
+        dim.scores.forEach(p => {
+          if (!seen.has(p.policyName) && (p.policyName.toLowerCase().includes(k) || (p.note && p.note.toLowerCase().includes(k)))) {
+            seen.add(p.policyName)
+            res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date })
+          }
+        })
+      })
+      newsLianboUpdates.forEach(n => {
+        if (!seen.has(n.title) && (n.title.toLowerCase().includes(k) || n.summary.toLowerCase().includes(k))) {
+          seen.add(n.title)
+          const dimMeta = { housing:'🏠', employment:'💼', education:'🎓', pension:'👴', finance:'💰', industry:'🏭' }
+          res.push({ type: 'news', dim: n.dim, icon: dimMeta[n.dim] || '📺', dimLabel: '新闻联播', title: n.title, desc: n.summary?.slice(0,60), sentiment: n.sentiment, data: n.data, date: n.date })
+        }
+      })
+    })
+    setQuery(scene.label)
+    setSceneMatch(scene)
     setResults(res.slice(0, 20))
   }
 
@@ -1732,22 +1869,74 @@ function PolicySearch({ onSwitchTab, variant }) {
     <div className={`policy-search ${variant === 'header' ? 'ps-header' : ''}`}>
       <div className="ps-input-wrap">
         <span className="ps-icon">🔍</span>
-        <input className="ps-input" aria-label="搜索政策" role="searchbox" type="text" placeholder="搜索政策（如：公积金、延迟退休、个税、AI教育）"
+        <input className="ps-input" aria-label="搜索政策" role="searchbox" type="text" placeholder="搜索政策（如：我要买房、规划养老、个税优化）"
           value={query} onChange={e => doSearch(e.target.value)} />
-        {query && <button className="ps-clear" onClick={() => { setQuery(''); setResults(null) }}>✕</button>}
+        {query && <button className="ps-clear" onClick={() => { setQuery(''); setResults(null); setSceneMatch(null) }}>✕</button>}
       </div>
       <div className="ps-hint">
-        <span>已搜索 {dailyCount}/{FREE_LIMIT} 次</span>
-        {dailyCount >= FREE_LIMIT && <span className="ps-limit">今日免费次数已用完，升级专业版享无限搜索</span>}
+        {isPremium() ? <span>VIP 不限次数</span> : <><span>已搜索 {dailyCount}/{FREE_LIMIT} 次</span>
+        {dailyCount >= FREE_LIMIT && <span className="ps-limit">今日免费次数已用完，升级专业版享无限搜索</span>}</>}
       </div>
-      {!results && <div className="ps-hot"><span className="ps-hot-label">热门：</span><span key="公积金" className="ps-hot-tag" onClick={() => doSearch('公积金')}>公积金</span><span key="延迟退休" className="ps-hot-tag" onClick={() => doSearch('延迟退休')}>延迟退休</span><span key="个税" className="ps-hot-tag" onClick={() => doSearch('个税')}>个税</span><span key="GDP" className="ps-hot-tag" onClick={() => doSearch('GDP')}>GDP</span><span key="利率" className="ps-hot-tag" onClick={() => doSearch('利率')}>利率</span><span key="AI教育" className="ps-hot-tag" onClick={() => doSearch('AI教育')}>AI教育</span><span key="医保" className="ps-hot-tag" onClick={() => doSearch('医保')}>医保</span><span key="购房" className="ps-hot-tag" onClick={() => doSearch('购房')}>购房</span></div>}
+      {/* Scene match suggestion — show when matched, especially when results are empty */}
+      {sceneMatch && (
+        <div className="ps-scene-match">
+          <span className="ps-scene-label">场景推荐：</span>
+          <button className="ps-scene-card" onClick={() => doSceneSearch(sceneMatch)}>
+            <span className="psc-icon">{sceneMatch.icon}</span>
+            <span className="psc-label">{sceneMatch.label}</span>
+            <span className="psc-desc">{sceneMatch.desc}</span>
+            <span className="psc-go">查看全部 →</span>
+          </button>
+        </div>
+      )}
+      {/* Scene cards (empty state) */}
+      {!results && !query && (
+        <div className="ps-scenes">
+          <div className="ps-hot"><span className="ps-hot-label">热门：</span><span key="公积金" className="ps-hot-tag" onClick={() => doSearch('公积金')}>公积金</span><span key="延迟退休" className="ps-hot-tag" onClick={() => doSearch('延迟退休')}>延迟退休</span><span key="个税" className="ps-hot-tag" onClick={() => doSearch('个税')}>个税</span><span key="利率" className="ps-hot-tag" onClick={() => doSearch('利率')}>利率</span></div>
+          <div className="ps-scene-grid">
+            <span className="ps-scene-grid-label">场景速查：</span>
+            <div className="ps-scene-grid-items">
+              {searchScenes.slice(0, 4).map(s => (
+                <button key={s.id} className="ps-scene-mini" onClick={() => doSceneSearch(s)}>
+                  <span>{s.icon}</span> {s.label}
+                </button>
+              ))}
+              <button className="ps-scene-mini ps-scene-more" onClick={() => setSceneExpanded(e => !e)}>
+                {sceneExpanded ? '收起' : '更多 ▾'}
+              </button>
+              {sceneExpanded && searchScenes.slice(4).map(s => (
+                <button key={s.id} className="ps-scene-mini" onClick={() => doSceneSearch(s)}>
+                  <span>{s.icon}</span> {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       {results && (
         <div className="ps-results">
           {results.length === 0 ? (
-            <div className="ps-empty">{dailyCount >= FREE_LIMIT ? '🔒 今日免费搜索次数已用完' : '未找到相关政策'}</div>
+            <div className="ps-empty">
+              {(dailyCount >= FREE_LIMIT && !isPremium()) ? (
+                <div className="ps-limit-reached">
+                  <p className="pslr-title">🔒 今日免费搜索次数已用完</p>
+                  <p className="pslr-desc">已使用 {dailyCount}/{FREE_LIMIT} 次，升级专业版享无限搜索</p>
+                  <button className="pslr-btn" onClick={() => onSwitchTab('dashboard')}>升级专业版 →</button>
+                </div>
+              ) : (
+                <div className="ps-empty-guide">
+                  <p>😕 未找到相关政策，试试以下方法：</p>
+                  <ul>
+                    <li>换个关键词，如「公积金」「限购」「生育」</li>
+                    <li>点击下方的<span className="ps-hot-tag" style={{display:'inline',padding:'2px 6px',margin:'0 4px'}}>场景速查</span>快速浏览</li>
+                    <li>输入更通用的词，如「买房」而不是「LPR下调」</li>
+                  </ul>
+                </div>
+              )}
+            </div>
           ) : (
             <>
-              <div className="ps-results-header">找到 {results.length} 条结果</div>
+              <div className="ps-results-header">找到 {results.length} 条结果{sceneMatch ? <span className="ps-results-scene"> · 场景：{sceneMatch.icon} {sceneMatch.label}</span> : null}</div>
               {results.map((r, i) => (
                 <div key={i} className="ps-result-item" onClick={() => { if (r.type === 'topic') onSwitchTab('topics'); else if (r.type === 'policy') onSwitchTab('dimensions'); else onSwitchTab('overview') }}>
                   <span className="ps-ri-icon">{r.icon}</span>
@@ -2055,6 +2244,514 @@ function NewsLianboPanel() {
   )
 }
 
+/* ═══════ 政策日历组件 ═══════ */
+function PolicyCalendar({ personaKey, compact = false, filterDims = null }) {
+  const today = new Date()
+  const sorted = [...deadlines].sort((a, b) => new Date(a.date) - new Date(b.date))
+  const filtered = sorted.filter(d => {
+    if (filterDims && filterDims.length > 0) return d.dims && d.dims.some(dim => filterDims.includes(dim))
+    if (personaKey) return d.persona.includes(personaKey)
+    return true
+  })
+  const items = compact ? filtered.slice(0, 2) : filtered
+
+  const getDaysLeft = (dateStr) => {
+    const d = new Date(dateStr)
+    return Math.ceil((d - today) / 86400000)
+  }
+
+  const getStatusClass = (days) => {
+    if (days < 0) return 'pcal-expired'
+    if (days <= 30) return 'pcal-urgent'
+    if (days <= 90) return 'pcal-soon'
+    return 'pcal-future'
+  }
+
+  const getStatusLabel = (days) => {
+    if (days < 0) return '已过期'
+    if (days === 0) return '今天'
+    if (days <= 30) return `${days}天后`
+    if (days <= 90) return `${days}天后`
+    return `${days}天后`
+  }
+
+  if (items.length === 0) return null
+
+  return (
+    <div className={`policy-calendar ${compact ? 'pcal-compact' : ''}`}>
+      {!compact && <h3 className="pcal-title">📅 重要日期提醒</h3>}
+      <div className="pcal-list">
+        {items.map((d, i) => {
+          const days = getDaysLeft(d.date)
+          const status = getStatusClass(days)
+          return (
+            <div key={d.id} className={`pcal-item ${status}`}>
+              <div className="pcal-date-col">
+                <span className="pcal-month">{d.date.slice(5, 7)}月</span>
+                <span className="pcal-day">{d.date.slice(8)}</span>
+              </div>
+              <div className="pcal-info">
+                <div className="pcal-label">{d.label}</div>
+                <div className="pcal-action">{d.action}</div>
+                {!compact && d.dims && (
+                  <div className="pcal-dims">{d.dims.map(dim => {
+                    const icons = { housing: '🏠', employment: '💼', education: '🎓', elderly: '👴', finance: '💰', industry: '🏭' }
+                    return <span key={dim} className="pcal-dim-tag">{icons[dim] || '📋'} {dim}</span>
+                  })}</div>
+                )}
+              </div>
+              <span className="pcal-countdown">{getStatusLabel(days)}</span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ 人生雷达 — 扫描算法 ═══════ */
+function runRadarScan(stageKey, currentDims) {
+  const stage = lifeRadar.stages.find(s => s.key === stageKey)
+  if (!stage) return { opportunities: [], blindSpots: [], risks: [], radarScore: 0, topActions: [], dimScores: {} }
+
+  // 1. 过滤匹配当前 stage 的信号
+  const matched = lifeRadar.signals.filter(s => s.stageMatch.includes(stageKey))
+
+  // 2. 按 type 分组
+  const opportunities = matched.filter(s => s.type === 'opportunity').sort((a,b) => (b.priority==='high'?1:0) - (a.priority==='high'?1:0))
+  const blindSpots = matched.filter(s => s.type === 'blindspot').sort((a,b) => (b.priority==='high'?1:0) - (a.priority==='high'?1:0))
+  const risks = matched.filter(s => s.type === 'risk').sort((a,b) => (b.priority==='high'?1:0) - (a.priority==='high'?1:0))
+
+  // 3. 计算各维度得分
+  const dimScores = {}
+  currentDims.forEach(dim => {
+    dimScores[dim.key] = calcDimensionScore(dim)
+  })
+
+  // 4. 加权综合分
+  let radarScore = 0
+  Object.entries(stage.weights).forEach(([dimKey, weight]) => {
+    radarScore += (dimScores[dimKey] || 0) * weight
+  })
+  radarScore = Math.round(radarScore)
+
+  // 5. 从维度中提取高分利好政策作为额外机会
+  const extraOpportunities = []
+  currentDims.forEach(dim => {
+    const w = stage.weights[dim.key] || 0
+    if (w >= 0.15) {
+      dim.scores.forEach(s => {
+        if (s.direction > 0 && s.breadth >= 6) {
+          extraOpportunities.push({
+            id: 'dim_' + s.policyName,
+            type: 'opportunity',
+            title: s.policyName,
+            desc: s.note,
+            priority: s.breadth >= 8 ? 'high' : 'medium',
+            dims: [dim.key],
+            action: '查看该政策详情',
+          })
+        }
+      })
+    }
+  })
+
+  // 6. 合并并去重
+  const allOpportunities = [...opportunities]
+  extraOpportunities.forEach(e => {
+    if (!allOpportunities.find(o => o.title.includes(e.title) || e.title.includes(o.title))) {
+      allOpportunities.push(e)
+    }
+  })
+
+  // 7. topActions: 从所有信号中提取，按 priority 排序
+  const allSignals = [...matched, ...extraOpportunities]
+  const topActions = allSignals
+    .sort((a,b) => {
+      const pa = a.priority === 'high' ? 3 : a.priority === 'medium' ? 2 : 1
+      const pb = b.priority === 'high' ? 3 : b.priority === 'medium' ? 2 : 1
+      return pb - pa
+    })
+    .slice(0, 5)
+    .map(s => ({ title: s.action, signalId: s.id, dims: s.dims }))
+
+  return { opportunities: allOpportunities, blindSpots, risks, radarScore, topActions, dimScores }
+}
+
+/* ═══════ 雷达图组件 (CSS 六边形) ═══════ */
+function RadarChart({ dimScores, weights }) {
+  const dimKeys = ['housing', 'employment', 'education', 'elderly', 'finance', 'industry']
+  const dimLabels = { housing: '房产', employment: '就业', education: '教育', elderly: '养老', finance: '理财', industry: '行业' }
+  const dimIcons = { housing: '🏠', employment: '💼', education: '🎓', elderly: '👴', finance: '💰', industry: '🏭' }
+  const size = 220
+  const cx = size / 2, cy = size / 2, r = 85
+
+  // 生成六边形顶点
+  const getPoint = (i, radius) => {
+    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
+    return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) }
+  }
+
+  // 雷达网格线
+  const gridLevels = [0.25, 0.5, 0.75, 1.0]
+  const gridPaths = gridLevels.map(level => {
+    const pts = dimKeys.map((_, i) => getPoint(i, r * level))
+    return pts.map(p => `${p.x},${p.y}`).join(' ')
+  })
+
+  // 数据多边形
+  const dataPts = dimKeys.map((key, i) => {
+    const score = (dimScores[key] || 0) / 100
+    const weight = weights[key] || 0
+    // 高权重维度在雷达图中更突出
+    const displayScore = Math.min(1, score * (0.6 + weight * 2))
+    return getPoint(i, r * displayScore)
+  })
+  const dataPath = dataPts.map(p => `${p.x},${p.y}`).join(' ')
+
+  // 轴线
+  const axes = dimKeys.map((_, i) => {
+    const p = getPoint(i, r)
+    return { x1: cx, y1: cy, x2: p.x, y2: p.y }
+  })
+
+  // 标签位置
+  const labels = dimKeys.map((key, i) => {
+    const p = getPoint(i, r + 22)
+    const weight = weights[key] || 0
+    return { x: p.x, y: p.y, key, label: dimLabels[key], icon: dimIcons[key], weight, isHigh: weight >= 0.25 }
+  })
+
+  return (
+    <div className="radar-chart-wrap">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="radar-svg">
+        {/* 网格 */}
+        {gridPaths.map((path, i) => (
+          <polygon key={i} points={path} fill="none" stroke="var(--border-subtle)" strokeWidth="0.5" opacity={0.4 + i * 0.15} />
+        ))}
+        {/* 轴线 */}
+        {axes.map((a, i) => (
+          <line key={i} x1={a.x1} y1={a.y1} x2={a.x2} y2={a.y2} stroke="var(--border-subtle)" strokeWidth="0.5" opacity="0.4" />
+        ))}
+        {/* 数据多边形 */}
+        <polygon points={dataPath} fill="rgba(22,119,255,0.15)" stroke="#1677ff" strokeWidth="2" className="radar-polygon" />
+        {/* 数据点 */}
+        {dataPts.map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r="4" fill="#1677ff" className="radar-dot" />
+        ))}
+        {/* 扫描动效线 */}
+        <line x1={cx} y1={cy} x2={cx} y2={cy - r} stroke="#1677ff" strokeWidth="1" opacity="0.6" className="radar-sweep" />
+      </svg>
+      {/* 标签 */}
+      {labels.map((lb, i) => (
+        <div key={i} className={`radar-label ${lb.isHigh ? 'radar-label-high' : ''}`}
+          style={{
+            left: `${(lb.x / size) * 100}%`,
+            top: `${(lb.y / size) * 100}%`,
+            transform: 'translate(-50%, -50%)'
+          }}>
+          <span className="rl-icon">{lb.icon}</span>
+          <span className="rl-name">{lb.label}</span>
+          <span className="rl-score">{dimScores[lb.key] || 0}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* ═══════ 人生雷达主组件 ═══════ */
+function LifeRadar({ currentDims, personaKey, onNavigateDim, onSwitchTab }) {
+  const [stageKey, setStageKey] = useState(() => {
+    const saved = localStorage.getItem('radar_stage')
+    if (saved) return saved
+    if (personaKey && lifeRadar.personaStageMap[personaKey]) return lifeRadar.personaStageMap[personaKey]
+    return null
+  })
+  const [scanning, setScanning] = useState(false)
+  const [scanDone, setScanDone] = useState(false)
+  const [actionsDone, setActionsDone] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('radar_actions_done') || '{}') } catch { return {} }
+  })
+  const [floatText, setFloatText] = useState(null)
+
+  const toggleAction = (e, stageKey, actionIdx, totalActions) => {
+    e.stopPropagation()
+    const key = stageKey
+    const current = actionsDone[key] || []
+    const next = current.includes(actionIdx) ? current.filter(i => i !== actionIdx) : [...current, actionIdx]
+    const updated = { ...actionsDone, [key]: next }
+    setActionsDone(updated)
+    localStorage.setItem('radar_actions_done', JSON.stringify(updated))
+    // Float text animation
+    if (!current.includes(actionIdx)) {
+      setFloatText('+1 行动力')
+      setTimeout(() => setFloatText(null), 1200)
+      // All done celebration
+      if (next.length === totalActions) {
+        setTimeout(() => { setFloatText('🎉 全部完成！你的政策行动力满分') }, 300)
+        setTimeout(() => setFloatText(null), 4000)
+      }
+    }
+  }
+
+  const handleSelectStage = (key) => {
+    setStageKey(key)
+    localStorage.setItem('radar_stage', key)
+    setScanDone(false)
+    setScanning(true)
+    setTimeout(() => { setScanning(false); setScanDone(true) }, 1500)
+  }
+
+  // 如果已经有 stageKey 且还没扫描过，自动扫描
+  useEffect(() => {
+    if (stageKey && !scanDone && !scanning) {
+      setScanning(true)
+      setTimeout(() => { setScanning(false); setScanDone(true) }, 1500)
+    }
+  }, [])
+
+  const result = stageKey ? runRadarScan(stageKey, currentDims) : null
+  const currentStage = lifeRadar.stages.find(s => s.key === stageKey)
+
+  // 未选择阶段时的引导页
+  if (!stageKey) {
+    return (
+      <div className="life-radar">
+        <div className="radar-intro">
+          <h2 className="radar-intro-title">📡 启动你的人生雷达</h2>
+          <p className="radar-intro-sub">选择你当前的人生阶段，我会帮你扫描所有政策盲区，找到你该抓住的机会和可能忽略的风险</p>
+        </div>
+        <div className="radar-stage-grid">
+          {lifeRadar.stages.map(s => (
+            <button key={s.key} className="radar-stage-card" onClick={() => handleSelectStage(s.key)}>
+              <span className="rsc-icon">{s.icon}</span>
+              <span className="rsc-label">{s.label}</span>
+              <span className="rsc-age">{s.ageRange}岁</span>
+              <span className="rsc-desc">{s.desc}</span>
+            </button>
+          ))}
+        </div>
+        {personaKey && lifeRadar.personaStageMap[personaKey] && (
+          <button className="radar-auto-btn" onClick={() => handleSelectStage(lifeRadar.personaStageMap[personaKey])}>
+            ✨ 使用当前身份（{personas.find(p => p.key === personaKey)?.label}）自动扫描
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="life-radar">
+      {/* 阶段选择器 */}
+      <div className="radar-stage-bar">
+        {lifeRadar.stages.map(s => (
+          <button key={s.key}
+            className={`rsb-btn ${stageKey === s.key ? 'active' : ''}`}
+            onClick={() => handleSelectStage(s.key)}>
+            <span className="rsb-icon">{s.icon}</span>
+            <span className="rsb-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* 扫描动效 */}
+      {scanning && (
+        <div className="radar-scanning">
+          <div className="radar-scanning-ring">
+            <div className="radar-scanning-sweep" />
+          </div>
+          <p className="radar-scanning-text">正在扫描「{currentStage?.label}」相关的政策信号...</p>
+        </div>
+      )}
+
+      {/* 扫描结果 */}
+      {scanDone && result && (
+        <div className="radar-result">
+          {/* 雷达图 + 综合分 */}
+          <section className="radar-chart-section">
+            <h3 className="radar-chart-title">{currentStage?.icon} {currentStage?.label} · 政策影响力雷达</h3>
+            <div className="radar-chart-area">
+              <RadarChart dimScores={result.dimScores} weights={currentStage?.weights || {}} />
+              <div className="radar-score-badge">
+                <span className="rsb-value" style={{ color: getIndexLevel(result.radarScore).color }}>{result.radarScore}</span>
+                <span className="rsb-unit">/100</span>
+                <span className="rsb-level" style={{ color: getIndexLevel(result.radarScore).color }}>
+                  {getIndexLevel(result.radarScore).icon} {getIndexLevel(result.radarScore).label}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          {/* 机会区 */}
+          {result.opportunities.length > 0 && (
+            <section className="radar-section radar-opportunity">
+              <h3 className="radar-section-title"><span className="rst-icon">✅</span> 机会区 · 你该抓住的政策红利</h3>
+              <div className="radar-signal-list">
+                {result.opportunities.map((s, i) => (
+                  <div key={s.id || i} className={`radar-signal-card ${s.priority === 'high' ? 'signal-high' : ''}`}
+                    onClick={() => s.dims?.[0] && onNavigateDim(s.dims[0])}>
+                    <div className="rsc-header">
+                      <span className="rsc-title">{s.title}</span>
+                      {s.priority === 'high' && <span className="rsc-priority">重要</span>}
+                    </div>
+                    <p className="rsc-desc">{s.desc}</p>
+                    <div className="rsc-action">→ {s.action}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 盲区警告 */}
+          {result.blindSpots.length > 0 && (
+            <section className="radar-section radar-blindspot">
+              <h3 className="radar-section-title"><span className="rst-icon">⚠️</span> 盲区警告 · 你可能忽略的重要政策</h3>
+              <div className="radar-signal-list">
+                {result.blindSpots.map((s, i) => (
+                  <div key={s.id || i} className={`radar-signal-card ${s.priority === 'high' ? 'signal-high' : ''}`}
+                    onClick={() => s.dims?.[0] && onNavigateDim(s.dims[0])}>
+                    <div className="rsc-header">
+                      <span className="rsc-title">{s.title}</span>
+                      {s.priority === 'high' && <span className="rsc-priority">重要</span>}
+                    </div>
+                    <p className="rsc-desc">{s.desc}</p>
+                    <div className="rsc-action">→ {s.action}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 风险提醒 */}
+          {result.risks.length > 0 && (
+            <section className="radar-section radar-risk">
+              <h3 className="radar-section-title"><span className="rst-icon">🔴</span> 风险提醒 · 对你不利的政策变化</h3>
+              <div className="radar-signal-list">
+                {result.risks.map((s, i) => (
+                  <div key={s.id || i} className={`radar-signal-card ${s.priority === 'high' ? 'signal-high' : ''}`}
+                    onClick={() => s.dims?.[0] && onNavigateDim(s.dims[0])}>
+                    <div className="rsc-header">
+                      <span className="rsc-title">{s.title}</span>
+                      {s.priority === 'high' && <span className="rsc-priority">重要</span>}
+                    </div>
+                    <p className="rsc-desc">{s.desc}</p>
+                    <div className="rsc-action">→ {s.action}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* 行动清单 */}
+          {result.topActions.length > 0 && (() => {
+            const doneList = actionsDone[stageKey] || []
+            const total = result.topActions.length
+            const doneCount = doneList.filter(i => i < total).length
+            const pct = Math.round((doneCount / total) * 100)
+            const barColor = pct === 100 ? '#27ae60' : pct >= 60 ? '#e67e22' : '#e74c3c'
+            return (
+              <section className="radar-section radar-action" style={{ position: 'relative' }}>
+                <h3 className="radar-section-title"><span className="rst-icon">📝</span> 你的行动清单</h3>
+                <div className="radar-action-progress">
+                  <div className="rap-bar"><div className="rap-fill" style={{ width: pct + '%', background: barColor }} /></div>
+                  <span className="rap-text">已完成 {doneCount}/{total}</span>
+                </div>
+                {floatText && <div className="radar-float-text">{floatText}</div>}
+                <div className="radar-action-list">
+                  {result.topActions.map((a, i) => {
+                    const isDone = doneList.includes(i)
+                    return (
+                      <div key={i} className={`radar-action-item ${isDone ? 'rai-done' : ''}`} onClick={() => {
+                        if (!isDone && (a.dims?.[0])) onNavigateDim(a.dims[0])
+                        else if (!isDone) onSwitchTab('tools')
+                      }}>
+                        <button className="rai-check" onClick={(e) => toggleAction(e, stageKey, i, total)}>
+                          {isDone ? '✅' : <span className="rai-circle" />}
+                        </button>
+                        <span className="rai-num">{i + 1}</span>
+                        <span className="rai-text">{a.title}</span>
+                        {!isDone && <span className="rai-arrow">去做 →</span>}
+                      </div>
+                    )
+                  })}
+                </div>
+              </section>
+            )
+          })()}
+
+          {/* 盲区提示 */}
+          {currentStage?.blindSpotHints && (
+            <section className="radar-section radar-hints">
+              <h3 className="radar-section-title"><span className="rst-icon">💡</span> 你可能不知道的</h3>
+              <div className="radar-hints-list">
+                {currentStage.blindSpotHints.map((h, i) => (
+                  <div key={i} className="radar-hint-item">· {h}</div>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ═══════ SmartRecommendations: 首页智能推荐区 ═══════ */
+function SmartRecommendations({ personaKey, regionKey, userCity, userAge, onSwitchTab, onNavigateDim }) {
+  const [recs, setRecs] = useState([])
+  const [reason, setReason] = useState('')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // 读取浏览历史
+    let viewHistory = []
+    try { viewHistory = JSON.parse(localStorage.getItem('view_history') || '[]') } catch {}
+    const params = { personaKey, city: userCity, regionKey, age: userAge, viewHistory }
+    const result = getSmartRecommendations(params)
+    setRecs(result)
+    setReason(getRecommendReason(params))
+    setLoading(false)
+  }, [personaKey, userCity, regionKey, userAge])
+
+  const sentColor = s => s === '利好' ? 'var(--success)' : s === '利空' ? 'var(--danger)' : 'var(--text-secondary)'
+
+  if (loading) {
+    return (
+      <div className="smart-rec">
+        <div className="sr-loading">正在为你梳理相关政策…</div>
+      </div>
+    )
+  }
+
+  if (recs.length === 0) return null
+
+  return (
+    <div className="smart-rec">
+      <div className="sr-header">
+        <h3 className="sr-title">🎯 为你推荐</h3>
+        <span className="sr-reason">{reason}</span>
+      </div>
+      <div className="sr-list">
+        {recs.map((r, i) => (
+          <div key={i} className="sr-item" onClick={() => { onNavigateDim?.(r.dim); onSwitchTab?.('dimensions') }}>
+            <span className="sr-rank">{i + 1}</span>
+            <span className="sr-icon">{r.dimIcon}</span>
+            <div className="sr-body">
+              <div className="sr-name">{r.title}</div>
+              {r.note && <div className="sr-note">{r.note.slice(0, 40)}{r.note.length > 40 ? '…' : ''}</div>}
+              <div className="sr-meta">
+                <span className="sr-dim">{r.dimName}</span>
+                <span className="sr-sent" style={{ color: sentColor(r.sentiment) }}>{r.sentiment}</span>
+              </div>
+            </div>
+            <span className="sr-go">→</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState('overview')
   const [selectedDim, setSelectedDim] = useState(null)
@@ -2063,6 +2760,9 @@ function App() {
   const [showModal, setShowModal] = useState(!personaKey && !sessionStorage.getItem('skipped'))
   const [showShare, setShowShare] = useState(false)
   const [expandedRationale, setExpandedRationale] = useState(null)
+  const [userCity, setUserCity] = useState(() => localStorage.getItem('user_city') || '')
+  const [userAge, setUserAge] = useState(() => { const a = localStorage.getItem('user_age'); return a ? +a : null })
+  const [cityDetected, setCityDetected] = useState(false)
   const [bookmarks, setBookmarks] = useState(() => {
     try { return JSON.parse(localStorage.getItem('bookmarks') || '[]') } catch { return [] }
   })
@@ -2075,6 +2775,7 @@ function App() {
   const [showTour, setShowTour] = useState(() => !sessionStorage.getItem("tour_done"))
   const [showReport, setShowReport] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [policyDetail, setPolicyDetail] = useState(null)
   const [moreOpen, setMoreOpen] = useState(false)
   useEffect(() => { if (!moreOpen) return; const handler = () => setMoreOpen(false); document.addEventListener('click', handler); return () => document.removeEventListener('click', handler); }, [moreOpen])
   // Track visits
@@ -2126,10 +2827,34 @@ function App() {
     setRegionKey(key); localStorage.setItem('region', key); setSelectedDim(null); setTabKey(k => k + 1)
   }
 
+  // IP自动定位用户城市
+  useEffect(() => {
+    if (userCity) { setCityDetected(true); return } // 已有缓存
+    let cancelled = false
+    detectUserCity().then(result => {
+      if (cancelled || !result) { setCityDetected(true); return }
+      const { city, region } = result
+      localStorage.setItem('user_city', city)
+      if (region) localStorage.setItem('user_region', region)
+      setUserCity(city)
+      // 自动匹配区域
+      const autoRegion = cityToRegion(city)
+      if (autoRegion !== 'national' && autoRegion !== regionKey) {
+        setRegionKey(autoRegion)
+        localStorage.setItem('region', autoRegion)
+      }
+      setCityDetected(true)
+    })
+    return () => { cancelled = true }
+  }, []) // eslint-disable-line
+
   const switchTab = useCallback((k) => {
-    setActiveTab(k); setSelectedDim(null); setTabKey(prev => prev + 1)
+    setActiveTab(k)
+    if (k === 'dimensions' && !selectedDim) setSelectedDim(currentDims[0]?.key || null)
+    else setSelectedDim(null)
+    setTabKey(prev => prev + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
+  }, [selectedDim, currentDims])
 
   const toggleBookmark = useCallback((policyName) => {
     setBookmarks(prev => {
@@ -2160,9 +2885,11 @@ function App() {
             <span className="logo-icon">🧭</span>
             <h1 className="logo-title">策查查</h1>
           </div>
-          <div className="header-search">
-            <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="header" />
-          </div>
+          {activeTab !== 'overview' && (
+            <div className="header-search">
+              <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="header" />
+            </div>
+          )}
           <div className="header-actions">
             <button className="icon-btn" onClick={() => setDarkMode(!darkMode)} title={darkMode ? '切换亮色模式' : '切换暗黑模式'}>{darkMode ? '☀️' : '🌙'}</button>
             {currentPersona && (
@@ -2177,18 +2904,15 @@ function App() {
         </div>
       </header>
 
-      {/* 区域选择器 */}
-      <RegionSelector value={regionKey} onChange={handleRegionChange} />
-
       <nav className="tabs" role="tablist" aria-label="主导航">
-        {[['overview','🏠 首页'],['dimensions','📋 政策库'],['tools','🧮 工具箱'],['dashboard','👤 我的']].map(([k, label]) => (
+        {[['overview','🏠 首页'],['radar','📡 雷达'],['dimensions','📋 政策库'],['tools','🧮 工具箱'],['topics','🎯 专题'],['dashboard','👤 我的']].map(([k, label]) => (
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
         <div className="tab-more-wrap">
-          <button className={`tab tab-more ${['methodology','graph','api','topics','monitor'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }}>⋯ 更多</button>
+          <button className={`tab tab-more ${['methodology','graph','api','monitor'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }}>⋯ 更多</button>
           {moreOpen && (
             <div className="tab-dropdown">
-              {[['topics','🎯 专题'],['methodology','🔬 方法论'],['monitor','🔔 监控'],['graph','🕸️ 图谱'],['api','🔌 API']].map(([k, label]) => (
+              {[['monitor','🔔 监控'],['methodology','🔬 方法论'],['graph','🕸️ 图谱'],['api','🔌 API']].map(([k, label]) => (
                 <button key={k} className={`tab-drop-item ${activeTab===k?'active':''}`} onClick={() => { switchTab(k); setMoreOpen(false); }}>{label}</button>
               ))}
             </div>
@@ -2196,12 +2920,11 @@ function App() {
         </div>
       </nav>
 
-      <main className="main tab-fade" key={tabKey}>
+      <main className="main">
 
         {/* ════════ OVERVIEW ════════ */}
         {activeTab === 'overview' && (
           <div className="overview">
-            {/* Hero Search — 企查查风格大搜索框 */}
             <section className="hero-search">
               <h2 className="hero-title">读懂政策，做对决策</h2>
               <p className="hero-sub">覆盖房产、就业、教育、养老、消费、行业六大维度，{totalPolicies}条权威政策实时解读</p>
@@ -2209,222 +2932,197 @@ function App() {
                 <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="hero" />
               </div>
             </section>
+            
+            <SmartRecommendations 
+              personaKey={personaKey} 
+              regionKey={regionKey} 
+              userCity={userCity} 
+              userAge={userAge}
+              onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}
+              onNavigateDim={(key) => { setSelectedDim(key); setTabKey(k=>k+1) }}
+            />
 
-            <section className="overall-card">
-              <div className="overall-left">
-                <div className="overall-ring" style={{ '--pct': ringValue, '--clr': overallLevel.color }}>
-                  <div className="ring-inner">
-                    <span className="ring-num">{ringValue}</span>
-                    <span className="ring-label">/ 100</span>
-                  </div>
-                </div>
-                {currentPersona && <div className="persona-info">{currentPersona.icon} {currentPersona.label}视角</div>}
-                {regionKey !== 'national' && <div className="region-info-chip">{currentRegion.icon} {currentRegion.name}</div>}
-              </div>
-              <div className="overall-right">
-                <div className="overall-title">综合政策影响力指数</div>
-                        <div className="overall-brand-tag">策查查</div>
-                <div className="overall-level" style={{ color: overallLevel.color }}>{overallLevel.icon} {overallLevel.label}</div>
-                <div className="overall-plain main-plain">💬 <b>对你意味着：</b>{overallLevel.plain}</div>
-                <Collapsible title="📐 我们怎么算的？" defaultOpen={false}>
-                  <p className="overall-desc-detail">
-                    基于近3年 <b>{totalPolicies}条</b> 权威政策（{regionKey === 'national' ? '国家层面' : `国家政策 + ${currentRegion.name}区域政策`}），
-                    涵盖房产、就业、教育、养老、理财、行业六大维度，
-                    采用 OECD 监管影响评估框架（RIA）+ PEST宏观分析 + 利益相关者矩阵综合计算。
-                    {currentPersona && <>当前以「{currentPersona.label}」视角计算，权重已按你的身份调整。</>}
-                  </p>
-                </Collapsible>
-                {currentPersona && (
-                  <div className="weight-tags">
-                    {currentDims.map(d => {
-                      const w = Math.round((currentPersona.weights[d.key] ?? 1/6) * 100)
-                      const isTop = topDimKeys.includes(d.key)
-                      return <span key={d.key} className={`weight-tag ${isTop ? 'weight-top' : ''}`} style={{ borderColor: d.color }}>{d.icon}{d.name} <b>{w}%</b></span>
-                    })}
-                  </div>
-                )}
+            <section className="overview-dims">
+              <h2 className="section-title">政策影响力总览</h2>
+              <div className="overview-quick-stats">
+                {sortedDims.map(dim => {
+                  const idx = calcDimensionScore(dim)
+                  const lvl = getIndexLevel(idx)
+                  return (
+                    <div key={dim.key} className="quick-stat" onClick={() => { setActiveTab('dimensions'); setSelectedDim(dim.key); setTabKey(k=>k+1) }} style={{ cursor: 'pointer' }}>
+                      <span className="qs-icon">{dim.icon}</span>
+                      <span className="qs-value" style={{ color: lvl.color }}><AnimatedCounter target={idx} /></span>
+                      <span className="qs-label">{dim.name}</span>
+                      <span className="qs-level" style={{ color: lvl.color }}>{lvl.label}</span>
+                    </div>
+                  )
+                })}
               </div>
             </section>
 
-            {currentPersona ? (
-              <ActionHub personaKey={personaKey} onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:'smooth'}) }} />
-            ) : (
-              <div className="empty-state">
-                <span className="empty-state-icon">🧭</span>
-                <div className="empty-state-title">选择身份，解锁专属行动清单</div>
-                <div className="empty-state-desc">告诉我们你是谁（购房者/职场人/家长/投资者/自由职业者），<br/>我们会为你生成个性化的政策行动建议、红利计算和时间窗口提醒</div>
-                <button className="empty-state-btn" onClick={() => setShowModal(true)}>👤 选择我的身份</button>
+            <section className="overview-summary">
+              <div className="summary-top">
+                <span className="summary-score" style={{ color: overallLevel.color }}>{overallIndex}</span>
+                <span className="summary-unit">/100 · {overallLevel.icon} {overallLevel.label}</span>
               </div>
-            )}
+              <p className="summary-plain">💬 {overallLevel.plain}</p>
+              {!currentPersona && (
+                <button className="summary-persona-btn" onClick={() => setShowModal(true)}>👤 选择我的身份，查看专属分析</button>
+              )}
+            </section>
 
-            {/* Quick Stats Overview */}
-            <div className="overview-quick-stats">
-              {sortedDims.map(dim => {
-                const idx = calcDimensionScore(dim)
-                const lvl = getIndexLevel(idx)
-                return (
-                  <div key={dim.key} className="quick-stat" onClick={() => { setActiveTab('dimensions'); setSelectedDim(dim.key); setTabKey(k=>k+1) }} style={{ cursor: 'pointer' }}>
-                    <span className="qs-icon">{dim.icon}</span>
-                    <span className="qs-value" style={{ color: lvl.color }}><AnimatedCounter target={idx} /></span>
-                    <span className="qs-label">{dim.name} · {lvl.label}</span>
-                  </div>
-                )
-              })}
-            </div>
-
-            <section className="findings">
-              <h2 className="section-title">🔑 关键发现{currentPersona ? ` · ${currentPersona.label}最该关注的` : ' · 与你最相关的'}</h2>
-              <div className="findings-list">
-                {filteredFindings.map((f, i) => (
-                  <div key={i} className={`finding-card finding-${f.level} stagger-card`}>
-                    <div className="finding-num">{i + 1}</div>
-                    <div className="finding-body">
-                      <div className="finding-title">
-                        {f.url ? <a href={f.url} target="_blank" rel="noopener noreferrer" className="policy-source-link">{f.title}</a> : f.title}
-                      </div>
-                      <div className="finding-summary">{f.summary}</div>
-                      <div className="finding-action">💡 建议：{f.action}</div>
-                    </div>
+            <section className="overview-hot">
+              <h2 className="section-title">📡 本周热点政策</h2>
+              <div className="hot-list">
+                {weeklyUpdates.slice(0, 4).map((u, i) => (
+                  <div key={i} className="hot-item" onClick={() => { setActiveTab('dimensions'); setSelectedDim(u.dim); setTabKey(k=>k+1) }}>
+                    <span className="hot-date">{u.date.slice(5)}</span>
+                    <span className={['hot-tag', 'tag-' + (u.impact === '偏利好' ? 'good' : u.impact === '中性' ? 'neutral' : 'bad')].join(' ')}>{u.impact}</span>
+                    <span className="hot-text">{u.text}</span>
+                    <span className="hot-arrow">→</span>
                   </div>
                 ))}
               </div>
             </section>
 
+            <section className="overview-radar-entry" onClick={() => { setActiveTab('radar'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
+              <div className="ore-content">
+                <span className="ore-icon">📡</span>
+                <div className="ore-text">
+                  <h3 className="ore-title">人生雷达</h3>
+                  <p className="ore-desc">扫描你的人生阶段，发现政策机会和盲区</p>
+                </div>
+              </div>
+              <span className="ore-arrow">开启扫描 →</span>
+            </section>
 
-
-
-            {currentPersona && <BeforeAfterCompare currentScore={overallIndex} actionCount={(actionPlans[personaKey]||[]).length} doneCount={doneActions.length} />}
-            {currentPersona && <SmartRecommendations personaKey={personaKey} onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />}
-            {/* TOP5政策雷达 */}
-            <PolicyRadar personaKey={personaKey} regionKey={regionKey} />
+            <PolicyCalendar personaKey={personaKey} compact={true} />
           </div>
         )}
-
-        {/* ════════ DIMENSIONS ════════ */}
+        {/* ════════ 人生雷达 ════════ */}
+        {activeTab === 'radar' && (
+          <LifeRadar currentDims={currentDims} personaKey={personaKey}
+            onNavigateDim={(key) => { setActiveTab('dimensions'); setSelectedDim(key); setTabKey(k=>k+1) }}
+            onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }} />
+        )}
+        {/* ════════ DIMENSIONS — 列表浏览模式 ════════ */}
         {activeTab === 'dimensions' && (
           <div className="dimensions-page">
             <WeeklyUpdateBar />
-            <NewsLianboPanel />
             <div className="dim-pills">
-              {currentDims.map(dim => {
-                const isTop = topDimKeys.includes(dim.key)
-                return (
-                  <button key={dim.key}
-                    className={`pill-btn dim-pill ${selectedDim===dim.key?'active':''} ${isTop ? 'pill-top' : ''}`}
-                    style={selectedDim===dim.key ? { background: dim.color, borderColor: dim.color } : {}}
-                    onClick={() => setSelectedDim(dim.key)}>
-                    {dim.icon} {dim.name}
-                    {isTop && !selectedDim && <span className="pill-star">★</span>}
-                  </button>
-                )
-              })}
+              {currentDims.map(dim => (
+                <button key={dim.key}
+                  className={'pill-btn dim-pill' + (selectedDim===dim.key?' active':'')}
+                  style={selectedDim===dim.key ? { background: dim.color, borderColor: dim.color } : {}}
+                  onClick={() => setSelectedDim(dim.key)}>
+                  {dim.icon} {dim.name}
+                </button>
+              ))}
             </div>
 
             {currentDims.filter(d => !selectedDim || d.key===selectedDim).map(dim => {
               const idx = calcDimensionScore(dim)
               const lvl = getIndexLevel(idx)
-              const nationalCount = (dimensions.find(d => d.key === dim.key)?.scores.length) ?? dim.scores.length
-              const regionalCount = dim.scores.length - nationalCount
               return (
-                <section key={dim.key} className="dim-detail" style={{ '--accent': dim.color }}>
-                  <div className="dim-detail-header">
-                    <span className="dim-detail-icon">{dim.icon}</span>
-                    <div>
-                      <h2>{dim.name}</h2>
-                      <p className="dim-detail-sub">{dim.subtitle}</p>
+                <section key={dim.key} className="dim-section">
+                  <div className="dim-section-header">
+                    <span className="ds-icon">{dim.icon}</span>
+                    <div className="ds-info">
+                      <h3>{dim.name}</h3>
+                      <p>{dim.subtitle}</p>
                     </div>
-                    <div className="dim-detail-score" style={{ color: lvl.color }}>
-                      <span className="big-score">{idx}</span>
-                      <span className="score-label">{lvl.icon} {lvl.label}</span>
+                    <div className="ds-score" style={{ color: lvl.color }}>
+                      <span className="ds-score-num">{idx}</span>
+                      <span className="ds-score-label">{lvl.label}</span>
                     </div>
                   </div>
-
-                  {regionKey !== 'national' && regionalCount > 0 && (
-                    <div className="region-data-badge">
-                      📌 共 {dim.scores.length} 条政策（国家 {nationalCount} + {currentRegion.name} {regionalCount}）
-                    </div>
-                  )}
-
-                  <div className="plain-box">💬 <b>通俗解读：</b>{dim.plainSummary}</div>
-                  <div className="dim-summary">{dim.summary}</div>
-                  <div className="dim-analysis"><h3>📋 深度分析</h3><p>{dim.analysis}</p></div>
-                  {/* 维度常见误区 */}
-                  {dim.tips && dim.tips.length > 0 && (
-                    <div className="dim-tips-section">
-                      <h3>⚠️ 常见误区</h3>
-                      {dim.tips.map((t, ti) => (
-                        <div key={ti} className="dim-tip-item">
-                          <b>{t.title}</b>
-                          <p>{t.tip}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* 历史时间线 */}
+                  <p className="dim-plain-text">💬 {dim.plainSummary}</p>
                   <Timeline dimKey={dim.key} />
 
-                  <div className="dim-policies">
-                    <h3>📌 政策评分明细</h3>
-                    <table className="policy-table desktop-only">
-                      <thead>
-                        <tr><th style={{width:30}}></th><th>政策名称</th><th>影响广度</th><th>深远程度</th><th>方向</th><th>置信度</th><th>评估说明</th></tr>
-                      </thead>
-                      <tbody>
-                        {dim.scores.map((s, i) => {
-                          const dirLabel = s.direction > 0 ? '利好' : s.direction < 0 ? '利空' : '中性'
-                          const dirColor = s.direction > 0 ? '#27ae60' : s.direction < 0 ? '#e74c3c' : '#95a5a6'
-                          const isExpanded = expandedRationale === `${dim.key}-${i}`
-                          const isBookmarked = bookmarks.includes(s.policyName)
-                          const isRegional = i >= nationalCount
-                          return (
-                            <tr key={i} className={`${isExpanded ? 'expanded-row' : ''} ${isRegional ? 'regional-row' : ''}`}>
-                              <td>
-                                <button className={`bookmark-btn ${isBookmarked?'bookmarked':''}`}
-                                  onClick={e => { e.stopPropagation(); toggleBookmark(s.policyName) }}>
-                                  {isBookmarked ? '★' : '☆'}
-                                </button>
-                              </td>
-                              <td className="policy-name-cell">
-                                {isRegional && <span className="region-tag">{currentRegion.name}</span>}
-                                {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="policy-source-link" onClick={e => e.stopPropagation()}>{s.policyName}</a> : s.policyName}
-                                <div className="conf-badge">{s.confidence}</div>
-                                {s.rationale && (
-                                  <button className="rationale-toggle" onClick={e => { e.stopPropagation(); setExpandedRationale(isExpanded ? null : `${dim.key}-${i}`) }}>
-                                    {isExpanded ? '收起依据 ▲' : '查看依据 ▼'}
-                                  </button>
-                                )}
-                              </td>
-                              <td><RatingBar value={s.breadth} color="#3498db" /></td>
-                              <td><RatingBar value={s.depth} color="#9b59b6" /></td>
-                              <td><span style={{ color: dirColor, fontWeight: 700 }}>{dirLabel}</span></td>
-                              <td><span className="conf-stars">{s.confidence}</span></td>
-                              <td className="note-cell">
-                                {s.note}
-                                {isExpanded && s.rationale && (
-                                  <div className="rationale-box"><b>📐 评分依据：</b>{s.rationale}</div>
-                                )}
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                    <div className="mobile-only">
-                      <PolicyCards scores={dim.scores} dimKey={dim.key}
-                        expandedRationale={expandedRationale} setExpandedRationale={setExpandedRationale} />
-                    </div>
+                  <div className="policy-list">
+                    <h4>📌 相关政策 ({dim.scores.length}条)</h4>
+                    {dim.scores.map((s, i) => {
+                      const dirLabel = s.direction > 0 ? '利好' : s.direction < 0 ? '利空' : '中性'
+                      const dirColor = s.direction > 0 ? 'var(--success)' : s.direction < 0 ? 'var(--error)' : 'var(--text-muted)'
+                      return (
+                        <div key={i} className="policy-list-item"
+                          onClick={() => {
+                                                      setPolicyDetail({ ...s, dimName: dim.name, dimIcon: dim.icon, dimColor: dim.color, dimKey: dim.key })
+                                                      try {
+                                                        const hist = JSON.parse(localStorage.getItem('view_history') || '[]')
+                                                        const entry = { policyName: s.policyName, dim: dim.key, dimName: dim.name, timestamp: Date.now() }
+                                                        const filtered = hist.filter(h => h.policyName !== s.policyName)
+                                                        filtered.unshift(entry)
+                                                        localStorage.setItem('view_history', JSON.stringify(filtered.slice(0, 50)))
+                                                      } catch {}
+                                                    }}>
+                          <span className="pl-name">{s.policyName}</span>
+                          <span className="pl-dir" style={{ color: dirColor }}>{dirLabel}</span>
+                          <span className="pl-conf">{s.confidence}</span>
+                          <span className="pl-note">{s.note}</span>
+                          <span className="pl-arrow">→</span>
+                        </div>
+                      )
+                    })}
                   </div>
                 </section>
               )
             })}
+
+            <NewsLianboPanel />
             <LegislativeOutlook regionKey={regionKey} personaKey={personaKey} />
-            <PersonaCompare currentPersonaKey={personaKey || "homebuyer"} />
           </div>
         )}
 
+        {/* ════════ POLICY DETAIL ════════ */}
+        {policyDetail && (
+          <div className="policy-detail-overlay" onClick={() => setPolicyDetail(null)}>
+            <div className="policy-detail-panel" onClick={e => e.stopPropagation()}>
+              <button className="pd-close" onClick={() => setPolicyDetail(null)}>✕</button>
+              <div className="pd-header">
+                <span className="pd-dim" style={{ color: policyDetail.dimColor }}>{policyDetail.dimIcon} {policyDetail.dimName}</span>
+                <span className="pd-conf">{policyDetail.confidence}</span>
+              </div>
+              <h2 className="pd-title">
+                {policyDetail.url ? <a href={policyDetail.url} target="_blank" rel="noopener noreferrer">{policyDetail.policyName} ↗</a> : policyDetail.policyName}
+              </h2>
+              <div className="pd-scores">
+                <div className="pd-score-item">
+                  <span className="pds-label">影响广度</span>
+                  <RatingBar value={policyDetail.breadth} color="#1677ff" />
+                </div>
+                <div className="pd-score-item">
+                  <span className="pds-label">深远程度</span>
+                  <RatingBar value={policyDetail.depth} color="#722ed1" />
+                </div>
+                <div className="pd-score-item">
+                  <span className="pds-label">影响方向</span>
+                  <span style={{ color: policyDetail.direction > 0 ? 'var(--success)' : policyDetail.direction < 0 ? 'var(--error)' : 'var(--text-muted)', fontWeight: 700 }}>
+                    {policyDetail.direction > 0 ? '利好' : policyDetail.direction < 0 ? '利空' : '中性'}
+                  </span>
+                </div>
+              </div>
+              <div className="pd-note">
+                <h4>📋 政策摘要</h4>
+                <p>{policyDetail.note}</p>
+              </div>
+              {policyDetail.rationale && (
+                <div className="pd-rationale">
+                  <h4>📐 评分依据</h4>
+                  <p>{policyDetail.rationale}</p>
+                </div>
+              )}
+              <div className="pd-actions">
+                <button className="btn-primary" onClick={() => { setPolicyDetail(null); setActiveTab('dimensions'); setSelectedDim(policyDetail.dimKey); setTabKey(k=>k+1) }}>
+                  查看「{policyDetail.dimName}」全部政策
+                </button>
+                <button className="btn-secondary" onClick={() => setPolicyDetail(null)}>关闭</button>
+              </div>
+            </div>
+          </div>
+        )}
         {/* ════════ TOOLS ════════ */}
-        {activeTab === 'tools' && <Tools regionKey={regionKey} toolParams={regionToolParams[regionKey] || regionToolParams.national} onNavigateDim={(key) => { setActiveTab('dimensions'); setSelectedDim(key); setTabKey(k=>k+1) }} />}
+        {activeTab === 'tools' && <Suspense fallback={<div style={{padding:40,textAlign:'center',color:'var(--text-secondary)'}}>加载中...</div>}><Tools regionKey={regionKey} toolParams={regionToolParams[regionKey] || regionToolParams.national} onNavigateDim={(key) => { setActiveTab('dimensions'); setSelectedDim(key); setTabKey(k=>k+1) }} /></Suspense>}
 
         {/* ════════ TOPICS ════════ */}
         {activeTab === 'topics' && (
@@ -2625,11 +3323,11 @@ function App() {
         <div className="footer-nav">
           <span className="footer-brand">🧭 策查查</span>
           <div className="footer-links">
-            <button className="footer-link" onClick={() => { setActiveTab("overview"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>总览</button>
-            <button className="footer-link" onClick={() => { setActiveTab("monitor"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>政策监控</button>
-            <button className="footer-link" onClick={() => { setActiveTab("graph"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>关系图谱</button>
+            <button className="footer-link" onClick={() => { setActiveTab("overview"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>首页</button>
+            <button className="footer-link" onClick={() => { setActiveTab("monitor"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>监控</button>
+            <button className="footer-link" onClick={() => { setActiveTab("graph"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>图谱</button>
             <button className="footer-link" onClick={() => { setActiveTab("api"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>API</button>
-            <button className="footer-link" onClick={() => { setActiveTab("dashboard"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>我的档案</button>
+            <button className="footer-link" onClick={() => { setActiveTab("dashboard"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>我的</button>
           </div>
         </div>
         <p className="footer-info">读懂政策，做对决策 · 数据更新至 2026-07-17 · 方法论v{methodology.version} · {currentRegion.name} · {totalPolicies}条政策</p>
