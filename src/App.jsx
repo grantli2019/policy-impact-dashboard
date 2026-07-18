@@ -2292,7 +2292,6 @@ function App() {
         {/* ════════ OVERVIEW ════════ */}
         {activeTab === 'overview' && (
           <div className="overview">
-            <WeeklyUpdateBar />
             <section className="overall-card">
               <div className="overall-left">
                 <div className="overall-ring" style={{ '--pct': ringValue, '--clr': overallLevel.color }}>
@@ -2412,6 +2411,7 @@ function App() {
         {/* ════════ DIMENSIONS ════════ */}
         {activeTab === 'dimensions' && (
           <div className="dimensions-page">
+            <WeeklyUpdateBar />
             <NewsLianboPanel />
             <div className="dim-pills">
               {currentDims.map(dim => {

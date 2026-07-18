@@ -1226,6 +1226,7 @@ a:hover { opacity: 0.8; }
   .dim-detail-header { flex-direction: column; align-items: flex-start; }
   .dim-detail-score { margin-left: 0; }
   .header-inner { flex-direction: column; gap: 10px; text-align: center; }
+  .header-inner-v2 { flex-direction: row; flex-wrap: nowrap; text-align: left; gap: 8px; }
   .header-actions { flex-wrap: wrap; justify-content: center; }
   .tabs { overflow-x: auto; -webkit-mask-image: linear-gradient(to right, transparent 0, black 8px, black calc(100% - 20px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, black 8px, black calc(100% - 20px), transparent 100%); }
   .tab { white-space: nowrap; font-size: 13px; padding: 12px 14px; }
@@ -2955,12 +2956,12 @@ a.policy-source-link:hover::after {
   .pg-label { font-size: 2.8px; }
 }
 /* ═══ Header V2: 搜索即入口 ═══ */
-.header-v2 { padding: 8px 0; }
+.header-v2 { padding: 6px 0; }
 .header-inner-v2 { display: flex; align-items: center; gap: 12px; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 .logo-compact { flex-shrink: 0; }
 .logo-compact .logo-icon { font-size: 1.5rem; }
 .logo-compact .logo-title { font-size: 1.1rem; }
-.header-search { flex: 1; min-width: 0; max-width: 560px; }
+.header-search { flex: 1; min-width: 120px; max-width: 560px; }
 .ps-header { margin-bottom: 0; }
 .ps-header .ps-input-wrap { padding: 0 12px; background: var(--surface-alt); border-width: 1px; }
 .ps-header .ps-input { padding: 8px 0; font-size: 0.9rem; }
@@ -2992,7 +2993,7 @@ a.policy-source-link:hover::after {
 .dark .icon-btn:hover { background: var(--surface-alt); }
 
 /* ═══ 移动端 ═══ */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .header-inner-v2 { flex-wrap: wrap; }
   .header-search { order: 3; flex-basis: 100%; max-width: 100%; }
   .ps-header .ps-results { width: 95%; top: 100px; }
@@ -3002,3 +3003,12 @@ a.policy-source-link:hover::after {
   .header-actions-v2 .persona-chip { display: none; }
   .tabs-v2 .tab { font-size: 0.72rem; padding: 5px 4px; }
 }
+
+/* ═══ 区域选择器紧凑化 ═══ */
+.region-selector { padding: 4px 16px; }
+.region-selector .region-label { font-size: 0.75rem; }
+.region-selector .region-btn { font-size: 0.78rem; padding: 3px 10px; }
+
+/* ═══ 首页紧凑化 ═══ */
+.overview { padding-top: 8px; }
+.overall-card { margin-top: 8px; }
