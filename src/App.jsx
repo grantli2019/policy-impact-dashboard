@@ -2168,6 +2168,7 @@ function App() {
   const [showReport, setShowReport] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
+  useEffect(() => { if (!moreOpen) return; const handler = () => setMoreOpen(false); document.addEventListener('click', handler); return () => document.removeEventListener('click', handler); }, [moreOpen])
   // Track visits
   useEffect(() => {
     try {
@@ -2276,7 +2277,7 @@ function App() {
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
         <div className="tab-more-wrap">
-          <button className={`tab tab-more ${['methodology','graph','api','topics','monitor'].includes(activeTab)?'active':''}`} onClick={() => setMoreOpen(!moreOpen)}>⋯ 更多</button>
+          <button className={`tab tab-more ${['methodology','graph','api','topics','monitor'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }}>⋯ 更多</button>
           {moreOpen && (
             <div className="tab-dropdown">
               {[['topics','🎯 专题'],['methodology','🔬 方法论'],['monitor','🔔 监控'],['graph','🕸️ 图谱'],['api','🔌 API']].map(([k, label]) => (
@@ -2372,37 +2373,11 @@ function App() {
               </div>
             </section>
 
-            {/* 立法前瞻 */}
-            <LegislativeOutlook regionKey={regionKey} personaKey={personaKey} />
 
-            {/* 政策联动效应 */}
-            <PolicyCrossLinks />
 
-            {/* 场景化专题入口 */}
-            {specialTopics.length > 0 && (
-              <div className="topic-entry-cards">
-                <h2 className="section-title">🎯 场景化专题</h2>
-                <div className="topic-card-grid">
-                  {specialTopics.map(t => (
-                    <div key={t.id} className="topic-entry-card stagger-card" onClick={() => { setActiveTab('topics'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
-                      <span className="tec-icon">{t.icon}</span>
-                      <div className="tec-body">
-                        <h4 className="tec-title">{t.title}</h4>
-                        <p className="tec-sub">{t.subtitle}</p>
-                        <div className="tec-tags">{t.tags.slice(0,3).map(tag => <span key={tag} className="tec-tag">{tag}</span>)}</div>
-                      </div>
-                      <span className="tec-arrow">→</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {currentPersona && <BeforeAfterCompare currentScore={overallIndex} actionCount={(actionPlans[personaKey]||[]).length} doneCount={doneActions.length} />}
             {currentPersona && <SmartRecommendations personaKey={personaKey} onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />}
-            <PersonaCompare currentPersonaKey={personaKey || "homebuyer"} />
-            <InvitePanel />
-            <PremiumTeaser />
             {/* TOP5政策雷达 */}
             <PolicyRadar personaKey={personaKey} regionKey={regionKey} />
           </div>
@@ -2697,8 +2672,12 @@ function App() {
 
         {/* ════════ DASHBOARD ════════ */}
         {activeTab === 'dashboard' && (
+          <>
           <Dashboard personaKey={personaKey} regionKey={regionKey} bookmarks={bookmarks}
             onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />
+            <InvitePanel />
+            <PremiumTeaser />
+          </>
         )}
 
         {/* ════════ MONITOR ════════ */}
