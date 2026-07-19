@@ -7143,3 +7143,21 @@ a.policy-source-link:hover::after {
   .card:active { transform: scale(0.99); }
 }
 
+/* ═══════ 移动端固定底部TabBar ═══════ */
+@media (max-width: 768px) {
+  .tabs {
+    position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+    z-index: 999; display: flex; justify-content: space-around;
+    background: var(--surface); border-top: 1px solid var(--border-subtle);
+    border-bottom: none; padding: 4px 0;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+  }
+  .tabs .tab {
+    flex-direction: column; font-size: 10px; padding: 6px 4px;
+    gap: 2px; border-radius: var(--r-md);
+  }
+  .tabs .tab-more-wrap { display: none; }
+  .main { padding-bottom: 70px; }
+  .footer { padding-bottom: 80px; }
+}
+
