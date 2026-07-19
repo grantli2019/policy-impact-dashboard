@@ -45,6 +45,7 @@ function getRubricHint(type, score) {
 // Lazy-loaded components
 const Tools = lazy(() => import('./Tools'));
 const ShareCard = lazy(() => import('./components/ShareCard'));
+import { TrustBadges, PolicyStatsBar, CelebrationToast } from './components/SharedComponents';
 
 /* ═══════ 工具函数 ═══════ */
 function timeAgo(dateStr) {
@@ -4390,27 +4391,6 @@ function App() {
 
 /* ═══════ 信任增强组件 ═══════ */
 
-/* P0-1: 社会证明数据栏 */
-function PolicyStatsBar({ totalPolicies }) {
-  const stats = [
-    { icon: '📋', num: totalPolicies, label: '条权威政策' },
-    { icon: '🌏', num: regions.length, label: '大经济区域' },
-    { icon: '👥', num: personas.length, label: '类用户画像' },
-    { icon: '🔬', num: 3, label: '大国际评估框架' },
-  ]
-  return (
-    <div className="trust-stats-bar">
-      {stats.map((s, i) => (
-        <div key={i} className="ts-item">
-          <span className="ts-icon">{s.icon}</span>
-          <span className="ts-num">{s.num}</span>
-          <span className="ts-label">{s.label}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 /* P0-3: 反馈模态框 */
 function FeedbackModal({ onClose }) {
   const [text, setText] = useState('')
@@ -4702,17 +4682,6 @@ function TimeMachinePanel({ show, onClose }) {
         </div>
         <p className="tm-footer">💡 种一棵树最好的时间是十年前，其次是现在</p>
       </div>
-    </div>
-  )
-}
-
-/* 庆祝浮层 */
-function CelebrationToast({ celebration, onClose }) {
-  if (!celebration) return null
-  return (
-    <div className="celebration-toast" onClick={onClose}>
-      <span className="celeb-icon">{celebration.icon}</span>
-      <span className="celeb-msg">{celebration.msg}</span>
     </div>
   )
 }
@@ -5951,28 +5920,6 @@ function TestimonialWall() {
               <span className="tw-result-label">决策收益</span>
               <span className="tw-result-val">{t.result}</span>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-/* P2-2: 合作/认证展示 */
-function TrustBadges() {
-  const badges = [
-    { name: 'OECD 监管影响评估', icon: '🏛️', desc: '国际通行的政策影响评估框架' },
-    { name: 'PEST 宏观分析', icon: '📊', desc: '政治·经济·社会·技术四维分析' },
-    { name: '利益相关者矩阵', icon: '🤝', desc: '多维利益相关者影响评估' },
-  ]
-  return (
-    <div className="trust-badges">
-      <span className="tb-label">评估框架基于</span>
-      <div className="tb-list">
-        {badges.map((b, i) => (
-          <div key={i} className="tb-item" title={b.desc}>
-            <span className="tb-icon">{b.icon}</span>
-            <span className="tb-name">{b.name}</span>
           </div>
         ))}
       </div>
