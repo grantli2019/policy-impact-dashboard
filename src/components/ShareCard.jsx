@@ -29,7 +29,7 @@ export default function ShareCard({ personaKey, regionKey, onClose }) {
     ctx.fillText('🧭 策查查', 40, 60)
     ctx.font = '18px sans-serif'; ctx.fillStyle = '#aaa'
     ctx.fillText(`${region?.name || '全国'} · 征求意见稿跟踪${persona ? ' · ' + persona.icon + persona.label + '视角' : ''}`, 40, 95)
-    ctx.fillText('2026-07-12', 40, 125)
+    ctx.fillText(new Date().toISOString().slice(0, 10), 40, 125)
     ctx.fillStyle = overallLevel.color; ctx.font = 'bold 100px sans-serif'
     ctx.fillText(overallIndex, 40, 250)
     ctx.font = 'bold 36px sans-serif'

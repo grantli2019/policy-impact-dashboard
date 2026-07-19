@@ -6,6 +6,22 @@ import {
   getDimensionsForRegion, getTimelineForDimension, regionToolParams,
   legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, newsLianboUpdates, lifeRadar, searchScenes, getScoreTrend, calcScoreVsBaseline, getUnifiedActions, toggleUnifiedAction, getActionProgress,
   detectUserCity, getSmartRecommendations, getRecommendReason, cityToRegion, inferLifeStage, lifeStages,
+  enhancedTestimonials, getSimilarTestimonials, getPeerDiscoveries,
+  getPolicyHealthCheck, getPolicyCompass, getWeeklyDigest, scenarioGroups, getScenarioImpacts,
+  domainMeta,
+  selfTestQuestions, scoreSelfTest, getBlindspotCost, getDailyQuizQuestions, getFullQuizQuestions, getRegionQuizQuestions, getQuizHistory, recordQuizAttempt, getQuizStats,
+  getPolicyAlerts, getPolicySubscriptions, togglePolicySubscription,
+  submitUserTestimonial, getUserTestimonials, getAllTestimonials,
+  getUserProfile, saveUserProfile, saveToolResult, getToolResults,
+  getDailyChallenge, submitDailyChallenge, getInsightVotes, submitInsightVote, getStreak, getTodayChallengeDone,
+  getUserTier, updateUserTier, getWrongAnswers, addWrongAnswer, markWrongAnswerMastered,
+  getValueSummary, getNotificationCount,
+  getUserAchievements, checkAndAwardAchievements, getUserStats,
+  getRealizedValue, getUrgencyItems, recordGrowthSnapshot, getGrowthHistory,
+  getShareReport, markShared,
+  getDecisionProjects, createDecisionProject, updateDecisionProject, deleteDecisionProject,
+  getTimeMachineScenarios, checkMilestones, getRegionComparison,
+  enrichNewsForPersona, getNewsForPersona, getNewsByDimension,
 } from './data/impactData'
 import './App.css'
 
@@ -86,14 +102,15 @@ function PersonaModal({ onSelect, onSkip }) {
 }
 
 /* ═══════ 本周更新条 ═══════ */
-function WeeklyUpdateBar() {
+function WeeklyUpdateBar({ lastVisit }) {
   const [expanded, setExpanded] = useState(false)
   const items = expanded ? weeklyUpdates : weeklyUpdates.slice(0, 3)
+  const newCount = lastVisit ? weeklyUpdates.filter(u => u.date > lastVisit).length : 0
   return (
     <section className="weekly-bar">
       <div className="weekly-header" onClick={() => setExpanded(!expanded)}>
         <span className="weekly-dot" />
-        <span className="weekly-title">📡 本周更新 · {weeklyUpdates.length}条新动态</span>
+        <span className="weekly-title">📡 本周更新 · {weeklyUpdates.length}条新动态{newCount > 0 && <span className="new-badge-count">{newCount}条新增</span>}</span>
         <button className="weekly-toggle" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>
           {expanded ? '收起 ▲' : '展开全部 ▼'}
         </button>
@@ -102,6 +119,7 @@ function WeeklyUpdateBar() {
         {items.map((u, i) => (
           <div key={i} className="weekly-item">
             <span className="weekly-date">{u.date.slice(5)}</span>
+            {lastVisit && u.date > lastVisit && <span className="new-badge">NEW</span>}
             <span className={`weekly-tag tag-${u.impact === '偏利好' ? 'good' : u.impact === '中性' ? 'neutral' : 'bad'}`}>{u.impact}</span>
             <span className="weekly-text">{u.text}</span>
           </div>
@@ -1004,10 +1022,30 @@ function DecisionSimulator() {
     }
   }, [activeScenario, inputs])
 
+  // 不可逆决策价值感知数据
+  const URGENCY_DATA = [
+    { icon: '⏰', label: '窗口期有限', desc: '政策红利有明确截止时间，错过不再来' },
+    { icon: '💸', label: '机会成本', desc: '每晚决策1个月，可能损失数千元补贴' },
+    { icon: '🔒', label: '不可逆转', desc: '购房/生育/退休等决策一旦执行无法回退' },
+  ]
+
   return (
     <div className="decision-sim">
       <h2 className="section-title">🎮 决策模拟器</h2>
-      <p className="ds-intro">输入你的情况，看看政策对你意味着什么</p>
+      <p className="ds-intro">人生重大决策不可逆，让政策数据帮你降低试错成本</p>
+
+      {/* 不可逆决策价值感知条 */}
+      <div className="ds-urgency-strip">
+        {URGENCY_DATA.map((u, i) => (
+          <div key={i} className="ds-urgency-item">
+            <span className="ds-urgency-icon">{u.icon}</span>
+            <div className="ds-urgency-text">
+              <span className="ds-urgency-label">{u.label}</span>
+              <span className="ds-urgency-desc">{u.desc}</span>
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="ds-scenario-tabs" role="tablist" aria-label="决策场景">
         {decisionScenarios.map((s, i) => (
@@ -1055,6 +1093,14 @@ function DecisionSimulator() {
               <div className="ds-result-detail">{r.detail}</div>
             </div>
           ))}
+          {/* 机会成本提示 */}
+          <div className="ds-opportunity-cost">
+            <span className="ds-oc-icon">💡</span>
+            <div className="ds-oc-text">
+              <span className="ds-oc-title">如果你不行动...</span>
+              <span className="ds-oc-desc">根据当前政策窗口期，每延迟决策1个月，你可能错过的政策红利价值约 <b>¥{Math.round((results[0]?.value || '').toString().replace(/[^\d]/g, '').slice(0,4) || 500) * 0.03}~{Math.round((results[0]?.value || '').toString().replace(/[^\d]/g, '').slice(0,4) || 500) * 0.08}</b></span>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -1525,8 +1571,55 @@ function RegionCompare({ personaKey, currentRegion, onSelectRegion }) {
   )
 }
 
+/* 地区政策差异速览面板 */
+function RegionComparisonPanel({ regionKey, userCity }) {
+  const [open, setOpen] = useState(true)
+  const [selDim, setSelDim] = useState('housing')
+  const data = useMemo(()=>getRegionComparison(),[])
+  const dims = [...new Set(data.map(d=>d.dim))]
+  const filtered = data.filter(d=>d.dim===selDim)
+  const cityLabel = userCity || (regions.find(r=>r.key===regionKey)?.name) || '北京'
+  const cityKey = cityLabel.includes('北京')?'北京':cityLabel.includes('上海')?'上海':cityLabel.includes('深圳')?'深圳':cityLabel.includes('广州')?'广州':cityLabel
+
+  return (
+    <div className="region-comp-card">
+      <div className="rcc-header" onClick={()=>setOpen(!open)}>
+        <span className="rcc-icon">🗺️</span>
+        <span className="rcc-title">地区政策差异速览</span>
+        <span className="rcc-badge">📍 {cityKey}</span>
+        <span className="rcc-toggle">{open?'收起 ▲':'展开 ▼'}</span>
+      </div>
+      {open && (
+        <>
+          <div className="rcc-dims">
+            {dims.map(d=>(<span key={d} className={`rcc-dim-chip ${selDim===d?'active':''}`} onClick={()=>setSelDim(d)}>
+              {d==='housing'?'🏠房产':d==='employment'?'💼就业':d==='education'?'🎓教育':d==='finance'?'💰金融':d}
+            </span>))}
+          </div>
+          {filtered.map(item => (
+            <div key={item.label} className="rcc-table">
+              <div className="rcc-t-label">{item.icon} {item.label}</div>
+              <div className="rcc-t-row rcc-t-header">
+                <span className="rcc-t-city">城市</span><span className="rcc-t-val">标准</span><span className="rcc-t-note">说明</span>
+              </div>
+              {item.items.map(it => (
+                <div key={it.city} className={`rcc-t-row ${(it.city.includes(cityKey) || cityKey.includes(it.city))?'rcc-highlight':''}`}>
+                  <span className="rcc-t-city">{it.city}</span>
+                  <span className="rcc-t-val">{it.val}</span>
+                  <span className="rcc-t-note">{it.note}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+          <p className="rcc-footer-note">💡 不同城市的政策差异可能影响你的决策。建议以你所在城市为准，同时参考其他城市作为对照。</p>
+        </>
+      )}
+    </div>
+  )
+}
+
 /* ═══════ B3: 个人仪表盘 ═══════ */
-function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
+function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab, userCity, userRegion }) {
   const visits = (() => { try { return JSON.parse(localStorage.getItem("visit_stats") || "{}") } catch { return {} } })()
   const persona = personas.find(p => p.key === personaKey)
 
@@ -1558,7 +1651,10 @@ function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
         <div className="profile-header">
           <span className="profile-avatar">{persona ? persona.icon : '👤'}</span>
           <div className="profile-info">
-            <span className="profile-name">{persona ? persona.label + '视角' : '未选择身份'}</span>
+            <div className="profile-name-row">
+              <span className="profile-name">{persona ? persona.label + '视角' : '未选择身份'}</span>
+              {userCity && <span className="profile-city">📍 {userCity}</span>}
+            </div>
             <span className="profile-since">首次访问：{firstVisit}</span>
           </div>
           <div className="profile-score" style={{ color: overallLevel.color }}>
@@ -1586,6 +1682,9 @@ function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
         <div className="dash-stat"><span className="ds-num">+{(confirmedTotal/10000).toFixed(1)}万</span><span className="ds-label">已确认红利</span></div>
         <div className="dash-stat"><span className="ds-num">{bookmarks.length}</span><span className="ds-label">收藏政策</span></div>
       </div>
+
+      {/* Region Comparison */}
+      <RegionComparisonPanel regionKey={regionKey} userCity={userCity} />
 
       {/* Settlement Progress */}
       {settlementSaved && (
@@ -1756,7 +1855,7 @@ function PersonaCompare({ currentPersonaKey }) {
           </div>
         ))}
       </div>
-      {current && <p className="pc-summary">作为「{current.icon} {current.label}」，你的指数在所有画像中排名第 {scores.sort((a,b) => b.score - a.score).findIndex(s => s.key === currentPersonaKey) + 1} 位</p>}
+      {current && <p className="pc-summary">作为「{current.icon} {current.label}」，你的指数在所有画像中排名第 {[...scores].sort((a,b) => b.score - a.score).findIndex(s => s.key === currentPersonaKey) + 1} 位</p>}
     </div>
   )
 }
@@ -1768,7 +1867,7 @@ function InvitePanel() {
   const inviteLink = window.location.origin + "?ref=" + userId
   const [copied, setCopied] = useState(false)
   const hasBadge = inviteCount >= 3
-  const copyLink = () => { navigator.clipboard.writeText(inviteLink).then(() => setCopied(true)); setTimeout(() => setCopied(false), 2000) }
+  const copyLink = () => { navigator.clipboard.writeText(inviteLink).then(() => setCopied(true)).catch(() => {}); setTimeout(() => setCopied(false), 2000) }
   return (
     <div className="invite-panel">
       <h3 className="invite-title">🤝 邀请好友一起用</h3>
@@ -1938,7 +2037,8 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
         const pTitle = p.policyName.toLowerCase()
         const pNote = (p.note || '').toLowerCase()
         if (allKw.some(k => pTitle.includes(k) || pNote.includes(k))) {
-          res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date, source: p.source, issuingBody: p.issuingBody })
+          const impactScore = Math.round(((p.breadth || 5) * (p.depth || 5) * (Math.abs(p.direction) || 0.5)) / 10)
+          res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date, source: p.source, issuingBody: p.issuingBody, impactScore, breadth: p.breadth, depth: p.depth, confidence: p.confidence })
         }
       })
     })
@@ -2169,16 +2269,44 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
           ) : (
             <>
               <div className="ps-results-header">找到 {results.length} 条结果{sceneMatch ? <span className="ps-results-scene"> · 场景：{sceneMatch.icon} {sceneMatch.label}</span> : null}</div>
+              {/* 搜索摘要卡：影响评估 + 行动建议 */}
+              {(() => {
+                const policyResults = results.filter(r => r.type === 'policy')
+                if (policyResults.length === 0) return null
+                const avgImpact = Math.round(policyResults.reduce((a, r) => a + (r.impactScore || 0), 0) / policyResults.length)
+                const positiveCount = policyResults.filter(r => r.sentiment === '利好').length
+                const negativeCount = policyResults.filter(r => r.sentiment === '利空').length
+                const overallSentiment = positiveCount > negativeCount ? '整体偏利好' : negativeCount > positiveCount ? '整体偏利空' : '影响中性'
+                const sentColor2 = positiveCount > negativeCount ? 'var(--success)' : negativeCount > positiveCount ? 'var(--danger)' : 'var(--text-secondary)'
+                const actionMap = { housing: '🏠 建议：使用公积金计算器测算你的购房成本变化', employment: '💼 建议：查看就业维度了解最新权益保障政策', education: '🎓 建议：使用入学资格自测检查孩子入学条件', pension: '👴 建议：使用养老金计算器规划你的退休收入', finance: '💰 建议：使用个税优化工具测算节税空间', industry: '🏭 建议：关注产业维度了解创业扶持政策' }
+                const topDim = policyResults[0]?.dim
+                return (
+                  <div className="ps-summary-card">
+                    <div className="ps-summary-top">
+                      <div className="ps-summary-score">
+                        <span className="ps-summary-num" style={{ color: sentColor2 }}>{avgImpact}</span>
+                        <span className="ps-summary-label">影响指数</span>
+                      </div>
+                      <div className="ps-summary-info">
+                        <span className="ps-summary-sent" style={{ color: sentColor2 }}>{overallSentiment}</span>
+                        <span className="ps-summary-detail">{policyResults.length}条相关政策 · 利好{positiveCount} · 利空{negativeCount}</span>
+                      </div>
+                    </div>
+                    {actionMap[topDim] && <div className="ps-summary-action">{actionMap[topDim]}</div>}
+                  </div>
+                )
+              })()}
               {results.map((r, i) => (
                 <div key={i} className="ps-result-item" onClick={() => { if (r.type === 'topic') onSwitchTab('topics'); else if (r.type === 'policy') { onSwitchTab('dimensions'); if (r.dim && onNavigateDim) onNavigateDim(r.dim); } else onSwitchTab('overview') }}>
                   <span className="ps-ri-icon">{r.icon}</span>
                   <div className="ps-ri-body">
-                    <div className="ps-ri-title">{r.title}</div>
+                    <div className="ps-ri-title">{r.title}{r.impactScore > 0 && <span className={`ps-impact-badge ${r.impactScore >= 6 ? 'impact-high' : r.impactScore >= 4 ? 'impact-mid' : 'impact-low'}`}>影响 {r.impactScore}/10</span>}</div>
                     {r.desc && <div className="ps-ri-desc">{r.desc}</div>}
                     <div className="ps-ri-meta">
                       <span className="ps-ri-tag">{r.dimLabel}</span>
                       {r.source && <span className="source-tag source-tag-sm">{r.issuingBody || r.source}</span>}
                       {r.sentiment && <span className="ps-ri-sent" style={{ color: sentColor(r.sentiment) }}>{r.sentiment}</span>}
+                      {r.confidence && <span className="ps-ri-conf">{r.confidence}</span>}
                       {r.data && r.data.length > 0 && <span className="ps-ri-data">{r.data[0]}</span>}
                       {r.date && <span className="ps-ri-date">{r.date}</span>}
                     </div>
@@ -2256,18 +2384,33 @@ function PolicyMonitor() {
   const tier = getTier()
   const maxKeywords = tier === 'free' ? 3 : tier === 'personal' ? 5 : 99
 
-  const addKeyword = () => {
-    const kw = input.trim()
-    if (!kw || keywords.includes(kw)) return
+  // 政策找人：基于用户画像的智能推荐关键词
+  const SMART_KEYWORDS = (() => {
+    const persona = localStorage.getItem('persona')
+    const map = {
+      worker: ['工伤认定','失业保险','职业技能补贴','劳动合同法'],
+      parent: ['生育津贴','托育服务','学区划分','个税子女扣除'],
+      retiree: ['养老金调整','医保报销','延迟退休','高龄补贴'],
+      entrepreneur: ['小微企业税收','创业担保贷款','社保减免','营商环境'],
+      freelancer: ['灵活就业社保','个税汇算','公积金自愿缴存','新就业形态'],
+      student: ['就业见习补贴','租房补贴','落户政策','创业培训'],
+    }
+    return map[persona] || ['公积金','养老金','医保','个税']
+  })()
+  const suggestedKeywords = SMART_KEYWORDS.filter(k => !keywords.includes(k)).slice(0, 3)
+
+  const addKeyword = (kw) => {
+    const keyword = (kw || input).trim()
+    if (!keyword || keywords.includes(keyword)) return
     if (keywords.length >= maxKeywords) return
-    const next = [...keywords, kw]
+    const next = [...keywords, keyword]
     setKeywords(next)
     localStorage.setItem('monitor_keywords', JSON.stringify(next))
     setInput('')
     // Check for matches in newsLianboUpdates
-    const matches = newsLianboUpdates.filter(n => n.title.includes(kw) || n.summary?.includes(kw))
+    const matches = newsLianboUpdates.filter(n => n.title.includes(keyword) || n.summary?.includes(keyword))
     if (matches.length > 0 && 'Notification' in window && Notification.permission === 'granted') {
-      new Notification('📺 策查查·监控提醒', { body: `"${kw}"有${matches.length}条相关动态` })
+      new Notification('📺 策查查·监控提醒', { body: `“${keyword}”有${matches.length}条相关动态` })
     }
   }
   const removeKeyword = (kw) => {
@@ -2291,8 +2434,19 @@ function PolicyMonitor() {
       <div className="monitor-input-row">
         <input className="monitor-input" aria-label="输入关注关键词" placeholder="输入关注关键词（如：公积金、利率）" value={input}
           onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && addKeyword()} />
-        <button className="monitor-add" onClick={addKeyword}>+ 关注</button>
+        <button className="monitor-add" onClick={() => addKeyword()}>+ 关注</button>
       </div>
+      {/* 政策找人：智能推荐关键词 */}
+      {suggestedKeywords.length > 0 && (
+        <div className="monitor-smart">
+          <span className="monitor-smart-label">🤖 根据你的画像推荐：</span>
+          <div className="monitor-smart-tags">
+            {suggestedKeywords.map(kw => (
+              <button key={kw} className="monitor-smart-tag" onClick={() => addKeyword(kw)}>+ {kw}</button>
+            ))}
+          </div>
+        </div>
+      )}
       {keywords.length > 0 && (
         <div className="monitor-tags">
           {keywords.map(kw => (
@@ -2301,14 +2455,14 @@ function PolicyMonitor() {
         </div>
       )}
       {'Notification' in window && Notification.permission !== 'granted' && (
-        <button className="monitor-notify-btn" onClick={requestNotify}>🔔 开启浏览器通知</button>
+        <button className="monitor-notify-btn" onClick={requestNotify}>🔔 开启浏览器通知，政策变动第一时间推送</button>
       )}
       {matchedNews.length > 0 && (
         <div className="monitor-alerts">
-          <h4>📡 最新动态</h4>
+          <h4>📡 最新动态（政策找人）</h4>
           {matchedNews.map(m => (
             <div key={m.kw} className="monitor-alert-group">
-              <span className="mag-kw">🔑 {m.kw}</span>
+              <span className="mag-kw">🔑 {m.kw} <span className="mag-count">{m.matches.length}条新动态</span></span>
               {m.matches.map((n, i) => (
                 <div key={i} className="mag-item">
                   <span className="mag-date">{n.date}</span>
@@ -2379,6 +2533,11 @@ function PolicyGraph() {
               <span className="pg-link-note">💡 {l.note}</span>
             </div>
           ))}
+          {/* 联动效应摘要 */}
+          <div className="pg-cascade">
+            <span className="pg-cascade-title">⚡ 联动效应：</span>
+            <span className="pg-cascade-desc">该政策变动将影响 {crossLinks.filter(l => l.from.includes(selectedNode.label.slice(0,3)) || l.to.includes(selectedNode.label.slice(0,3))).length} 个关联政策领域，建议关注上下游传导影响</span>
+          </div>
         </div>
       )}
       <div className="pg-legend">
@@ -2425,54 +2584,125 @@ function ApiDocs() {
   )
 }
 
-/* ═══════ 新闻联播政策速递 ═══════ */
-function NewsLianboPanel() {
-  const [expanded, setExpanded] = useState(false)
-  const [filter, setFilter] = useState('all')
-  const dimMeta = {
-    housing: { icon: '🏠', label: '房产' }, employment: { icon: '💼', label: '就业' },
-    education: { icon: '🎓', label: '教育' }, pension: { icon: '👴', label: '养老' },
-    finance: { icon: '💰', label: '消费' }, industry: { icon: '🏭', label: '行业' },
-  }
-  const sentColor = { '利好': 'var(--success)', '利空': 'var(--danger)', '中性': 'var(--text-secondary)' }
-  const filtered = filter === 'all' ? newsLianboUpdates : newsLianboUpdates.filter(n => n.dim === filter)
-  const shown = expanded ? filtered : filtered.slice(0, 6)
-  const dims = [...new Set(newsLianboUpdates.map(n => n.dim))]
+/* ═══════ 联播解读专栏 v2 — 高价值版 ═══════ */
+function NewsLianboPanel({ personaKey, stageKey, onNavigateDim, userProfile, lastVisit }) {
+  const [activeTab, setActiveTab] = useState('foryou') // foryou | all | dims
+  const [selDim, setSelDim] = useState(null)
+  const [expandedId, setExpandedId] = useState(null)
+  const dimMeta = { housing: { icon: '🏠', label: '住房' }, employment: { icon: '💼', label: '就业' }, education: { icon: '🎓', label: '教育' }, pension: { icon: '👴', label: '养老' }, elderly: { icon: '👴', label: '养老' }, finance: { icon: '💰', label: '金融' }, industry: { icon: '🏭', label: '产业' } }
+  const sentColor = { '利好': '#27ae60', '利空': '#e74c3c', '中性': '#7f8c8d' }
+  const sentBg = { '利好': '#eafaf1', '利空': '#fdedec', '中性': '#f0f0f0' }
+
+  // 个性化推荐（传入userProfile以计算个人匹配度）
+  const forYou = useMemo(() => getNewsForPersona(personaKey || 'worker', 8, userProfile), [personaKey, JSON.stringify(userProfile || {})])
+  const byDim = useMemo(() => getNewsByDimension(), [])
+  const allNews = useMemo(() => newsLianboUpdates.map(n => enrichNewsForPersona(n, personaKey || 'worker', userProfile)), [personaKey, JSON.stringify(userProfile || {})])
+
+  // 周报摘要统计
+  const weeklyStats = useMemo(() => {
+    const total = newsLianboUpdates.length
+    const利好 = newsLianboUpdates.filter(n => n.sentiment === '利好').length
+    const latest = newsLianboUpdates[0]
+    return { total, 利好, 利好Pct: Math.round(利好 / total * 100), latestDate: latest?.date, latestTitle: latest?.title?.slice(0, 30) }
+  }, [])
+
+  const displayItems = activeTab === 'foryou' ? forYou : selDim ? (byDim.find(g => g.dim === selDim)?.items || []) : allNews.slice(0, 12)
 
   return (
-    <div className="xwlb-panel">
-      <div className="xwlb-header" onClick={() => setExpanded(!expanded)}>
-        <span className="xwlb-title">📺 新闻联播·政策速递</span>
-        <span className="xwlb-count">{newsLianboUpdates.length}条 · {newsLianboUpdates[0]?.date}~{newsLianboUpdates[newsLianboUpdates.length-1]?.date}</span>
-        <span className="xwlb-toggle">{expanded ? '收起 ▲' : '展开 ▼'}</span>
+    <div className="lianbo-dashboard">
+      {/* 周报摘要卡片 */}
+      <div className="lbd-weekly-brief">
+        <div className="lbd-brief-left">
+          <span className="lbd-brief-icon">📺</span>
+          <div className="lbd-brief-text">
+            <span className="lbd-brief-title">联播解读 · 政策速递</span>
+            <span className="lbd-brief-sub">近30天 {weeklyStats.total} 条政策动态 · {weeklyStats.利好Pct}%利好 · 最新 {weeklyStats.latestDate}</span>
+          </div>
+        </div>
+        <div className="lbd-brief-right">
+          <div className="lbd-brief-stat"><span className="lbd-bs-num green">{weeklyStats.利好}</span><span>利好</span></div>
+          <div className="lbd-brief-stat"><span className="lbd-bs-num">{weeklyStats.total - weeklyStats.利好}</span><span>中性/利空</span></div>
+        </div>
       </div>
-      <div className="xwlb-filters">
-        <button className={`xwlb-filter ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>全部</button>
-        {dims.map(d => (
-          <button key={d} className={`xwlb-filter ${filter === d ? 'active' : ''}`} onClick={() => setFilter(d)}>
-            {dimMeta[d]?.icon} {dimMeta[d]?.label}
-          </button>
-        ))}
+
+      {/* 标签切换 */}
+      <div className="lbd-tabs">
+        <button className={`lbd-tab ${activeTab === 'foryou' ? 'active' : ''}`} onClick={() => { setActiveTab('foryou'); setSelDim(null) }}>
+          🎯 与你相关
+        </button>
+        <button className={`lbd-tab ${activeTab === 'dims' ? 'active' : ''}`} onClick={() => setActiveTab('dims')}>
+          📂 按维度浏览
+        </button>
+        <button className={`lbd-tab ${activeTab === 'all' ? 'active' : ''}`} onClick={() => { setActiveTab('all'); setSelDim(null) }}>
+          📋 全部动态
+        </button>
       </div>
-      <div className="xwlb-list">
-        {shown.map((item, i) => (
-          <div key={i} className="xwlb-item">
-            <div className="xwlb-item-top">
-              <span className="xwlb-date">{item.date}</span>
-              <span className="xwlb-dim-tag">{dimMeta[item.dim]?.icon} {dimMeta[item.dim]?.label}</span>
-              <span className="xwlb-sent" style={{ color: sentColor[item.sentiment] }}>{item.sentiment}</span>
+
+      {/* 维度子标签 */}
+      {activeTab === 'dims' && (
+        <div className="lbd-dim-tabs">
+          {byDim.map(g => (
+            <button key={g.dim} className={`lbd-dim-tab ${selDim === g.dim ? 'active' : ''}`} onClick={() => setSelDim(g.dim)}>
+              {g.icon} {g.label}<span className="lbd-dim-count">{g.items.length}</span>
+              <span className="lbd-dim-sent" style={{color:sentColor['利好']}}>+{g['利好']||0}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* 新闻列表 */}
+      <div className="lbd-news-list">
+        {displayItems.map((item, i) => (
+          <div key={i} className={`lbd-news-card ${expandedId === i ? 'expanded' : ''}`} onClick={() => setExpandedId(expandedId === i ? null : i)}>
+            <div className="lbd-nc-header">
+              <span className="lbd-nc-date">{item.date}</span>
+              {lastVisit && item.date > lastVisit && <span className="new-badge">NEW</span>}
+              <span className="lbd-nc-dim" onClick={e => { e.stopPropagation(); onNavigateDim?.(item.dim) }}>
+                {item.dimIcon || dimMeta[item.dim]?.icon} {dimMeta[item.dim]?.label}
+              </span>
+              <span className="lbd-nc-sent" style={{ background: sentBg[item.sentiment], color: sentColor[item.sentiment] }}>
+                {item.sentiment}
+              </span>
+              <span className={`lbd-nc-impact lbd-impact-${item.impact || '中'}`}>
+                {item.impact === '高' ? '⚡高影响' : '📡关注'}
+              </span>
+              {item.personalMatch === 'high' && <span className="lbd-nc-personal">🎯 与你相关</span>}
+              {item.personalMatch === 'medium' && <span className="lbd-nc-personal lbd-personal-med">📡 可关注</span>}
             </div>
-            <div className="xwlb-item-title">{item.title}</div>
+            <div className="lbd-nc-title">{item.title}</div>
             {item.data?.length > 0 && (
-              <div className="xwlb-data">{item.data.map((d, j) => <span key={j} className="xwlb-datum">{d}</span>)}</div>
+              <div className="lbd-nc-data">{item.data.map((d, j) => <span key={j} className="lbd-nc-datum">{d}</span>)}</div>
             )}
-            <div className="xwlb-summary">{item.summary}</div>
+            {expandedId === i && (
+              <div className="lbd-nc-expanded">
+                <p className="lbd-nc-summary">{item.summary}</p>
+                {item.relevance && (
+                  <div className="lbd-nc-relevance">
+                    <span className="lbd-nc-rel-label">👤 相关人群：</span>
+                    {item.relevance.map(r => {
+                      const p = personas.find(pp => pp.key === r)
+                      return <span key={r} className="lbd-nc-rel-tag">{p?.icon} {p?.label || r}</span>
+                    })}
+                  </div>
+                )}
+                {item.actionHint && (
+                  <div className="lbd-nc-action">
+                    <span className="lbd-nc-action-icon">💡</span>
+                    <span className="lbd-nc-action-text">{item.actionHint}</span>
+                  </div>
+                )}
+                <span className="lbd-nc-source">📡 {item.source}</span>
+              </div>
+            )}
           </div>
         ))}
       </div>
-      {!expanded && filtered.length > 6 && (
-        <button className="xwlb-more" onClick={() => setExpanded(true)}>查看全部 {filtered.length} 条 ▼</button>
-      )}
+
+      {/* 底部提示 */}
+      <div className="lbd-footer">
+        <span>📡 数据来源：新闻联播官方摘要 · 每日更新</span>
+        <span>💡 点击卡片展开操作建议</span>
+      </div>
     </div>
   )
 }
@@ -3110,6 +3340,12 @@ function App() {
   const [personaKey, setPersonaKey] = useState(() => localStorage.getItem('persona') || null)
   const [regionKey, setRegionKey] = useState(() => localStorage.getItem('region') || 'national')
   const [showModal, setShowModal] = useState(!personaKey && !sessionStorage.getItem('skipped'))
+  // “上次访问后新增”标记系统
+  const [lastVisit] = useState(() => localStorage.getItem('last_visit') || null)
+  useEffect(() => {
+    const timer = setTimeout(() => { localStorage.setItem('last_visit', new Date().toISOString().slice(0, 10)) }, 3000)
+    return () => clearTimeout(timer)
+  }, [])
   const [showShare, setShowShare] = useState(false)
   const [expandedRationale, setExpandedRationale] = useState(null)
   const [userCity, setUserCity] = useState(() => localStorage.getItem('user_city') || '')
@@ -3172,6 +3408,30 @@ function App() {
   // 新用户检测：访问次数<=2时折叠首页次要区块
   const visitCount = (() => { try { return JSON.parse(localStorage.getItem('visit_stats') || '{}').count || 1 } catch { return 1 } })()
   const [overviewCollapsed, setOverviewCollapsed] = useState(visitCount <= 2)
+  // ═══ 认知破局增强状态 ═══
+  const [showHealthCheck, setShowHealthCheck] = useState(false)
+  const [showQuiz, setShowQuiz] = useState(false)
+  const [showUgcModal, setShowUgcModal] = useState(false)
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
+  const [showWeeklyDigest, setShowWeeklyDigest] = useState(false)
+  const [testimonialScenario, setTestimonialScenario] = useState('all')
+  const [testimonialStage, setTestimonialStage] = useState('all')
+  const [expandedTestimonial, setExpandedTestimonial] = useState(null)
+  const [selectedScenario, setSelectedScenario] = useState(null)
+  const [quizAnswers, setQuizAnswers] = useState({})
+  const [quizSubmitted, setQuizSubmitted] = useState(false)
+  const [digestData, setDigestData] = useState(null)
+  const [notifCount, setNotifCount] = useState(() => getNotificationCount())
+  const [showNotifPanel, setShowNotifPanel] = useState(false)
+  const [showValueDashboard, setShowValueDashboard] = useState(false)
+  const [showWrongBook, setShowWrongBook] = useState(false)
+  const [showDailyChallenge, setShowDailyChallenge] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
+  const [showTimeMachine, setShowTimeMachine] = useState(false)
+  const [showDecisionProject, setShowDecisionProject] = useState(false)
+  const [celebration, setCelebration] = useState(null)
+  const [compassAutoExpand, setCompassAutoExpand] = useState(false) // 体检后自动展开风向标
+  const [showProfileCenter, setShowProfileCenter] = useState(false) // 画像中心
   useEffect(() => { if (!moreOpen) return; const handler = () => setMoreOpen(false); document.addEventListener('click', handler); return () => document.removeEventListener('click', handler); }, [moreOpen])
   // Track visits
   useEffect(() => {
@@ -3180,6 +3440,16 @@ function App() {
       const today = new Date().toISOString().slice(0, 10)
       if (stats.lastDate !== today) { stats.count = (stats.count || 0) + 1; stats.lastDate = today; localStorage.setItem("visit_stats", JSON.stringify(stats)) }
     } catch {}
+    // 记录访问次数（用于成就系统）
+    try { const v=parseInt(localStorage.getItem('total_visits')||'0'); localStorage.setItem('total_visits',String(v+1)) } catch {}
+  }, [])
+
+  // 里程碑庆祝检测
+  useEffect(() => {
+    const milestones = checkMilestones()
+    if (milestones.length>0) { setCelebration(milestones[0]); setTimeout(()=>setCelebration(null),4000) }
+    // 记录增长快照
+    try { recordGrowthSnapshot() } catch {}
   }, [])
 
   // Region-aware data
@@ -3220,9 +3490,9 @@ function App() {
       const dims = sortedDims.map(d => ({ key: d.key, idx: calcDimensionScore(d) }))
       return getScoreTrend(dims).trends || {}
     } catch { return {} }
-  }, [])
+  }, [sortedDims])
   // 所有维度分数（用于基准对比）
-  const allDimScores = useMemo(() => sortedDims.map(d => ({ key: d.key, idx: calcDimensionScore(d) })), [])
+  const allDimScores = useMemo(() => sortedDims.map(d => ({ key: d.key, idx: calcDimensionScore(d) })), [sortedDims])
 
   const handlePersonaSelect = (key) => {
     setPersonaKey(key); localStorage.setItem('persona', key); setShowModal(false)
@@ -3249,7 +3519,7 @@ function App() {
         localStorage.setItem('region', autoRegion)
       }
       setCityDetected(true)
-    })
+    }).catch(() => { setCityDetected(true) })
     return () => { cancelled = true }
   }, []) // eslint-disable-line
 
@@ -3298,12 +3568,14 @@ function App() {
             </div>
           )}
           <div className="header-actions">
+            <button className={`icon-btn notif-btn ${notifCount>0?'has-notif':''}`} onClick={()=>{setShowNotifPanel(!showNotifPanel);if(!showNotifPanel)setNotifCount(getNotificationCount())}} title="通知">🔔{notifCount>0 && <span className="notif-badge">{notifCount}</span>}</button>
             <button className="icon-btn" onClick={() => setDarkMode(!darkMode)} title={darkMode ? '切换亮色模式' : '切换暗黑模式'}>{darkMode ? '☀️' : '🌙'}</button>
             {currentPersona && (
               <button className="persona-chip" onClick={() => { localStorage.removeItem('persona'); setPersonaKey(null); setShowModal(true); sessionStorage.removeItem('skipped') }}>
                 {currentPersona.icon} {currentPersona.label}<span className="chip-x">✕</span>
               </button>
             )}
+            <button className="icon-btn profile-btn" onClick={() => setShowProfileCenter(true)} title="我的画像">👤</button>
             {!isPremium() && <button className="upgrade-btn" onClick={() => setShowUpgrade(true)}>⭐</button>}
             <button className="icon-btn" onClick={() => setShowReport(true)} title="下载报告">📄</button>
             <button className="icon-btn" onClick={() => setShowShare(true)} title="分享">📤</button>
@@ -3340,7 +3612,33 @@ function App() {
               </div>
             </section>
 
+            {/* 老用户欢迎回来横幅 */}
+            {lastVisit && (() => {
+              const newNews = newsLianboUpdates.filter(n => n.date > lastVisit).length
+              const newWeekly = weeklyUpdates.filter(u => u.date > lastVisit).length
+              const totalNew = newNews + newWeekly
+              if (totalNew === 0) return null
+              return (
+                <div className="welcome-back-banner">
+                  <div className="wb-left">
+                    <span className="wb-icon">👋</span>
+                    <div className="wb-text">
+                      <span className="wb-title">欢迎回来！</span>
+                      <span className="wb-sub">上次访问后有 <b>{totalNew}</b> 条新动态（新闻{newNews}条 + 周报{newWeekly}条）</span>
+                    </div>
+                  </div>
+                  <button className="wb-btn" onClick={() => { setActiveTab('news'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
+                    查看新动态 →
+                  </button>
+                </div>
+              )
+            })()}
+
             <PolicyStatsBar totalPolicies={totalPolicies} />
+            
+            {/* P0: 价值感知横幅 — 用户进入首页立即感知价值 */}
+            <ValuePerceptionBanner personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'}
+              onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}} />
             
             <SmartRecommendations 
               personaKey={personaKey} 
@@ -3351,12 +3649,32 @@ function App() {
               onNavigateDim={(key) => { setSelectedDim(key); setTabKey(k=>k+1) }}
             />
 
+            <DiscoveryPanel personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'}
+              regionKey={regionKey} userCity={userCity} userAge={userAge}
+              onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}}
+              onNavigateDim={(key)=>{setSelectedDim(key);setTabKey(k=>k+1)}}
+              setShowHealthCheck={setShowHealthCheck} setShowQuiz={setShowQuiz} setShowWeeklyDigest={setShowWeeklyDigest} />
+
+            <DailyChallengeCard challenge={(()=>{try{return getDailyChallenge(personaKey,getUserProfile())}catch{return null}})()}
+            personaKey={personaKey}
+            onStart={()=>setShowDailyChallenge(true)} />
+
+            <PolicyCompassPanel personaKey={personaKey} userProfile={(()=>{try{return getUserProfile()||{}}catch(e){return {}}})()}
+              autoExpand={compassAutoExpand} onAutoExpandHandled={()=>setCompassAutoExpand(false)}
+              onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}} />
+
             <div className={overviewCollapsed ? 'section-collapsed' : 'section-expanded'}>
               <RegionSelector value={regionKey} onChange={handleRegionChange} />
 
               <RegionCompare personaKey={personaKey} currentRegion={regionKey} onSelectRegion={handleRegionChange} />
 
-              <TestimonialWall />
+              <EnhancedTestimonialWall personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'}
+                userCity={userCity} userAge={userAge}
+                testimonialScenario={testimonialScenario} testimonialStage={testimonialStage}
+                expandedTestimonial={expandedTestimonial}
+                setExpandedTestimonial={setExpandedTestimonial}
+                setTestimonialScenario={setTestimonialScenario}
+                setTestimonialStage={setTestimonialStage} />
 
               <section className="overview-dims">
                 <h2 className="section-title">政策影响力总览</h2>
@@ -3460,7 +3778,7 @@ function App() {
         {/* ════════ DIMENSIONS — 列表浏览模式 ════════ */}
         {activeTab === 'dimensions' && (
           <div className="dimensions-page">
-            <WeeklyUpdateBar />
+            <WeeklyUpdateBar lastVisit={lastVisit} />
             <div className="dim-pills">
               {currentDims.map(dim => (
                 <button key={dim.key}
@@ -3555,7 +3873,13 @@ function App() {
               )
             })}
 
-            <NewsLianboPanel />
+            <NewsLianboPanel personaKey={personaKey} stageKey={lifeStage} userProfile={(()=>{try{return getUserProfile()||{}}catch(e){return {}}})()} onNavigateDim={(key)=>{setSelectedDim(key);setTabKey(k=>k+1)}} lastVisit={lastVisit} />
+            <CrossLinkGraph />
+            <ScenarioPreEnact onNavigateDim={(key)=>{setSelectedDim(key);setTabKey(k=>k+1)}} />
+            <div className="overview-sub-actions">
+              <button className="dp-action-btn" onClick={()=>setShowUgcModal(true)}>📝 分享我的发现</button>
+              <button className="dp-action-btn" onClick={()=>setShowSubscriptionModal(true)}>🔔 政策订阅</button>
+            </div>
             <LegislativeOutlook regionKey={regionKey} personaKey={personaKey} />
           </div>
         )}
@@ -3890,7 +4214,16 @@ function App() {
         {/* ════════ DASHBOARD ════════ */}
         {activeTab === 'dashboard' && (
           <>
+          <UserCabinet personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'}
+            onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}}
+            onNavigateDim={(key)=>{setSelectedDim(key);setTabKey(k=>k+1)}}
+            setShowHealthCheck={setShowHealthCheck} setShowQuiz={setShowQuiz}
+            setShowWrongBook={setShowWrongBook} setShowDailyChallenge={setShowDailyChallenge}
+            setShowShareModal={setShowShareModal} setShowTimeMachine={setShowTimeMachine}
+            setShowDecisionProject={setShowDecisionProject} />
+          <AchievementWall personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'} />
           <Dashboard personaKey={personaKey} regionKey={regionKey} bookmarks={bookmarks}
+            userCity={userCity} userRegion={regions.find(r=>r.key===regionKey)}
             onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} />
             <InvitePanel />
             <PremiumTeaser />
@@ -3925,6 +4258,35 @@ function App() {
           </div>
         )}
       </main>
+
+      {/* 认知破局弹窗 */}
+      <PolicyHealthCheck show={showHealthCheck} onClose={(hadResult)=>{setShowHealthCheck(false);if(hadResult)setCompassAutoExpand(true)}}
+        personaKey={personaKey} userAge={userAge} userCity={userCity} />
+      <SelfTestQuiz show={showQuiz} onClose={()=>{setShowQuiz(false);setQuizAnswers({});setQuizSubmitted(false)}} />
+      {showWeeklyDigest && (
+        <div className="modal-overlay" onClick={()=>setShowWeeklyDigest(false)}>
+          <div className="modal-content" onClick={e=>e.stopPropagation()}>
+            <WeeklyDigestCard compact={false} data={digestData||getWeeklyDigest({personaKey:personaKey||'worker',stageKey:lifeRadar.personaStageMap[personaKey]||'mid_career',regionKey,userProfile:getUserProfile()})}
+              onClose={()=>setShowWeeklyDigest(false)} />
+          </div>
+        </div>
+      )}
+      <SubscriptionModal show={showSubscriptionModal} onClose={()=>setShowSubscriptionModal(false)} />
+      <UgcSubmitModal show={showUgcModal} onClose={()=>setShowUgcModal(false)} />
+      <NotificationPanel notifCount={notifCount} show={showNotifPanel}
+        onClose={()=>setShowNotifPanel(false)}
+        personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'} regionKey={regionKey}
+        onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}} />
+      <DailyChallengeModal show={showDailyChallenge} onClose={()=>setShowDailyChallenge(false)}
+        challenge={(()=>{try{return getDailyChallenge(personaKey,getUserProfile())}catch{return null}})()}
+        personaKey={personaKey} userProfile={(()=>{try{return getUserProfile()||{}}catch{return {}}})()}
+        setNotifCount={setNotifCount} />
+      <WrongAnswerBook show={showWrongBook} onClose={()=>setShowWrongBook(false)} />
+      <ShareReportModal show={showShareModal} onClose={()=>setShowShareModal(false)} />
+      <TimeMachinePanel show={showTimeMachine} onClose={()=>setShowTimeMachine(false)} />
+      <DecisionProjectPanel show={showDecisionProject} onClose={()=>setShowDecisionProject(false)} onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1)}} />
+      <CelebrationToast celebration={celebration} onClose={()=>setCelebration(null)} />
+      <ProfileCenterModal show={showProfileCenter} onClose={()=>setShowProfileCenter(false)} personaKey={personaKey} />
 
       <footer className="footer">
         <TrustBadges />
@@ -4032,6 +4394,1461 @@ function PrivacyModal({ onClose }) {
   )
 }
 
+/* ═══════ P0/P1/P2 用户价值深化组件 ═══════ */
+
+/* P0: 价值闭环面板 */
+function ValueClosedLoop() {
+  const rv = useMemo(() => getRealizedValue(), [])
+  return (
+    <div className="value-closed-loop">
+      <h3 className="vcl-title">💎 你的决策价值</h3>
+      <div className="vcl-main">
+        <div className="vcl-ring">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border-subtle)" strokeWidth="8" />
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#27ae60" strokeWidth="8" strokeDasharray={`${rv.realizedPct*2.64} 264`} strokeLinecap="round" transform="rotate(-90 50 50)" />
+          </svg>
+          <div className="vcl-ring-text"><span>{rv.realizedPct}%</span><span>已实现</span></div>
+        </div>
+        <div className="vcl-data">
+          <div className="vcl-row"><span className="vcl-label">已落地价值</span><span className="vcl-val vcl-green">¥{rv.realizedMax.toLocaleString()}</span></div>
+          <div className="vcl-row"><span className="vcl-label">潜在可挖掘</span><span className="vcl-val vcl-blue">¥{rv.potentialMax.toLocaleString()}</span></div>
+          <div className="vcl-row"><span className="vcl-label">已完成行动</span><span className="vcl-val">{rv.doneCount}/{rv.doneCount+rv.pendingCount}</span></div>
+        </div>
+      </div>
+      {rv.actionItems.length>0 && (
+        <div className="vcl-actions">
+          <span className="vcl-subtitle">🏆 已落地的行动</span>
+          {rv.actionItems.map((a,i)=>(<div key={i} className="vcl-action-item"><span>{i+1}.</span><span>{a.title||a.id}</span><span className="vcl-cost">¥{a.cost.min.toLocaleString()}-{a.cost.max.toLocaleString()}</span></div>))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* P0: 成就墙 */
+function AchievementWall({ personaKey, stageKey }) {
+  const stats = useMemo(() => getUserStats(), [])
+  const result = useMemo(() => checkAndAwardAchievements(stats), [stats])
+  const achievements = result.all
+  const newAwards = result.new
+  return (
+    <div className="achievement-wall">
+      <h3 className="aw-title">🏅 成就徽章</h3>
+      {newAwards.length>0 && (
+        <div className="aw-new-banner">
+          🎉 新获得：{newAwards.map(a=>a.icon+a.label).join('、')}
+        </div>
+      )}
+      <div className="aw-grid">
+        {achievementDefs.map(def => {
+          const earned = achievements.find(a=>a.id===def.id)
+          return (
+            <div key={def.id} className={`aw-badge ${earned?'aw-earned':'aw-locked'}`} title={earned?`获得于 ${earned.awardedAt?.slice(0,10)}`:'尚未解锁'}>
+              <span className="aw-icon">{def.icon}</span>
+              <span className="aw-label">{def.label}</span>
+              <span className="aw-desc">{def.desc}</span>
+            </div>
+          )
+        })}
+      </div>
+      <div className="aw-count">{achievements.length}/{achievementDefs.length} 已解锁</div>
+    </div>
+  )
+}
+
+/* P0: 关键时刻提醒条 */
+function UrgencyBanner() {
+  const items = useMemo(() => getUrgencyItems(), [])
+  if (items.length===0) return null
+  return (
+    <div className="urgency-banner">
+      <div className="ub-header">⏰ 关键时刻提醒</div>
+      <div className="ub-scroll">
+        {items.map((item,i) => (
+          <div key={i} className={`ub-item ub-${item.severity}`}>
+            <span className="ub-days">{item.daysLeft}天{item.severity==='critical'?'⚠️':item.severity==='high'?'⚡':''}</span>
+            <span className="ub-title">{item.title}</span>
+            <span className="ub-type">{item.type==='deadline'?'截止':'立法'}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* P1: 增长曲线 */
+function GrowthChart() {
+  const history = useMemo(() => getGrowthHistory(), [])
+  if (history.length<2) return null
+  const maxVal = Math.max(...history.map(h=>h.tierPct), 1)
+  const pts = history.map((h,i)=>({x:(i/(Math.max(history.length-1,1)))*100,y:100-(h.tierPct/maxVal)*100,v:h.tierPct}))
+  const path = pts.map((p,i)=>`${i===0?'M':'L'}${p.x} ${p.y}`).join(' ')
+  return (
+    <div className="growth-chart">
+      <h4 className="gc-title">📈 政策感知力趋势</h4>
+      <div className="gc-container">
+        <svg width="100%" height="80" viewBox="0 0 100 80" preserveAspectRatio="none">
+          <path d={path} fill="none" stroke="var(--p-500)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          {pts.filter((_,i)=>i===0||i===pts.length-1).map((p,i)=>(<circle key={i} cx={p.x} cy={p.y} r="2.5" fill="var(--p-500)" />))}
+        </svg>
+        <div className="gc-labels">
+          <span>{history[0]?.date?.slice(5)||''}</span>
+          <span className="gc-curr">{pts[pts.length-1]?.v||0}分</span>
+          <span>{history[history.length-1]?.date?.slice(5)||''}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* P1: 分享卡片 */
+function ShareReportModal({ show, onClose }) {
+  const report = useMemo(() => getShareReport(), [show])
+  const [copied, setCopied] = useState(false)
+  if (!show) return null
+  const shareText = `🧭 我的策查查政策感知力报告\n段位：${report.tier.label}\n感知力：${report.tierPct}分\n已发现价值：¥${report.realizedMax.toLocaleString()}\n已完成行动：${report.actionsDone}项\n成就：${report.totalAchievements}个\n连续打卡：${report.streak}天`
+  const handleCopy = () => { navigator.clipboard.writeText(shareText).then(()=>{setCopied(true);markShared();setTimeout(()=>setCopied(false),2000)}).catch(()=>{}) }
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content share-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <h3>📤 分享你的政策感知力</h3>
+        <div className="share-card">
+          <div className="sc-header">🧭 策查查 · 政策感知力报告</div>
+          <div className="sc-body">
+            <div className="sc-tier">{report.tier.icon} {report.tier.label} · {report.tierPct}分</div>
+            <div className="sc-value">已发现价值 <strong>¥{report.realizedMax.toLocaleString()}</strong>（{report.realizedLabel}）</div>
+            <div className="sc-stats">
+              <span>🔥 连续{report.streak}天</span>
+              <span>✅ {report.actionsDone}项行动</span>
+              <span>🏅 {report.totalAchievements}个成就</span>
+            </div>
+            {report.achievements.length>0 && <div className="sc-badges">{report.achievements.map((a,i)=><span key={i} className="sc-badge" title={a.desc}>{a.icon}{a.label}</span>)}</div>}
+          </div>
+          <div className="sc-footer">{report.date}</div>
+        </div>
+        <button className="btn-primary" onClick={handleCopy} style={{width:'100%',marginTop:12}}>{copied?'✅ 已复制！':'📋 复制分享文字'}</button>
+      </div>
+    </div>
+  )
+}
+
+/* P2: 决策项目管理 */
+function DecisionProjectPanel({ show, onClose, onSwitchTab, onNavigateDim }) {
+  const [projects, setProjects] = useState(()=>getDecisionProjects())
+  const [newName, setNewName] = useState('')
+  const [newGoal, setNewGoal] = useState('')
+  const [adding, setAdding] = useState(false)
+  const dimIcons = {housing:'🏠',employment:'💼',education:'🎓',elderly:'👴',finance:'💰',industry:'🏭'}
+  if (!show) return null
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content dp-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <h3>📋 我的决策项目</h3>
+        {projects.length===0 && !adding && (
+          <div className="dp-empty">
+            <p>还没有决策项目。创建一个来追踪你的人生重大决策吧！</p>
+            <button className="btn-primary" onClick={()=>setAdding(true)}>+ 创建决策项目</button>
+          </div>
+        )}
+        {adding && (
+          <div className="dp-add-form">
+            <input className="dp-input" value={newName} onChange={e=>setNewName(e.target.value)} placeholder="项目名称，如：北京购房" />
+            <input className="dp-input" value={newGoal} onChange={e=>setNewGoal(e.target.value)} placeholder="目标，如：2026年底前完成落户+购房" />
+            <div className="dp-add-btns">
+              <button className="btn-secondary" onClick={()=>{setAdding(false);setNewName('');setNewGoal('')}}>取消</button>
+              <button className="btn-primary" disabled={!newName} onClick={()=>{createDecisionProject(newName,newGoal,['housing']);setProjects(getDecisionProjects());setAdding(false);setNewName('');setNewGoal('');checkAndAwardAchievements(getUserStats())}}>创建</button>
+            </div>
+          </div>
+        )}
+        <div className="dp-list">
+          {projects.map(p=>(
+            <div key={p.id} className="dp-project">
+              <div className="dpp-header">
+                <span className="dpp-name">{p.name}</span>
+                <span className={`dpp-status dpp-${p.status}`}>{p.status==='active'?'进行中':p.status==='done'?'已完成':'暂停'}</span>
+                <button className="dpp-del" onClick={()=>{deleteDecisionProject(p.id);setProjects(getDecisionProjects())}}>🗑</button>
+              </div>
+              {p.goal && <p className="dpp-goal">🎯 {p.goal}</p>}
+              <div className="dpp-progress-bar"><div className="dpp-progress-fill" style={{width:p.progress+'%'}} /></div>
+              <span className="dpp-progress-text">{p.progress}%</span>
+              <div className="dpp-actions-row">
+                <button className="btn-sm btn-secondary" onClick={()=>{updateDecisionProject(p.id,{status:p.status==='active'?'done':'active'});setProjects(getDecisionProjects())}}>
+                  {p.status==='active'?'标记完成':'重新激活'}</button>
+              </div>
+              <span className="dpp-date">创建于 {p.createdAt?.slice(0,10)}</span>
+            </div>
+          ))}
+        </div>
+        {projects.length>0 && !adding && <button className="btn-secondary" onClick={()=>setAdding(true)} style={{marginTop:8,width:'100%'}}>+ 新建项目</button>}
+      </div>
+    </div>
+  )
+}
+
+/* P2: 时间机器面板 */
+function TimeMachinePanel({ show, onClose }) {
+  const scenarios = useMemo(()=>getTimeMachineScenarios(), [])
+  const [selected, setSelected] = useState(null)
+  const [results, setResults] = useState({})
+  if (!show) return null
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content tm-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <h3>⏳ 政策时间机器</h3>
+        <p className="tm-intro">看看如果早一点行动，你能省下多少</p>
+        <div className="tm-grid">
+          {scenarios.map(s=>{
+            const result = results[s.id]
+            return (
+              <div key={s.id} className={`tm-card ${selected===s.id?'tm-expanded':''}`}
+                onClick={()=>{
+                  if(selected!==s.id){setSelected(s.id);const r=s.calc();setResults({...results,[s.id]:r})}
+                  else setSelected(null)
+                }}>
+                <div className="tm-card-hd">
+                  <span className="tm-icon">{s.icon}</span>
+                  <span className="tm-title">{s.title}</span>
+                </div>
+                {selected===s.id && result && (
+                  <div className="tm-result">
+                    <span className="tm-cost">💸 机会成本约</span>
+                    <span className="tm-amount">¥{result.totalSaved.toLocaleString()}</span>
+                    <span className="tm-detail">{result.detail}</span>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+        <p className="tm-footer">💡 种一棵树最好的时间是十年前，其次是现在</p>
+      </div>
+    </div>
+  )
+}
+
+/* 庆祝浮层 */
+function CelebrationToast({ celebration, onClose }) {
+  if (!celebration) return null
+  return (
+    <div className="celebration-toast" onClick={onClose}>
+      <span className="celeb-icon">{celebration.icon}</span>
+      <span className="celeb-msg">{celebration.msg}</span>
+    </div>
+  )
+}
+
+/* ═══════ 用户粘性增强组件 ═══════ */
+
+/* 通知面板 */
+function NotificationPanel({ notifCount, show, onClose, personaKey, stageKey, regionKey, onSwitchTab }) {
+  const alerts = useMemo(() => getPolicyAlerts(), [])
+  const subs = useMemo(() => getPolicySubscriptions(), [])
+  const todayDone = getTodayChallengeDone()
+  if (!show) return null
+  return (
+    <div className="notif-panel">
+      <div className="notif-header"><span>🔔 通知中心</span><button className="notif-close" onClick={onClose}>✕</button></div>
+      <div className="notif-body">
+        {!todayDone && <div className="notif-item notif-challenge" onClick={()=>{onClose();onSwitchTab?.('overview')}}>
+          <span className="notif-dot" />📝 今日政策挑战尚未完成 <span className="notif-arrow">→</span></div>}
+        {subs.length>0 && <div className="notif-item" onClick={()=>{onClose();onSwitchTab?.('dimensions')}}>
+          <span className="notif-dot notif-blue" />🔔 已订阅{subs.length}项政策 <span className="notif-arrow">→</span></div>}
+        {alerts.map((a,i) => (
+          <div key={i} className="notif-item" onClick={()=>{onClose();onSwitchTab?.('dimensions')}}>
+            <span className="notif-dot notif-orange" />{a.title} · {a.status} <span className="notif-arrow">→</span></div>
+        ))}
+        {notifCount===0 && <div className="notif-empty">暂无新通知</div>}
+      </div>
+    </div>
+  )
+}
+
+/* 每日政策挑战 */
+function DailyChallengeCard({ challenge, personaKey, onStart }) {
+  const done = getTodayChallengeDone()
+  const streak = getStreak()
+  const modeIcons = { impact:'🎯', forecast:'🔮', connect:'🔗' }
+  const modeLabels = { impact:'个人关联', forecast:'趋势预判', connect:'连接生活' }
+  if (done) {
+    return (
+      <div className="daily-challenge done">
+        <span className="dc-icon">✅</span>
+        <div className="dc-body"><span className="dc-title">今日洞察已完成</span><span className="dc-sub">明天继续！连续打卡 {streak} 天 🔥</span></div>
+      </div>
+    )
+  }
+  if (!challenge) return null
+  return (
+    <div className="daily-challenge" onClick={onStart}>
+      <span className="dc-icon">{modeIcons[challenge.mode] || '📰'}</span>
+      <div className="dc-body">
+        <span className="dc-title">每日洞察 · {modeLabels[challenge.mode] || '政策'}</span>
+        <span className="dc-sub">{challenge.title.slice(0, 32)}{challenge.title.length>32?'…':''}</span>
+        {challenge.mode==='impact' && challenge.personalMatch !== undefined && (
+          <span className={`dc-match ${challenge.personalMatch?'match-yes':'match-no'}`}>
+            {challenge.personalMatch?'✅ 与你高度相关':'🔍 了解也有价值'}
+          </span>
+        )}
+        <span className="dc-streak">🔥 连续 {streak} 天</span>
+      </div>
+      <span className="dc-go">去看看 →</span>
+    </div>
+  )
+}
+
+/* 每日洞察挑战弹窗 v2 */
+function DailyChallengeModal({ show, onClose, challenge, personaKey, userProfile, setNotifCount }) {
+  const [selected, setSelected] = useState(null)
+  const [result, setResult] = useState(null)
+  const [votes, setVotes] = useState(null)
+  const [expandedAngle, setExpandedAngle] = useState(null)
+  const [expandedStep, setExpandedStep] = useState(0)
+  if (!show || !challenge) return null
+
+  const profile = userProfile || {}
+  const mode = challenge.mode
+
+  // ── impact 提交 ──
+  const handleImpactSubmit = () => {
+    submitDailyChallenge(challenge.id, 0, true)
+    updateUserTier(1, 1)
+    setResult({ type:'impact' })
+    setNotifCount?.(getNotificationCount())
+  }
+
+  // ── forecast 提交 ──
+  const handleForecastSubmit = () => {
+    if (selected===null) return
+    const updated = submitInsightVote(challenge.id, selected)
+    setVotes(updated)
+    submitDailyChallenge(challenge.id, 0, true)
+    updateUserTier(1, 1)
+    setResult({ type:'forecast', selected })
+    setNotifCount?.(getNotificationCount())
+  }
+
+  // ── connect 提交 ──
+  const handleConnectSubmit = () => {
+    submitDailyChallenge(challenge.id, 0, true)
+    updateUserTier(1, 1)
+    setResult({ type:'connect' })
+    setNotifCount?.(getNotificationCount())
+  }
+
+  const voteData = votes || challenge.votes
+  const maxVote = voteData ? Math.max(voteData.A||0, voteData.B||0, voteData.C||0, voteData.D||0) : 1
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content dc-modal-v2" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+
+        {!result ? (
+          <>
+            {/* ═══ 提问页 ═══ */}
+            <div className="dcv-mode-tag">
+              {mode==='impact' && '🎯 个人关联'}
+              {mode==='forecast' && '🔮 趋势预判'}
+              {mode==='connect' && '🔗 连接生活'}
+            </div>
+            <h3 className="dcv-title">{challenge.title}</h3>
+            <p className="dcv-hook">{challenge.hook}</p>
+
+            {/* impact 模式 */}
+            {mode === 'impact' && (
+              <>
+                <div className={`dcv-impact-match ${challenge.personalMatch ? 'match-yes' : 'match-else'}`}>
+                  <span className="dcv-im-icon">{challenge.personalMatch ? '✅' : '💡'}</span>
+                  <span>{challenge.personalReason}</span>
+                </div>
+                {challenge.personalCalc && (
+                  <div className="dcv-impact-calc">
+                    <span className="dcv-ic-label">预估影响</span>
+                    <span className="dcv-ic-val">¥{challenge.personalCalc.save?.toLocaleString?.() || challenge.personalCalc.save} {challenge.personalCalc.unit}</span>
+                  </div>
+                )}
+                <button className="btn-primary" onClick={handleImpactSubmit} style={{width:'100%',marginTop:16}}>
+                  已了解，打卡完成
+                </button>
+              </>
+            )}
+
+            {/* forecast 模式 */}
+            {mode === 'forecast' && (
+              <>
+                <p className="dcv-prompt">你怎么看？选择你的判断（无标准答案）</p>
+                <div className="dcv-options">
+                  {challenge.options.map(opt => (
+                    <label key={opt.key} className={`dcv-option ${selected===opt.key?'selected':''}`}
+                      onClick={()=>{setSelected(opt.key); setExpandedAngle(opt.key===expandedAngle?null:opt.key)}}>
+                      <span className="dcv-radio">{selected===opt.key?'●':'○'}</span>
+                      <div className="dcv-opt-body">
+                        <span className="dcv-opt-label">{opt.label}</span>
+                        <span className="dcv-opt-sectors">{opt.sectors} {opt.indicator}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+                {expandedAngle && (()=>{
+                  const opt = challenge.options.find(o=>o.key===expandedAngle)
+                  return opt ? <div className="dcv-angle"><span className="dcv-angle-label">📝 分析视角</span><p>{opt.angle}</p></div> : null
+                })()}
+                <button className="btn-primary" disabled={selected===null} onClick={handleForecastSubmit} style={{width:'100%',marginTop:12}}>
+                  提交我的判断
+                </button>
+              </>
+            )}
+
+            {/* connect 模式 */}
+            {mode === 'connect' && (
+              <>
+                <p className="dcv-prompt">跟着这条影响链，一步步看清对你意味着什么</p>
+                <div className="dcv-chain">
+                  {challenge.exploreSteps?.map((step, si) => (
+                    <div key={si} className={`dcv-chain-step ${expandedStep>=si?'expanded':''}`}
+                      onClick={()=>setExpandedStep(expandedStep>=si?si-1:si)}>
+                      <div className="dcv-cs-header">
+                        <span className="dcv-cs-num">{si+1}</span>
+                        <span className="dcv-cs-label">{step.label}</span>
+                        <span className="dcv-cs-arrow">{expandedStep>=si?'▾':'▸'}</span>
+                      </div>
+                      {expandedStep >= si && <p className="dcv-cs-detail">{step.detail}</p>}
+                    </div>
+                  ))}
+                </div>
+                <button className="btn-primary" onClick={handleConnectSubmit} style={{width:'100%',marginTop:12}}>
+                  懂了，打卡完成
+                </button>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            {/* ═══ 结果页 ═══ */}
+            <div className="dcv-result-banner correct">🎉 今日洞察完成！</div>
+
+            {result.type === 'forecast' && voteData && (
+              <div className="dcv-vote-result">
+                <p className="dcv-vr-title">社群判断分布</p>
+                <div className="dcv-vr-bars">
+                  {challenge.options.map(opt => {
+                    const count = voteData[opt.key] || 0
+                    const pct = voteData.total > 0 ? Math.round(count/voteData.total*100) : 0
+                    const isUser = voteData.userVote === opt.key
+                    return (
+                      <div key={opt.key} className={`dcv-vr-bar ${isUser?'is-user':''}`}>
+                        <span className="dcv-vrb-label">{opt.key}. {opt.label.slice(0,10)}{opt.label.length>10?'…':''}</span>
+                        <div className="dcv-vrb-track"><div className="dcv-vrb-fill" style={{width:`${pct}%`}}>{pct>0 && <span>{pct}%</span>}</div></div>
+                        {isUser && <span className="dcv-vrb-you">你</span>}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 个人连接 */}
+            {challenge.personalConnect && (
+              <div className="dcv-connect-box">
+                <span className="dcv-cb-label">📌 跟你有什么关系</span>
+                <p>{challenge.personalConnect}</p>
+              </div>
+            )}
+            {mode === 'impact' && challenge.personalCalc && (
+              <div className="dcv-connect-box">
+                <span className="dcv-cb-label">💰 预估影响</span>
+                <p className="dcv-cb-val">¥{challenge.personalCalc.save?.toLocaleString?.() || challenge.personalCalc.save} {challenge.personalCalc.unit}</p>
+              </div>
+            )}
+
+            <div className="dcv-streak-info">🔥 连续打卡 <strong>{getStreak()}</strong> 天</div>
+            <button className="btn-primary" onClick={onClose} style={{width:'100%',marginTop:8}}>明天继续</button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ═══ 政策风向标 v2 — 全画像影响评估 ═══ */
+function PolicyCompassPanel({ personaKey, userProfile, onSwitchTab, autoExpand, onAutoExpandHandled }) {
+  const [expanded, setExpanded] = useState(false)
+  useEffect(() => {
+    if (autoExpand) { setExpanded(true); onAutoExpandHandled?.() }
+  }, [autoExpand])
+  const compass = useMemo(() => {
+    try { return getPolicyCompass(personaKey, userProfile) } catch { return null }
+  }, [personaKey, JSON.stringify(userProfile || {})])
+  if (!compass || !compass.signals.length) return null
+
+  const urgencyIcons = { immediate:'🔴', soon:'🟡', watch:'🔵' }
+  const urgencyLabels = { immediate:'立即', soon:'尽快', watch:'关注' }
+  const summary = compass.impactSummary
+  const hasFinancial = summary.totalMin > 0
+
+  return (
+    <div className="policy-compass">
+      <div className="pc-header" onClick={()=>setExpanded(!expanded)}>
+        <span className="pc-header-icon">🧭</span>
+        <div className="pc-header-text">
+          <span className="pc-header-title">政策风向标 · 个人影响评估</span>
+          <span className="pc-header-sub">
+            {compass.matchedSignals}条信号匹配 · {compass.domains.length}个决策域
+            {hasFinancial && <span className="pc-header-badge">影响约 ¥{(summary.totalMin/10000).toFixed(1)}-{(summary.totalMax/10000).toFixed(1)}万</span>}
+          </span>
+        </div>
+        <span className="pc-header-arrow">{expanded?'▾':'▸'}</span>
+      </div>
+      {expanded && (
+        <div className="pc-body">
+          {/* 影响汇总仪表盘 */}
+          <div className="pc-summary-dash">
+            <div className="pcsd-item pcsd-total">
+              <span className="pcsd-label">预估综合影响</span>
+              <span className="pcsd-val">{hasFinancial?`¥${(summary.totalMin/10000).toFixed(1)}-${(summary.totalMax/10000).toFixed(1)}万`:'待评估'}</span>
+            </div>
+            <div className="pcsd-item pcsd-urgent">
+              <span className="pcsd-label">需立即处理</span>
+              <span className="pcsd-val">{summary.highCount}项</span>
+            </div>
+            <div className="pcsd-item pcsd-soon">
+              <span className="pcsd-label">近期关注</span>
+              <span className="pcsd-val">{summary.soonCount}项</span>
+            </div>
+          </div>
+          {/* 决策域快速导航 */}
+          <div className="pc-domains">
+            {compass.domains.map(d => (
+              <span key={d.key} className="pc-domain-chip" title={`${d.label}：${d.count}条信号`}>
+                {d.icon} {d.label}×{d.count}
+              </span>
+            ))}
+          </div>
+          {/* 信号三层展示 */}
+          <div className="pc-signals">
+            {compass.signals.map(s => (
+              <div key={s.id} className={`pc-signal pc-sig-${s.urgency}`}>
+                {/* Layer 0: 元信息 */}
+                <div className="pcs-meta">
+                  <span className="pcs-domain-tag">{domainMeta[s.domain]?.icon} {domainMeta[s.domain]?.label}</span>
+                  <span className={`pcs-urgency-tag pcs-urg-${s.urgency}`}>{urgencyIcons[s.urgency]} {urgencyLabels[s.urgency]}</span>
+                  <span className={`pcs-conf-tag ${s.confidence}`}>{s.confidence==='high'?'高确定性':'参考'}</span>
+                  {s._financial?.min>0 && <span className="pcs-cost-tag">影响 ¥{s._financial.min.toLocaleString()}+</span>}
+                </div>
+                {/* Layer 1: 政策变化 */}
+                <div className="pcs-layer pcs-layer-change">
+                  <span className="pcs-layer-label">📋 政策变化</span>
+                  <p>{s.change}</p>
+                </div>
+                {/* Layer 2: 对你意味着什么 */}
+                <div className="pcs-layer pcs-layer-impact">
+                  <span className="pcs-layer-label">💡 {s._score>=70?'对你有显著影响':s._score>=40?'与你相关':'值得了解'}</span>
+                  <p>{s.impactText}</p>
+                  {s._financial?.min>0 && (
+                    <div className="pcs-impact-estimate">
+                      <span>💰 预估影响：¥{s._financial.min.toLocaleString()}-{s._financial.max.toLocaleString()} {s._financial.unit}</span>
+                    </div>
+                  )}
+                </div>
+                {/* Layer 3: 同类人怎么看 + 行动建议 */}
+                {s.peerInsight && (
+                  <div className="pcs-layer pcs-layer-peer">
+                    <span className="pcs-layer-label">👥 同类人洞察</span>
+                    <p>{s.peerInsight}</p>
+                  </div>
+                )}
+                <div className="pcs-layer pcs-layer-action">
+                  <span className="pcs-layer-label">→ 你的行动建议</span>
+                  <p>{s.actionText}</p>
+                  <button className="pcs-create-project" onClick={(e)=>{e.stopPropagation();createDecisionProject(s.change.slice(0,30),s.actionText,[s.domain]);}}>📋 加入决策项目</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* 优先行动清单 — 从风向标中提取3条最紧急信号 */
+function PriorityActionList({ personaKey }) {
+  const userProfile = useMemo(() => { try { return getUserProfile() } catch { return {} } }, [])
+  const compass = useMemo(() => {
+    try { return getPolicyCompass(personaKey, userProfile) } catch { return null }
+  }, [personaKey, JSON.stringify(userProfile || {})])
+  if (!compass || !compass.signals.length) return null
+
+  const top3 = compass.signals.filter(s => s.urgency === 'immediate' || s.urgency === 'soon').slice(0, 3)
+  if (!top3.length) return null
+
+  const urgencyIcons = { immediate:'🔴', soon:'🟡' }
+  const urgencyLabels = { immediate:'立即', soon:'尽快' }
+  const totalMin = top3.reduce((sum, s) => sum + (s._financial?.min || 0), 0)
+  const totalMax = top3.reduce((sum, s) => sum + (s._financial?.max || 0), 0)
+
+  return (
+    <div className="cabinet-priority">
+      <div className="cpr-header">
+        <span className="cpr-title">⚡ 优先行动清单</span>
+        {totalMin > 0 && <span className="cpr-total">影响约 ¥{(totalMin/10000).toFixed(1)}-{(totalMax/10000).toFixed(1)}万</span>}
+      </div>
+      <div className="cpr-list">
+        {top3.map((s, i) => (
+          <div key={s.id} className={`cpr-item cpr-${s.urgency}`}>
+            <span className="cpr-rank">{i + 1}</span>
+            <span className="cpr-domain">{domainMeta[s.domain]?.icon}</span>
+            <div className="cpr-body">
+              <div className="cpr-action-text">{s.actionText.length > 60 ? s.actionText.slice(0, 60) + '...' : s.actionText}</div>
+              <div className="cpr-meta-row">
+                <span className={`cpr-urgency ${s.urgency}`}>{urgencyIcons[s.urgency]} {urgencyLabels[s.urgency]}</span>
+                {s._financial?.min > 0 && <span className="cpr-impact">💰 ¥{s._financial.min.toLocaleString()}+</span>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* 用户驾驶舱（Dashboard增强） */
+function UserCabinet({ personaKey, stageKey, onSwitchTab, onNavigateDim, setShowHealthCheck, setShowQuiz, setShowWrongBook, setShowDailyChallenge, setShowShareModal, setShowTimeMachine, setShowDecisionProject }) {
+  const summary = useMemo(() => getValueSummary(personaKey||'', stageKey||''), [personaKey, stageKey])
+  const tierData = useMemo(() => getUserTier(), [])
+  const wrongs = useMemo(() => getWrongAnswers().filter(w=>!w.mastered), [])
+  const tools = useMemo(() => getToolResults().slice(0, 5), [])
+  const streak = getStreak()
+  const todayDone = getTodayChallengeDone()
+
+  return (
+    <div className="user-cabinet">
+      <h3 className="cabinet-title">🧭 我的决策驾驶舱</h3>
+      
+      {/* 收益总览卡 */}
+      <div className="cabinet-value-card">
+        <div className="cvc-header">
+          <span className="cvc-icon">💰</span>
+          <span className="cvc-title">策查查为你发现的潜在价值</span>
+        </div>
+        <div className="cvc-amount">
+          <span className="cvc-min">¥{summary.potentialMin.toLocaleString()}</span>
+          <span className="cvc-sep">-</span>
+          <span className="cvc-max">¥{summary.potentialMax.toLocaleString()}</span>
+          <span className="cvc-label">（{summary.potentialLabel}）</span>
+        </div>
+        <div className="cvc-stats">
+          <div className="cvc-stat" onClick={()=>onSwitchTab?.('radar')}><span className="cvc-num">{summary.doneActions}</span><span className="cvc-desc">已完成行动</span></div>
+          <div className="cvc-stat"><span className="cvc-num">{summary.actionPct}%</span><span className="cvc-desc">行动完成率</span></div>
+          <div className="cvc-stat" onClick={()=>setShowWrongBook?.(true)}><span className="cvc-num">{wrongs.length}</span><span className="cvc-desc">待复习错题</span></div>
+        </div>
+      </div>
+
+      {/* P0: 价值闭环 */}
+      <ValueClosedLoop />
+
+      {/* P0: 关键时刻提醒 */}
+      <UrgencyBanner />
+
+      {/* 段位+打卡+新功能入口 */}
+      <div className="cabinet-row">
+        <div className="cabinet-tier-card" onClick={()=>setShowQuiz?.(true)}>
+          <span className="ctc-label">政策感知力 · 点击自测</span>
+          <span className="ctc-tier">{summary.tier?.label || '🟤 小白'}</span>
+          <span className="ctc-pct">{summary.tierPct}分</span>
+          <div className="ctc-sub">题库33题 · 多模式</div>
+        </div>
+        <div className="cabinet-streak-card" onClick={()=>setShowDailyChallenge?.(true)}>
+          <span className="csc-label">连续打卡</span>
+          <span className="csc-days">{streak}天</span>
+          <span className={`csc-status ${todayDone?'done':'pending'}`}>{todayDone?'今日已完成':'去答题'}</span>
+        </div>
+        <div className="cabinet-action-card" onClick={()=>setShowHealthCheck?.(true)}>
+          <span className="cac-label">政策体检</span>
+          <span className="cac-icon">🔍</span>
+          <span className="cac-status">{summary.doneActions>0?'已体检':'去体检'}</span>
+        </div>
+      </div>
+
+      {/* 优先行动清单 — 政策风向标精华 */}
+      <PriorityActionList personaKey={personaKey} />
+
+      {/* 知识树 */}
+      <div className="knowledge-tree">
+        <h4>🌳 你的政策知识树</h4>
+        <div className="kt-dims">
+          {[{key:'housing',icon:'🏠',label:'房产'},{key:'employment',icon:'💼',label:'就业'},{key:'education',icon:'🎓',label:'教育'},{key:'elderly',icon:'👴',label:'养老'},{key:'finance',icon:'💰',label:'金融'},{key:'industry',icon:'🏭',label:'产业'}].map(d => {
+            const dimWrongs = wrongs.filter(w => w.dim === d.key)
+            const score = Math.max(0, 100 - dimWrongs.length * 20)
+            const barColor = score >= 80 ? '#27ae60' : score >= 50 ? '#e67e22' : '#e74c3c'
+            return (
+              <div key={d.key} className="kt-item" onClick={()=>{onNavigateDim?.(d.key);onSwitchTab?.('dimensions')}}>
+                <span className="kt-icon">{d.icon}</span>
+                <span className="kt-label">{d.label}</span>
+                <div className="kt-bar"><div className="kt-fill" style={{width:score+'%',background:barColor}} /></div>
+                <span className="kt-pct">{score}%</span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* P1: 增长曲线 */}
+      <GrowthChart />
+
+      {/* 最近工具结果 */}
+      {tools.length>0 && (
+        <div className="cabinet-tools">
+          <h4>🧮 最近计算结果</h4>
+          <div className="ct-list">
+            {tools.map(t => (
+              <div key={t.id} className="ct-item" onClick={()=>onSwitchTab?.('tools')}>
+                <span className="ct-tool-name">{t.tool}</span>
+                <span className="ct-tool-date">{t.savedAt?.slice(0,10)}</span>
+                <span className="ct-arrow">→</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* P1: 分享 + P2: 时间机器 & 决策项目 */}
+      <div className="cabinet-extra-actions">
+        <button className="btn-secondary" onClick={()=>{setShowShareModal?.(true);markShared();checkAndAwardAchievements(getUserStats())}} style={{flex:1}}>📤 分享我的报告</button>
+        <button className="btn-secondary" onClick={()=>setShowTimeMachine?.(true)} style={{flex:1}}>⏳ 时间机器</button>
+        <button className="btn-secondary" onClick={()=>{setShowDecisionProject?.(true)}} style={{flex:1}}>📋 决策项目</button>
+      </div>
+
+      {summary.doneActions===0 && summary.potentialMax===0 && (
+        <div className="cabinet-empty">
+          <p>📡 还没有数据，开始探索吧！</p>
+          <button className="btn-primary" onClick={()=>onSwitchTab?.('radar')}>开启人生雷达</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* 错题本弹窗 */
+function WrongAnswerBook({ show, onClose }) {
+  const [wrongs, setWrongs] = useState(() => getWrongAnswers())
+  const active = wrongs.filter(w => !w.mastered)
+  const mastered = wrongs.filter(w => w.mastered)
+  if (!show) return null
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content wrong-book-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <h3>📝 我的错题本</h3>
+        <div className="wb-stats"><span>🟡 待复习 {active.length} 题</span><span>✅ 已掌握 {mastered.length} 题</span></div>
+        {active.length===0 ? (
+          <div className="wb-empty">🎉 没有待复习的错题！</div>
+        ) : (
+          <div className="wb-list">
+            {active.map(w => (
+              <div key={w.id} className="wb-item">
+                <p className="wb-question">{w.question}</p>
+                <div className="wb-answers">
+                  <span className="wb-wrong">你的答案：{w.userAnswer}</span>
+                  <span className="wb-correct">正确答案：{w.correctAnswer}</span>
+                </div>
+                <p className="wb-exp">{w.explanation}</p>
+                <button className="btn-secondary btn-sm" onClick={()=>{markWrongAnswerMastered(w.id);setWrongs(getWrongAnswers())}}>我已掌握</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ 价值感知横幅 — 首页高可见度 ═══════ */
+function ValuePerceptionBanner({ personaKey, stageKey, onSwitchTab }) {
+  const summary = useMemo(() => {
+    try { return getValueSummary(personaKey || 'worker', stageKey || 'mid_career') } catch { return null }
+  }, [personaKey, stageKey])
+  const tier = summary?.tier
+  const quizStats = useMemo(() => { try { return getQuizStats() } catch { return null } }, [])
+  if (!summary || summary.potentialMax <= 0) return null
+  return (
+    <div className="value-banner" onClick={() => onSwitchTab?.('dashboard')}>
+      <div className="vb-left">
+        <span className="vb-icon">💎</span>
+        <div className="vb-text">
+          <span className="vb-title">策查查为你发现的潜在价值</span>
+          <span className="vb-amount">¥{summary.potentialMax.toLocaleString()}</span>
+          {summary.potentialMin > 0 && <span className="vb-range">（¥{summary.potentialMin.toLocaleString()} ~ ¥{summary.potentialMax.toLocaleString()}）</span>}
+        </div>
+      </div>
+      <div className="vb-right">
+        {tier && <span className="vb-tier" style={{color: tier.color}}>{tier.icon} {tier.label} · {summary.tierPct}分</span>}
+        {quizStats && quizStats.done > 0 && <span className="vb-quiz">📝 已测{quizStats.done}/33题 · 正确率{quizStats.accuracy}%</span>}
+        <span className="vb-arrow">查看驾驶舱 →</span>
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ 认知破局增强组件 ═══════ */
+
+/* P0: 首页「你可能不知道」区块 */
+function DiscoveryPanel({ personaKey, stageKey, regionKey, userCity, userAge, onSwitchTab, onNavigateDim, setShowHealthCheck, setShowQuiz, setShowWeeklyDigest }) {
+  const [tab, setTab] = useState('blindspots')
+  const digest = useMemo(() => getWeeklyDigest({ personaKey: personaKey||'worker', stageKey: stageKey||'mid_career', regionKey, viewHistory:[], userProfile: getUserProfile() }), [personaKey, stageKey, regionKey])
+  const peers = useMemo(() => getPeerDiscoveries({ personaKey: personaKey||'worker', stageKey: stageKey||'mid_career' }), [personaKey, stageKey])
+  return (
+    <section className="discovery-panel" id="discovery-panel">
+      <div className="dp-header">
+        <h2 className="section-title">🎯 你可能不知道</h2>
+        <div className="dp-tabs">
+          <button className={`dp-tab ${tab==='blindspots'?'active':''}`} onClick={()=>setTab('blindspots')}>⚡盲区</button>
+          <button className={`dp-tab ${tab==='peers'?'active':''}`} onClick={()=>setTab('peers')}>👥同路人</button>
+          <button className={`dp-tab ${tab==='outlook'?'active':''}`} onClick={()=>setTab('outlook')}>📡前瞻</button>
+          <button className={`dp-tab ${tab==='digest'?'active':''}`} onClick={()=>setTab('digest')}>📬周报</button>
+        </div>
+      </div>
+      <div className="dp-body">
+        {tab==='blindspots' && (
+          <div className="dp-list">
+            {digest.signals.map((s,i) => {
+              const cost = s.cost
+              return (
+                <div key={i} className="dp-item" onClick={()=>onSwitchTab?.('radar')}>
+                  <span className={s.type==='blindspot'?'dp-icon-warn':'dp-icon-opp'}>{s.type==='blindspot'?'⚠️':'✅'}</span>
+                  <div className="dp-item-body">
+                    <span className="dp-item-title">{s.title}</span>
+                    <span className="dp-item-desc">{s.desc?.slice(0,40)}{s.desc?.length>40?'…':''}</span>
+                    {cost && <span className="dp-item-cost">💸 影响 <strong>¥{cost.min.toLocaleString()}-{cost.max.toLocaleString()}</strong> {cost.unit}</span>}
+                  </div>
+                  <span className="dp-arrow">→</span>
+                </div>
+              )
+            })}
+            <button className="dp-more-btn" onClick={()=>onSwitchTab?.('radar')}>查看完整盲区清单 →</button>
+          </div>
+        )}
+        {tab==='peers' && (
+          <div className="dp-list">
+            {peers.map((p,i) => (
+              <div key={i} className="dp-item" onClick={()=>onSwitchTab?.('radar')}>
+                <span className="dp-pct-badge">{p.pct}%</span>
+                <div className="dp-item-body"><span className="dp-item-title">{p.title}</span><span className="dp-item-desc">{p.desc}</span></div>
+                <span className="dp-arrow">→</span>
+              </div>
+            ))}
+            <button className="dp-more-btn" onClick={()=>onSwitchTab?.('radar')}>发现更多同路人关注 →</button>
+          </div>
+        )}
+        {tab==='outlook' && (
+          <div className="dp-list">
+            {digest.outlook.map((o,i) => (
+              <div key={i} className="dp-item" onClick={()=>onNavigateDim?.(o.dim||'housing')}>
+                <span className="dp-outlook-status" style={{background:o.status?.includes('审议')?'#e67e22':'#1a237e'}}>{o.status||'前瞻'}</span>
+                <div className="dp-item-body"><span className="dp-item-title">{o.name||'政策前瞻'}</span><span className="dp-item-desc">{o.note?.slice(0,40)}{o.note?.length>40?'…':''}</span></div>
+                <span className="dp-arrow">→</span>
+              </div>
+            ))}
+            <button className="dp-more-btn" onClick={()=>onSwitchTab?.('dimensions')}>查看完整立法前瞻 →</button>
+          </div>
+        )}
+        {tab==='digest' && <WeeklyDigestCard data={digest} />}
+      </div>
+      <div className="dp-actions">
+        <button className="dp-action-btn" onClick={()=>setShowHealthCheck?.(true)}>🔍 政策体检</button>
+        <button className="dp-action-btn" onClick={()=>setShowQuiz?.(true)}>🎮 盲区自测 · 33题多模式</button>
+        <button className="dp-action-btn" onClick={()=>setShowWeeklyDigest?.(true)}>📬 本周简报</button>
+      </div>
+    </section>
+  )
+}
+
+/* P0: 增强案例墙（动态筛选+详情+社交证明） */
+function EnhancedTestimonialWall({ personaKey, stageKey, userCity, userAge, testimonialScenario, testimonialStage, expandedTestimonial, setExpandedTestimonial, setTestimonialScenario, setTestimonialStage }) {
+  const filtered = useMemo(() => {
+    let list = [...enhancedTestimonials]
+    if (testimonialScenario!=='all') list = list.filter(t=>t.scenario===testimonialScenario)
+    if (testimonialStage!=='all') list = list.filter(t=>t.stage===testimonialStage)
+    if (testimonialScenario==='all'&&testimonialStage==='all'&&(personaKey||stageKey)) {
+      const similar = getSimilarTestimonials({ personaKey: personaKey||'worker', age:userAge, city:userCity, stageKey: stageKey||'mid_career' })
+      const ids = similar.map(s=>s.id)
+      list.sort((a,b)=>{const ai=ids.indexOf(a.id),bi=ids.indexOf(b.id);if(ai>=0&&bi>=0)return ai-bi;if(ai>=0)return -1;if(bi>=0)return 1;return 0})
+    }
+    return list
+  }, [testimonialScenario,testimonialStage,personaKey,stageKey,userCity,userAge])
+  const scenarios = [...new Set(enhancedTestimonials.map(t=>t.scenario))]
+  const stages = [...new Set(enhancedTestimonials.map(t=>t.stage))]
+  const stageLabels = { young_single:'单身青年', newlywed:'新婚备孕', young_parent:'学龄家长', mid_career:'事业上升期', approaching_retire:'临近退休', entrepreneur:'创业者' }
+  return (
+    <div className="enhanced-testimonial-wall">
+      <h3 className="tw-title">💡 他们正在用策查查做决策</h3>
+      <div className="tw-filters">
+        <select className="tw-filter" value={testimonialScenario} onChange={e=>setTestimonialScenario(e.target.value)}>
+          <option value="all">全部场景</option>{scenarios.map(s=><option key={s} value={s}>{s}</option>)}
+        </select>
+        <select className="tw-filter" value={testimonialStage} onChange={e=>setTestimonialStage(e.target.value)}>
+          <option value="all">全部阶段</option>{stages.map(s=><option key={s} value={s}>{stageLabels[s]||s}</option>)}
+        </select>
+      </div>
+      <div className="tw-scroll">
+        {filtered.map(t => (
+          <div key={t.id} className={`tw-card ${expandedTestimonial===t.id?'tw-card-expanded':''}`}
+            onClick={()=>setExpandedTestimonial(expandedTestimonial===t.id?null:t.id)}>
+            <div className="tw-header">
+              <span className="tw-icon">{t.icon}</span>
+              <div><span className="tw-role">{t.role}</span><span className="tw-age">{t.age}岁</span><span className="tw-city">{t.city}</span></div>
+              <div className="tw-social"><span title="点赞">👍 {t.likes}</span><span title="有用">✅ {t.helpful}</span></div>
+            </div>
+            <p className="tw-quote">"{t.quote}"</p>
+            <div className="tw-result"><span className="tw-result-label">决策收益</span><span className="tw-result-val">{t.result}</span></div>
+            {expandedTestimonial===t.id && (
+              <div className="tw-detail">
+                <div className="tw-path"><span className="tw-path-label">决策路径</span><span className="tw-path-text">{t.path}</span></div>
+                <div className="tw-tags"><span className="tw-tag">{t.scenario}</span><span className="tw-tag">{stageLabels[t.stage]||t.stage}</span><span className="tw-tag">{t.city}</span></div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {filtered.length===0 && <div className="tw-empty">当前筛选条件下没有案例</div>}
+    </div>
+  )
+}
+
+/* P1: 交互式传导图谱 */
+function CrossLinkGraph() {
+  const [selected, setSelected] = useState(null)
+  const dimI = { housing:'🏠', employment:'💼', education:'🎓', elderly:'👴', finance:'💰', industry:'🏭' }
+  return (
+    <div className="cross-link-graph">
+      <h3>🕸️ 政策传导图谱</h3>
+      <p className="clg-desc">点击查看政策之间的联动链条</p>
+      <div className="clg-grid">
+        {crossLinks.map((l,i) => (
+          <div key={i} className={`clg-item ${selected===i?'clg-selected':''}`} onClick={()=>setSelected(selected===i?null:i)}>
+            <div className="clg-flow"><span className="clg-from"><span className="clg-dim-icon">{dimI[l.dim1]||'📋'}</span>{l.from}</span><span className="clg-arrow">→</span><span className="clg-to">{l.to}<span className="clg-dim-icon">{dimI[l.dim2]||'📋'}</span></span></div>
+            {selected===i && <div className="clg-note">💡 {l.note}</div>}
+            <div className="clg-dims"><span className="clg-dim-tag">{l.dim1}</span><span className="clg-connector">+</span><span className="clg-dim-tag">{l.dim2}</span></div>
+          </div>
+        ))}
+      </div>
+      <div className="clg-legend">共{crossLinks.length}条传导链 · 点击展开详情</div>
+    </div>
+  )
+}
+
+/* P2: 政策预演场景 */
+function ScenarioPreEnact({ onNavigateDim }) {
+  const [expanded, setExpanded] = useState(null)
+  const impactColor = v => v==='利好'?'var(--success)':v==='利空'?'var(--error)':'var(--text-muted)'
+  return (
+    <div className="scenario-pre-enact">
+      <h3>🔮 政策预演 · 以你的决策场景</h3>
+      <p className="spe-desc">选择你正在考虑的事，看相关政策的综合影响</p>
+      <div className="spe-grid">
+        {scenarioGroups.map(sg => (
+          <div key={sg.key} className={`spe-card ${expanded===sg.key?'spe-expanded':''}`}
+            onClick={()=>setExpanded(expanded===sg.key?null:sg.key)}>
+            <div className="spe-card-header">
+              <span className="spe-icon">{sg.icon}</span>
+              <div className="spe-card-info"><span className="spe-label">{sg.label}</span><span className="spe-desc-text">{sg.desc}</span></div>
+              <span className="spe-count">{sg.policies.length}项</span><span className="spe-arrow">{expanded===sg.key?'▲':'▼'}</span>
+            </div>
+            {expanded===sg.key && (
+              <div className="spe-policies">
+                {sg.policies.map((p,pi) => (
+                  <div key={pi} className="spe-policy" onClick={e=>{e.stopPropagation();onNavigateDim?.(sg.dims[0])}}>
+                    <span className="spe-p-name">{p.title}</span>
+                    <span className="spe-p-impact" style={{color:impactColor(p.impact)}}>{p.impact}</span>
+                    <span className="spe-p-note">{p.note}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ═══ 画像中心 — 查看/编辑个人画像 ═══ */
+function ProfileCenterModal({ show, onClose, personaKey }) {
+  const [profile, setProfile] = useState(() => getUserProfile())
+  const [saved, setSaved] = useState(false)
+  if (!show) return null
+  const persona = personas.find(p => p.key === personaKey)
+  const updated = profile.updatedAt ? new Date(profile.updatedAt).toLocaleDateString('zh-CN') : '尚未填写'
+  const dataUsage = [
+    { field: '年龄', uses: ['体检评分', '风向标紧急度', '养老/退休信号'] },
+    { field: '性别', uses: ['退休年龄', '产假/生育津贴', '延迟退休'] },
+    { field: '学历', uses: ['人才落户', '新质生产力适配', '个税税率'] },
+    { field: '城市', uses: ['房价差异', '公积金政策', '保租房'] },
+    { field: '房产', uses: ['LPR影响', '换房退税', '以旧换新'] },
+    { field: '子女', uses: ['教育专业', '婴幼儿照护', '个税扣除'] },
+    { field: '婚姻', uses: ['购房资格', '生育政策', '财产规划'] },
+    { field: '就业', uses: ['灵活就业社保', '创业扶持', '失业保障'] },
+  ]
+  const handleSave = () => {
+    saveUserProfile(profile)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content profile-center-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <h3>👤 我的画像中心</h3>
+        <p className="pc-intro">你的画像数据决定了所有个性化分析的准确度。数据仅存储在本地浏览器。</p>
+
+        {/* 当前身份 */}
+        <div className="pc-persona-row">
+          <span className="pc-persona-label">当前身份</span>
+          <span className="pc-persona-val">{persona ? `${persona.icon} ${persona.label}` : '未选择'}</span>
+        </div>
+
+        {/* 画像表单 */}
+        <div className="pc-form">
+          <div className="pc-form-row">
+            <label className="pc-field"><span>年龄</span><input type="number" value={profile.age||''} onChange={e=>setProfile({...profile,age:+e.target.value})} min={18} max={80} placeholder="如：30" /></label>
+            <label className="pc-field"><span>性别</span>
+              <select value={profile.gender||''} onChange={e=>setProfile({...profile,gender:e.target.value})}>
+                <option value="">请选择</option><option value="男">男</option><option value="女">女</option>
+              </select>
+            </label>
+          </div>
+          <div className="pc-form-row">
+            <label className="pc-field"><span>学历</span>
+              <select value={profile.education||''} onChange={e=>setProfile({...profile,education:e.target.value})}>
+                <option value="">请选择</option><option value="高中及以下">高中及以下</option><option value="大专">大专</option><option value="本科">本科</option><option value="硕士">硕士</option><option value="博士">博士</option>
+              </select>
+            </label>
+            <label className="pc-field"><span>城市</span><input value={profile.city||''} onChange={e=>setProfile({...profile,city:e.target.value})} placeholder="如：上海" /></label>
+          </div>
+          <div className="pc-checks">
+            <label className="pc-check"><input type="checkbox" checked={!!profile.hasHouse} onChange={e=>setProfile({...profile,hasHouse:e.target.checked})} />已有房产</label>
+            <label className="pc-check"><input type="checkbox" checked={!!profile.hasChild} onChange={e=>setProfile({...profile,hasChild:e.target.checked})} />有子女</label>
+            <label className="pc-check"><input type="checkbox" checked={!!profile.isMarried} onChange={e=>setProfile({...profile,isMarried:e.target.checked})} />已婚</label>
+            <label className="pc-check"><input type="checkbox" checked={!!profile.isSelfEmployed} onChange={e=>setProfile({...profile,isSelfEmployed:e.target.checked})} />自由职业/创业</label>
+          </div>
+        </div>
+
+        <button className="btn-primary" onClick={handleSave} style={{width:'100%',marginTop:12}}>{saved?'✅ 已保存':'保存画像'}</button>
+
+        {/* 数据用途透明化 */}
+        <div className="pc-usage">
+          <h4>🔍 你的数据用在哪里？</h4>
+          <div className="pc-usage-grid">
+            {dataUsage.map(d => (
+              <div key={d.field} className="pc-usage-item">
+                <span className="pc-usage-field">{d.field}</span>
+                <span className="pc-usage-uses">{d.uses.join(' · ')}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="pc-footer">
+          <span className="pc-updated">📅 最后更新：{updated}</span>
+          <button className="pc-clear" onClick={()=>{localStorage.removeItem('user_profile');setProfile({});setSaved(false)}}>清除数据</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* P1: 政策体检诊断 */
+function PolicyHealthCheck({ show, onClose, personaKey, userAge, userCity }) {
+  const [form, setForm] = useState({ age:userAge||30, gender:'男', education:'本科', city:userCity||'', personaKey:personaKey||'worker', hasHouse:false, hasChild:false, isMarried:false, isSelfEmployed:false })
+  const [result, setResult] = useState(null)
+  const [filterDim, setFilterDim] = useState('all')
+  if (!show) return null
+  const maxDimScore = Math.max(...(result?.dimScores?.map(d=>d.score) || [0]), 1)
+  const dims = result ? result.dimScores : []
+  const filteredIssues = result ? (filterDim === 'all' ? result.issues : result.issues.filter(i => {
+    const dim = dims.find(d => d.count > 0 && result.issues.filter(x => x.severity).includes(i))
+    return i.id && dims.find(d => d.count > 0 && i.title && d.label && i.title.includes(d.label))
+  }) || result.issues) : []
+  // 更简单的按维度过滤
+  const dimFiltered = !result ? [] : filterDim === 'all' ? result.issues : result.issues.filter(i => {
+    const dimsOfIssues = {}
+    result.dimScores.forEach(d => { dimsOfIssues[d.dim] = d.label })
+    return true // 简化：全部显示，用tab高亮
+  })
+  const displayIssues = result ? result.issues : []
+  const severityCounts = result ? `${result.highCount}高危 ${result.mediumCount}关注 ${result.lowCount}提示` : ''
+  return (
+    <div className="modal-overlay" onClick={()=>onClose(!!result)}>
+      <div className="modal-content health-check-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={()=>onClose(!!result)}>✕</button>
+        {!result ? (
+          <>
+            <h3>🔍 政策体检诊断</h3>
+            <p className="health-intro">填写基本画像，AI 扫描你对政策的认知盲区</p>
+            <div className="health-form">
+              <div className="health-row">
+                <label className="health-field health-field-half"><span>年龄</span><input type="number" value={form.age} onChange={e=>setForm({...form,age:+e.target.value})} min={18} max={80} /></label>
+                <label className="health-field health-field-half"><span>性别</span>
+                  <select value={form.gender} onChange={e=>setForm({...form,gender:e.target.value})}>
+                    <option value="男">男</option><option value="女">女</option>
+                  </select>
+                </label>
+              </div>
+              <div className="health-row">
+                <label className="health-field health-field-half"><span>学历</span>
+                  <select value={form.education} onChange={e=>setForm({...form,education:e.target.value})}>
+                    <option value="高中及以下">高中及以下</option><option value="大专">大专</option><option value="本科">本科</option><option value="硕士">硕士</option><option value="博士">博士</option>
+                  </select>
+                </label>
+                <label className="health-field health-field-half"><span>城市</span><input value={form.city} onChange={e=>setForm({...form,city:e.target.value})} placeholder="如：上海" /></label>
+              </div>
+              <div className="health-checks">
+                <label className="health-check"><input type="checkbox" checked={form.hasHouse} onChange={e=>setForm({...form,hasHouse:e.target.checked})} />已有房产</label>
+                <label className="health-check"><input type="checkbox" checked={form.hasChild} onChange={e=>setForm({...form,hasChild:e.target.checked})} />有子女</label>
+                <label className="health-check"><input type="checkbox" checked={form.isMarried} onChange={e=>setForm({...form,isMarried:e.target.checked})} />已婚</label>
+                <label className="health-check"><input type="checkbox" checked={form.isSelfEmployed} onChange={e=>setForm({...form,isSelfEmployed:e.target.checked})} />自由职业/创业者</label>
+              </div>
+            </div>
+            <button className="btn-primary" onClick={()=>{setResult(getPolicyHealthCheck(form));saveUserProfile({age:form.age,gender:form.gender,education:form.education,city:form.city,hasHouse:form.hasHouse,hasChild:form.hasChild,isMarried:form.isMarried,isSelfEmployed:form.isSelfEmployed})}} style={{marginTop:12,width:'100%'}}>开始体检</button>
+          </>
+        ) : (
+          <>
+            <h3>📊 体检报告</h3>
+            <div className="health-result-header">
+              <div className="health-score-ring">
+                <span className="health-score-num" style={{color:result.tier.color}}>{result.score}</span>
+                <span className="health-score-label">/100 感知力</span>
+                <span className="health-tier" style={{background:result.tier.color}}>{result.tier.icon} {result.tier.label}</span>
+              </div>
+              <div className="health-summary">
+                <span>发现 <strong>{result.totalIssues}</strong> 个政策感知盲区</span>
+                <span className="health-severity-summary">🔴{result.highCount} 高 📒{result.mediumCount} 中 🔵{result.lowCount} 低</span>
+              </div>
+            </div>
+            {/* 分维度评分条 */}
+            <div className="health-dim-bars">
+              {dims.map(d => (
+                <div key={d.dim} className={`health-dim-bar ${d.score < 60 ? 'dim-danger' : d.score < 80 ? 'dim-warn' : 'dim-good'}`}>
+                  <div className="hd-label"><span className="hd-icon">{d.icon}</span><span className="hd-name">{d.label}</span><span className="hd-count">{d.count}条</span></div>
+                  <div className="hd-track"><div className="hd-fill" style={{width:`${d.score}%`,background:d.score<60?'#e74c3c':d.score<80?'#e67e22':'#27ae60'}} /></div>
+                  <span className="hd-score" style={{color:d.score<60?'#e74c3c':d.score<80?'#e67e22':'#27ae60'}}>{d.score}分</span>
+                </div>
+              ))}
+            </div>
+            {/* 问题列表 */}
+            <div className="health-issues">
+              {displayIssues.map(i => (
+                <div key={i.id} className={`health-issue health-issue-${i.severity}`}>
+                  <div className="hi-header"><span className="hi-icon">{i.icon}</span><span className="hi-title">{i.title}</span><span className={`hi-severity ${i.severity}`}>{i.severity==='high'?'🔴高危':i.severity==='medium'?'📒关注':'🔵提示'}</span></div>
+                  <p className="hi-desc">{i.desc}</p>
+                  <div className="hi-cost">💸 可能影响 ¥{i.estimatedBoost.min.toLocaleString()}-{i.estimatedBoost.max.toLocaleString()} {i.estimatedBoost.unit}</div>
+                  <div className="hi-action">→ {i.action}</div>
+                </div>
+              ))}
+            </div>
+            <button className="btn-secondary" onClick={()=>setResult(null)} style={{marginTop:16,width:'100%'}}>重新诊断</button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* P1: 个性化政策周报 */
+function WeeklyDigestCard({ data, onClose, compact }) {
+  if (!data) return null
+  const { signals,peers,outlook,compassSignals,personaLabel,stageLabel } = data
+  if (compact) {
+    return <div className="weekly-digest-compact">📬 你的个性化政策周报（{personaLabel} · {stageLabel}）<span className="wd-hint">发现{signals.length}条盲区+{peers.length}条同路人动态{compassSignals?.length?`+${compassSignals.length}条风向标`:''}</span></div>
+  }
+  const urgencyLabels = { immediate:'🔴立即', soon:'🟡尽快', watch:'🔵关注' }
+  return (
+    <div className="weekly-digest">
+      <div className="wd-header">
+        <span className="wd-icon">📬</span>
+        <div className="wd-header-text"><span className="wd-title">你的个性化政策周报</span><span className="wd-subtitle">{personaLabel} · {stageLabel} · {data.date}</span></div>
+      </div>
+      <div className="wd-section">
+        <h4 className="wd-section-title">⚡ 你可能不知道的信号</h4>
+        {signals.map((s,i) => (
+          <div key={i} className="wd-item"><span className={`wd-badge wd-${s.type}`}>{s.type==='blindspot'?'盲区':'机会'}</span><span className="wd-text">{s.title}</span>{s.cost&&<span className="wd-cost">💰{s.cost.min.toLocaleString()}-{s.cost.max.toLocaleString()}{s.cost.unit}</span>}</div>
+        ))}
+      </div>
+      {compassSignals?.length > 0 && (
+        <div className="wd-section">
+          <h4 className="wd-section-title">🧭 本周风向标 · 与你最相关</h4>
+          {compassSignals.map((s,i) => (
+            <div key={i} className="wd-compass-item">
+              <span className="wd-compass-domain">{s.domainIcon} {s.domainLabel}</span>
+              <span className={`wd-compass-urgency ${s.urgency}`}>{urgencyLabels[s.urgency]||s.urgency}</span>
+              <div className="wd-compass-body">
+                <span className="wd-compass-change">{s.change.length>50?s.change.slice(0,50)+'...':s.change}</span>
+                <span className="wd-compass-action">→ {s.action.length>40?s.action.slice(0,40)+'...':s.action}</span>
+              </div>
+              {s.financial?.min>0 && <span className="wd-compass-cost">💰¥{s.financial.min.toLocaleString()}+</span>}
+            </div>
+          ))}
+        </div>
+      )}
+      {peers.length>0 && <div className="wd-section"><h4 className="wd-section-title">👥 同路人动态</h4>{peers.map((p,i) => <div key={i} className="wd-item"><span className="wd-pct">{p.pct}%</span><span className="wd-text">{p.title}</span></div>)}</div>}
+      <div className="wd-section"><h4 className="wd-section-title">📡 立法前瞻</h4><span>有 <strong>{outlook?.length||0}</strong> 项和你相关的立法项目推进中</span></div>
+      {onClose && <button className="btn-secondary" onClick={onClose} style={{marginTop:8,width:'100%'}}>关闭</button>}
+    </div>
+  )
+}
+
+/* P2: 盲区自测游戏 — 多模式版 */
+function SelfTestQuiz({ show, onClose }) {
+  const [mode, setMode] = useState(null)
+  const [region, setRegion] = useState('beijing')
+  const [questions, setQuestions] = useState([])
+  const [answers, setAnswers] = useState({})
+  const [submitted, setSubmitted] = useState(false)
+  const [currentQ, setCurrentQ] = useState(0)
+  const [historyView, setHistoryView] = useState(false)
+  const quizStats = useMemo(() => { try { return getQuizStats() } catch { return { total:0,done:0,undone:0,accuracy:0,totalAttempts:0 } } }, [show])
+  const quizHistory = useMemo(() => { try { return getQuizHistory() } catch { return [] } }, [show])
+
+  const startQuiz = (m) => {
+    let qs = []
+    if (m === 'daily') qs = getDailyQuizQuestions(3)
+    else if (m === 'full') qs = getFullQuizQuestions(15)
+    else if (m === 'region') qs = getRegionQuizQuestions(region, 5)
+    else qs = getFullQuizQuestions(5)
+    setQuestions(qs)
+    setMode(m)
+    setAnswers({})
+    setSubmitted(false)
+    setCurrentQ(0)
+  }
+
+  const submitQuiz = () => {
+    const objAnswers = {}
+    questions.forEach(q => { objAnswers[q.id] = answers[q.id] ?? -1 })
+    questions.forEach(q => {
+      recordQuizAttempt(q.id, answers[q.id] === q.correct)
+      if (answers[q.id] !== q.correct) {
+        addWrongAnswer(q.question, q.options[answers[q.id] ?? -1] || '未作答', q.options[q.correct], q.explanation, q.dim)
+      }
+    })
+    updateUserTier(scoreSelfTest(objAnswers, questions).score, questions.length)
+    setSubmitted(true)
+  }
+
+  const handleClose = () => { if (mode && !submitted && questions.length>0) { setMode(null); setAnswers({}); setCurrentQ(0) } else { onClose(); setMode(null); setAnswers({}); setSubmitted(false); setCurrentQ(0) } }
+
+  if (!show) return null
+  const result = submitted && questions.length > 0 ? scoreSelfTest(answers, questions) : null
+
+  // 地区选择器
+  const RegionPicker = ({ value, onChange }) => {
+    const regions = [{key:'beijing',label:'北京'},{key:'shanghai',label:'上海'},{key:'shenzhen',label:'深圳'},{key:'guangzhou',label:'广州'}]
+    return (
+      <div className="region-picker" onClick={e=>e.stopPropagation()}>
+        {regions.map(r => <span key={r.key} className={`rp-chip ${value===r.key?'active':''}`} onClick={()=>onChange(r.key)}>{r.label}</span>)}
+      </div>
+    )
+  }
+
+  return (
+    <div className="modal-overlay" onClick={handleClose}>
+      <div className="modal-content quiz-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={handleClose}>✕</button>
+        {!mode ? (<>
+          <h3>🎮 政策盲区自测</h3>
+          <p className="quiz-intro">每日检测政策感知力，发现忽略的政策盲区。题库持续扩充中。</p>
+          {quizStats.totalAttempts > 0 && (
+            <div className="quiz-stats-bar">
+              <div className="qsb-item"><span className="qsb-num">{quizStats.total}</span><span className="qsb-label">题库</span></div>
+              <div className="qsb-item"><span className="qsb-num">{quizStats.done}</span><span className="qsb-label">已做</span></div>
+              <div className="qsb-item"><span className={`qsb-num ${quizStats.undone>0?'qsb-new':''}`}>{quizStats.undone}</span><span className="qsb-label">未做</span></div>
+              <div className="qsb-item"><span className="qsb-num">{quizStats.accuracy}%</span><span className="qsb-label">正确率</span></div>
+            </div>
+          )}
+          <div className="quiz-mode-grid">
+            <div className="quiz-mode-card qmc-daily" onClick={()=>startQuiz('daily')}>
+              <span className="qmc-icon">📅</span><span className="qmc-title">每日3题</span>
+              <span className="qmc-desc">优先错题和新题 · 2分钟搞定</span>
+            </div>
+            <div className="quiz-mode-card qmc-full" onClick={()=>startQuiz('full')}>
+              <span className="qmc-icon">📝</span><span className="qmc-title">完整测试</span>
+              <span className="qmc-desc">15题全面检测 · 5分钟完成</span>
+            </div>
+            <div className="quiz-mode-card qmc-region" onClick={e=>e.stopPropagation()}>
+              <span className="qmc-icon">📍</span><span className="qmc-title">地区专项</span>
+              <span className="qmc-desc">聚焦你关心城市的政策差异</span>
+              <RegionPicker value={region} onChange={setRegion} />
+              <button className="qmc-start-btn" onClick={()=>startQuiz('region')}>开始 →</button>
+            </div>
+            <div className="quiz-mode-card qmc-quick" onClick={()=>startQuiz('quick')}>
+              <span className="qmc-icon">⚡</span><span className="qmc-title">快速5题</span>
+              <span className="qmc-desc">随机5题 · 1分钟速测</span>
+            </div>
+          </div>
+          {quizHistory.length > 0 && (
+            <div className="quiz-history-section">
+              <div className="qhs-header" onClick={()=>setHistoryView(!historyView)}>
+                <span>📋 答题记录（{quizHistory.length}次）</span>
+                <span className="qhs-toggle">{historyView?'收起 ▲':'展开 ▼'}</span>
+              </div>
+              {historyView && (
+                <div className="qhs-list">{quizHistory.slice(-20).reverse().map((h,i) => (
+                  <div key={i} className={`qhs-item ${h.correct?'correct':'wrong'}`}>
+                    <span className="qhs-mark">{h.correct?'✅':'❌'}</span>
+                    <span className="qhs-date">{h.date}</span>
+                  </div>
+                ))}</div>
+              )}
+            </div>
+          )}
+        </>) : (<>
+          <div className="quiz-header-bar">
+            <button className="qh-back" onClick={()=>{setMode(null);setAnswers({});setSubmitted(false);setCurrentQ(0)}}>← 返回</button>
+            <span className="qh-mode-label">{{daily:'每日3题',full:'完整测试',region:'地区专项',quick:'快速5题'}[mode]}</span>
+            <span className="qh-progress">{currentQ+1}/{questions.length}</span>
+          </div>
+          {!submitted ? (<>
+            <div className="quiz-progress-bar"><div className="qpb-fill" style={{width:`${((currentQ+1)/questions.length)*100}%`}} /></div>
+            {questions.map((q,qi) => (
+              <div key={q.id} className={`quiz-question ${currentQ===qi?'':'quiz-hidden'}`}>
+                <div className="qqb-meta">
+                  <span className={`qqb-diff qqb-${q.difficulty||'easy'}`}>{(q.difficulty||'easy')==='easy'?'⭐':q.difficulty==='medium'?'⭐⭐':'⭐⭐⭐'}</span>
+                  {q.region!=='national' && <span className="qqb-tag qqb-region">📍{(q.region==='beijing'?'北京':q.region==='shanghai'?'上海':q.region==='shenzhen'?'深圳':q.region)}</span>}
+                  <span className="qqb-tag qqb-dim">{q.dim==='housing'?'🏠':q.dim==='employment'?'💼':q.dim==='education'?'🎓':q.dim==='elderly'?'👴':q.dim==='finance'?'💰':'🏭'}</span>
+                </div>
+                <p className="qq-text">{q.question}</p>
+                <div className="qq-options">
+                  {q.options.map((opt,oi) => (
+                    <label key={oi} className={`qq-option ${answers[q.id]===oi?'selected':''}`} onClick={()=>setAnswers({...answers,[q.id]:oi})}>
+                      <span className="qq-radio">{answers[q.id]===oi?'●':'○'}</span><span className="qqo-text">{opt}</span>
+                      {answers[q.id]===oi && <span className="qqo-check">✓</span>}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div className="quiz-nav">
+              <button className="btn-secondary" disabled={currentQ===0} onClick={()=>setCurrentQ(Math.max(0,currentQ-1))}>上一题</button>
+              {currentQ<questions.length-1 ? (
+                <button className="btn-primary" disabled={answers[questions[currentQ]?.id]===undefined} onClick={()=>setCurrentQ(currentQ+1)}>下一题</button>
+              ) : (
+                <button className="btn-primary" onClick={submitQuiz}>✅ 提交答案</button>
+              )}
+            </div>
+          </>) : result && (<>
+            <div className="quiz-result">
+              <div className="qr-header-new">
+                <span className="qr-h-icon">{result.pct>=80?'🏆':result.pct>=60?'📚':'💡'}</span>
+                <div>
+                  <span className="qr-h-score" style={{color:result.pct>=80?'#27ae60':result.pct>=60?'#e67e22':'#e74c3c'}}>{result.score}/{result.total}</span>
+                  <span className="qr-h-level">{result.level.icon} {result.level.label}</span>
+                  <span className="qr-h-pct">{result.pct}分</span>
+                </div>
+              </div>
+              {result.missedCount>0 ? (
+                <div className="qr-cost-banner">
+                  <span>💸 答错的盲区可能让你损失 <strong>¥{result.missedCost.min.toLocaleString()}-{result.missedCost.max.toLocaleString()}</strong></span>
+                </div>
+              ) : (
+                <div className="qr-perfect"><span>🎉 全部正确！你是真正的政策达人！</span></div>
+              )}
+              <div className="qr-answers">{questions.map(q => {
+                const isCorrect = answers[q.id] === q.correct
+                return (
+                  <div key={q.id} className={`qr-answer ${isCorrect?'correct':'wrong'}`}>
+                    <div className="qra-head">
+                      <span>{isCorrect?'✅':'❌'}</span>
+                      <span className="qr-a-text">{q.question}</span>
+                    </div>
+                    {!isCorrect && (
+                      <div className="qra-detail">
+                        <span className="qra-yours">你的答案：{q.options[answers[q.id] ?? -1] || '未作答'}</span>
+                        <span className="qra-right">正确：{q.options[q.correct]}</span>
+                        <span className="qra-exp">💡 {q.explanation}</span>
+                        {q.region!=='national' && <span className="qra-region-note">📍 此题为{q.region==='beijing'?'北京':q.region==='shanghai'?'上海':q.region==='shenzhen'?'深圳':q.region}地区政策，其他城市可能不同</span>}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}</div>
+            </div>
+            <div className="quiz-result-actions">
+              <button className="btn-secondary" onClick={()=>{setMode(null);setAnswers({});setSubmitted(false);setCurrentQ(0)}}>← 返回选题</button>
+              <button className="btn-primary" onClick={()=>startQuiz(mode)}>🔄 再做一组新题</button>
+            </div>
+          </>)}
+        </>)}
+      </div>
+    </div>
+  )
+}
+
+/* P2: 政策订阅弹窗 */
+function SubscriptionModal({ show, onClose }) {
+  const [subs, setSubs] = useState(() => getPolicySubscriptions())
+  const items = useMemo(() => { const a=[]; Object.values(legislativeOutlook.outlookByDim||{}).forEach(items=>items.forEach(item=>a.push(item))); return a }, [])
+  if (!show) return null
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content sub-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <h3>🔔 政策变化订阅</h3>
+        <p className="sub-intro">选择你想追踪的政策，有更新时提醒你</p>
+        <div className="sub-list">{items.map((item,i) => (
+          <div key={i} className={`sub-item ${subs.some(s=>s.label===item.name)?'sub-active':''}`}
+            onClick={()=>setSubs(togglePolicySubscription(item.name.replace(/\s/g,'_'),item.name))}>
+            <span className="sub-check">{subs.some(s=>s.label===item.name)?'☑':'☐'}</span>
+            <div className="sub-body"><span className="sub-name">{item.name}</span><span className="sub-status">{item.status}</span></div>
+            <span className="sub-impact" style={{color:item.impact==='利好'?'#27ae60':item.impact==='利空'?'#e74c3c':'#95a5a6'}}>{item.impact}</span>
+          </div>
+        ))}</div>
+        <div style={{marginTop:8,fontSize:12,color:'var(--text-muted)',textAlign:'center'}}>已订阅{subs.length}项政策</div>
+      </div>
+    </div>
+  )
+}
+
+/* P2: UGC案例提交弹窗 */
+function UgcSubmitModal({ show, onClose }) {
+  const [form, setForm] = useState({ role:'', age:'', city:'', quote:'', result:'', dim:'housing', scenario:'购房' })
+  const [submitted, setSubmitted] = useState(false)
+  if (!show) return null
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content ugc-modal" onClick={e=>e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        {!submitted ? (
+          <>
+            <h3>📝 分享你的政策发现</h3>
+            <p className="ugc-intro">你的经验可能帮助到和你有同样处境的人</p>
+            <div className="ugc-form">
+              <label className="ugc-field"><span>身份</span><input value={form.role} onChange={e=>setForm({...form,role:e.target.value})} placeholder="如：深圳程序员" /></label>
+              <label className="ugc-field"><span>年龄</span><input type="number" value={form.age} onChange={e=>setForm({...form,age:e.target.value})} /></label>
+              <label className="ugc-field"><span>城市</span><input value={form.city} onChange={e=>setForm({...form,city:e.target.value})} /></label>
+              <label className="ugc-field"><span>你的发现</span><textarea value={form.quote} onChange={e=>setForm({...form,quote:e.target.value})} rows={3} placeholder="用了策查查发现了…" /></label>
+              <label className="ugc-field"><span>收益结果</span><input value={form.result} onChange={e=>setForm({...form,result:e.target.value})} placeholder="如：节省了5万元" /></label>
+              <div className="ugc-selects">
+                <select value={form.dim} onChange={e=>setForm({...form,dim:e.target.value})}>
+                  <option value="housing">🏠房产</option><option value="employment">💼就业</option><option value="education">🎓教育</option><option value="elderly">👴养老</option><option value="finance">💰金融</option><option value="industry">🏭产业</option></select>
+                <select value={form.scenario} onChange={e=>setForm({...form,scenario:e.target.value})}>
+                  <option value="购房">购房</option><option value="生育">生育</option><option value="教育">教育</option><option value="养老">养老</option><option value="创业">创业</option><option value="就业">就业</option><option value="社保">社保</option></select>
+              </div>
+            </div>
+            <button className="btn-primary" onClick={()=>{submitUserTestimonial(form);setSubmitted(true)}} style={{width:'100%',marginTop:12}} disabled={!form.role||!form.quote}>提交（审核后上墙）</button>
+          </>
+        ) : (
+          <><h3>✅ 提交成功！</h3><p>审核通过后将展示在案例墙中</p><button className="btn-secondary" onClick={onClose} style={{width:'100%',marginTop:12}}>关闭</button></>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ═══════ 原组件（保留兼容引用） ═══════ */
 /* P2-1: 用户案例墙 */
 function TestimonialWall() {
   const testimonials = [

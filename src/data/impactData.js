@@ -47,6 +47,37 @@ const SOURCE_MAP = [
   { domain: 'g60.org.cn', source: 'G60科创走廊官网', issuingBody: 'G60科创走廊办公室' },
   { domain: 'mca.gov.cn', source: '民政部官网', issuingBody: '民政部' },
   { domain: 'mnr.gov.cn', source: '自然资源部官网', issuingBody: '自然资源部' },
+  { domain: 'csrc.gov.cn', source: '证监会官网', issuingBody: '中国证监会' },
+  { domain: 'nfra.gov.cn', source: '金融监管总局官网', issuingBody: '国家金融监管总局' },
+  { domain: 'mofcom.gov.cn', source: '商务部官网', issuingBody: '商务部' },
+  { domain: 'cnipa.gov.cn', source: '国家知识产权局官网', issuingBody: '国家知识产权局' },
+  { domain: 'gd.gov.cn', source: '广东省政府官网', issuingBody: '广东省政府' },
+  { domain: 'sz.gov.cn', source: '深圳市政府官网', issuingBody: '深圳市政府' },
+  { domain: 'hrss.sz.gov.cn', source: '深圳人社局官网', issuingBody: '深圳市人社局' },
+  { domain: 'szeb.sz.gov.cn', source: '深圳教育局官网', issuingBody: '深圳市教育局' },
+  { domain: 'zjj.sz.gov.cn', source: '深圳住建局官网', issuingBody: '深圳市住建局' },
+  { domain: 'cq.gov.cn', source: '重庆市政府官网', issuingBody: '重庆市政府' },
+  { domain: 'wuhan.gov.cn', source: '武汉市政府官网', issuingBody: '武汉市政府' },
+  { domain: 'chengdu.gov.cn', source: '成都市政府官网', issuingBody: '成都市政府' },
+  { domain: 'cdhrss.chengdu.gov.cn', source: '成都人社局官网', issuingBody: '成都市人社局' },
+  { domain: 'cdjs.chengdu.gov.cn', source: '成都住建局官网', issuingBody: '成都市住建局' },
+  { domain: 'gjj.chengdu.gov.cn', source: '成都公积金中心官网', issuingBody: '成都住房公积金中心' },
+  { domain: 'changsha.gov.cn', source: '长沙市政府官网', issuingBody: '长沙市政府' },
+  { domain: 'zhengzhou.gov.cn', source: '郑州市政府官网', issuingBody: '郑州市政府' },
+  { domain: 'hefei.gov.cn', source: '合肥市政府官网', issuingBody: '合肥市政府' },
+  { domain: 'nc.gov.cn', source: '南昌市政府官网', issuingBody: '南昌市政府' },
+  { domain: 'hrss.hangzhou.gov.cn', source: '杭州人社局官网', issuingBody: '杭州市人社局' },
+  { domain: 'edu.beijing.gov.cn', source: '北京教委官网', issuingBody: '北京市教委' },
+  { domain: 'tianfu.gov.cn', source: '天府新区官网', issuingBody: '天府新区管委会' },
+  { domain: 'hengqin.gov.cn', source: '横琴新区官网', issuingBody: '横琴粤澳深度合作区' },
+  { domain: 'nansha.gov.cn', source: '南沙新区官网', issuingBody: '广州南沙开发区管委会' },
+  { domain: 'dg.gov.cn', source: '东莞市政府官网', issuingBody: '东莞市政府' },
+  { domain: 'foshan.gov.cn', source: '佛山市政府官网', issuingBody: '佛山市政府' },
+  { domain: 'shmh.gov.cn', source: '上海闵行区政府官网', issuingBody: '上海市闵行区政府' },
+  { domain: 'jiangxi.gov.cn', source: '江西省政府官网', issuingBody: '江西省政府' },
+  { domain: 'shanxi.gov.cn', source: '山西省政府官网', issuingBody: '山西省政府' },
+  { domain: 'taiyuan.gov.cn', source: '太原市政府官网', issuingBody: '太原市政府' },
+  { domain: 'shanghaiinvest.com', source: '上海投资促进网', issuingBody: '上海市投资促进服务中心' },
 ];
 
 /** 根据URL域名自动推断发布机构和来源名称 */
@@ -79,6 +110,7 @@ export const regions = [
   { key: "jingjinji", name: "京津冀", icon: "🏛", subtitle: "北京 · 天津 · 河北", provinces: "京津冀" },
   { key: "greater_bay", name: "大湾区", icon: "🌉", subtitle: "广东 · 香港 · 澳门", provinces: "粤港澳" },
   { key: "chengyu", name: "成渝", icon: "🐼", subtitle: "四川 · 重庆", provinces: "川渝" },
+  { key: "central", name: "中部", icon: "🏔", subtitle: "湖北 · 湖南 · 河南 · 安徽 · 江西 · 山西", provinces: "鄂湘豫皖赣晋" },
 ];
 
 /* ── 评分Rubric标尺 ───────────────────────────────────────── */
@@ -190,6 +222,10 @@ export function getTimelineForDimension(dimKey) {
 export const regionToolParams = {
   national: { gjjCapBefore: 160, gjjCapAfter: 240, gjjRate: 2.85, commRate: 4.2 },
   yangtze_delta: { gjjCapBefore: 160, gjjCapAfter: 240, gjjRate: 2.85, commRate: 3.9 },
+  jingjinji: { gjjCapBefore: 160, gjjCapAfter: 240, gjjRate: 2.85, commRate: 4.0 },
+  greater_bay: { gjjCapBefore: 180, gjjCapAfter: 260, gjjRate: 2.85, commRate: 4.1 },
+  chengyu: { gjjCapBefore: 140, gjjCapAfter: 220, gjjRate: 2.85, commRate: 4.3 },
+  central: { gjjCapBefore: 130, gjjCapAfter: 200, gjjRate: 2.85, commRate: 4.4 },
 };
 
 /* ── 通俗解读模板 ──────────────────────────────────────────── */
@@ -218,6 +254,14 @@ export const dimensions = [
       { policyName: "换房退税政策延续至2027年底", breadth: 6, depth: 5, direction: 1, status: "已发布", date: "2026-01-01", note: "改善型住房消费直接利好", confidence: "★★★", rationale: "breadth=6: 仅影响有换房需求的中产家庭。depth=5: 窗口期政策，到期可能调整。", url: "https://www.chinatax.gov.cn/chinatax/n810219/n810724/common_list_n810774.html" },
       { policyName: "个人住房房产税完善", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-02-26", note: "部分情形免征或减征", confidence: "★★★", rationale: "breadth=5: 主要影响上海多套房持有者。depth=7: 房产税调整具有长期结构性影响。", url: "https://www.shanghai.gov.cn/nw12344/20260226/7a5b0a3e7e7b4d1e9f3a2c8d6e4b5a1f.html" },
       { policyName: "房地产税试点扩围（暂缓但立法研究未停）", breadth: 7, depth: 9, direction: -1, status: "已发布", date: "2026-03-01", note: "多套房持有者需持续关注", confidence: "★★☆", rationale: "breadth=7: 影响试点城市多套房持有者。depth=9: 若正式推行将根本改变房产持有成本。direction=-1: 对多套房持有者利空。", url: "http://www.npc.gov.cn/npc/c2/c30834/202110/t20211023_313092.html" },
+      { policyName: "保障性租赁住房建设提速", breadth: 8, depth: 8, direction: 1, status: "进行中", date: "2025-01-01", note: "十四五期间全国筹集870万套保障房", confidence: "★★★", rationale: "breadth=8: 影响全国新市民及青年人群体。depth=8: 住房供应体系结构性变革。", url: "https://www.mohurd.gov.cn" },
+      { policyName: "房贷利率市场化改革深化", breadth: 9, depth: 8, direction: 1, status: "已发布", date: "2024-05-01", note: "房贷利率与LPR挂钩，持续下行", confidence: "★★★", rationale: "breadth=9: 影响所有房贷借款人。depth=8: 利率市场化是长期结构性变化。", url: "http://www.pbc.gov.cn" },
+      { policyName: "认房不认贷政策全国推广", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2024-08-01", note: "改善型购房门槛大幅降低", confidence: "★★★", rationale: "breadth=8: 影响全国改善型购房者。depth=7: 购房资格认定标准变革。", url: "https://www.mohurd.gov.cn" },
+      { policyName: "城中村改造专项借款", breadth: 7, depth: 8, direction: 1, status: "进行中", date: "2024-01-01", note: "35城城中村改造+货币化安置", confidence: "★★☆", rationale: "breadth=7: 影响城中村居民及拆迁户。depth=8: 城市更新模式创新。", url: "https://www.mohurd.gov.cn" },
+      { policyName: "预售资金监管制度完善", breadth: 7, depth: 7, direction: 1, status: "已发布", date: "2023-01-01", note: "保交楼+购房者权益保障", confidence: "★★★", rationale: "breadth=7: 影响所有期房购房者。depth=7: 预售制度改革推进。", url: "https://www.mohurd.gov.cn" },
+      { policyName: "共有产权住房制度推广", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2022-01-01", note: "政府与购房者共有产权，降低购房门槛", confidence: "★★☆", rationale: "breadth=6: 影响中低收入购房群体。depth=8: 住房制度创新。", url: "https://www.mohurd.gov.cn" },
+      { policyName: "租赁住房REITs试点", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2021-06-01", note: "租赁住房资产证券化，增加租赁供给", confidence: "★★☆", rationale: "breadth=6: 影响租房群体及投资者。depth=8: 租赁市场金融创新。", url: "https://www.csrc.gov.cn" },
+      { policyName: "老旧小区改造全面推进", breadth: 7, depth: 7, direction: 1, status: "进行中", date: "2020-07-01", note: "加装电梯+管线改造+社区服务提升", confidence: "★★★", rationale: "breadth=7: 影响全国老旧小区居民。depth=7: 城市更新民生工程。", url: "https://www.mohurd.gov.cn" },
     ],
     regionalPolicies: {
       yangtze_delta: [
@@ -230,6 +274,29 @@ export const dimensions = [
         { policyName: "雄安新区住房保障体系", breadth: 5, depth: 8, direction: 1, status: "已发布", date: "2025-01-01", note: "租购并举+人才公寓", confidence: "★★☆", rationale: "breadth=5: 影响雄安新区人才和建设者。depth=8: 新型住房保障模式先行示范。", url: "https://www.xiongan.gov.cn" },
         { policyName: "北京公积金贷款额度上调至160万", breadth: 6, depth: 6, direction: 1, status: "已发布", date: "2026-06-01", note: "首套最高可贷160万", confidence: "★★☆", rationale: "breadth=6: 北京公积金缴存职工。depth=6: 贷款额度提升直接降低购房资金压力。", url: "https://www.beijing.gov.cn" },
       ],
+      greater_bay: [
+        { policyName: "深圳前海深港现代服务业合作区住房补贴", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "港澳青年前海购房补贴最高200万", confidence: "★★☆", rationale: "breadth=5: 前海就业港澳青年及高端人才。depth=7: 深港融合住房制度创新。", url: "https://www.sz.gov.cn" },
+        { policyName: "横琴粤澳深度合作区人才安居工程", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-06-01", note: "人才公寓+购房优惠+租房补贴", confidence: "★★☆", rationale: "breadth=5: 横琴就业人才。depth=7: 粤澳住房制度衔接创新。", url: "https://www.hengqin.gov.cn" },
+        { policyName: "广州南沙新区购房政策优化", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2026-01-01", note: "港澳居民南沙购房享同等待遇", confidence: "★★☆", rationale: "breadth=5: 南沙购房者及港澳居民。depth=6: 大湾区住房互联互通。", url: "https://www.nansha.gov.cn" },
+        { policyName: "深圳保障性租赁住房大规模建设", breadth: 7, depth: 8, direction: 1, status: "进行中", date: "2026-03-01", note: "十四五期间建设74万套保障房", confidence: "★★★", rationale: "breadth=7: 深圳新市民及青年人超400万。depth=8: 住房供应体系结构性变革。", url: "https://zjj.sz.gov.cn" },
+        { policyName: "港车北上/澳车北上配套停车及居住便利化", breadth: 4, depth: 5, direction: 1, status: "已发布", date: "2025-07-01", note: "港澳居民湾区生活便利化", confidence: "★★☆", rationale: "breadth=4: 港车北上车主。depth=5: 居住配套便利化。", url: "https://www.gd.gov.cn" },
+        { policyName: "东莞制造业人才安居工程", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-10-01", note: "产业工人住房补贴+人才房", confidence: "★★☆", rationale: "breadth=5: 东莞制造业人才。depth=6: 产城融合住房保障。", url: "https://www.dg.gov.cn" },
+      ],
+      chengyu: [
+        { policyName: "成都人才安居工程（人才公寓+购房补贴）", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-05-01", note: "本科以上人才购房补贴最高50万", confidence: "★★☆", rationale: "breadth=6: 成都新引进人才。depth=7: 人才住房制度体系化。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆中心城区购房补贴及契税减免", breadth: 6, depth: 6, direction: 1, status: "已发布", date: "2026-02-01", note: "首套房契税补贴+公积金贷款提额", confidence: "★★☆", rationale: "breadth=6: 重庆中心城区购房者。depth=6: 降低购房综合成本。", url: "https://www.cq.gov.cn" },
+        { policyName: "天府新区产业人才住房专项政策", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-08-01", note: "产业人才购房优惠+共有产权房", confidence: "★★☆", rationale: "breadth=5: 天府新区产业人才。depth=7: 产城融合住房模式创新。", url: "https://www.tianfu.gov.cn" },
+        { policyName: "川渝住房公积金互认互贷", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-12-01", note: "成渝两地公积金跨省贷款", confidence: "★★★", rationale: "breadth=6: 成渝跨省就业群体。depth=7: 打破公积金行政壁垒。", url: "https://gjj.chengdu.gov.cn" },
+        { policyName: "成都保障性租赁住房建设提速", breadth: 6, depth: 7, direction: 1, status: "进行中", date: "2026-04-01", note: "十四五筹集30万套保障性租赁住房", confidence: "★★☆", rationale: "breadth=6: 成都新市民青年群体。depth=7: 住房供应结构优化。", url: "https://cdjs.chengdu.gov.cn" },
+      ],
+      central: [
+        { policyName: "武汉光谷人才住房专项政策", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-06-01", note: "博士购房补贴30万+人才公寓", confidence: "★★☆", rationale: "breadth=5: 光谷科创人才。depth=7: 人才住房全链条保障。", url: "https://www.wuhan.gov.cn" },
+        { policyName: "长沙房价洼地+人才购房优惠政策", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-04-01", note: "房价收入比全国最低+人才购房补贴", confidence: "★★★", rationale: "breadth=6: 长沙新就业人才。depth=7: 低房价+补贴政策组合拳。", url: "https://www.changsha.gov.cn" },
+        { policyName: "郑州航空港区人才安居工程", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-09-01", note: "港区就业人才租房购房双补贴", confidence: "★★☆", rationale: "breadth=5: 航空港区就业人才。depth=6: 产城融合住房保障。", url: "https://www.zhengzhou.gov.cn" },
+        { policyName: "合肥科创人才住房保障计划", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-01-01", note: "科创企业人才共有产权房+租房补贴", confidence: "★★☆", rationale: "breadth=5: 合肥科创人才。depth=7: 共有产权模式创新。", url: "https://www.hefei.gov.cn" },
+        { policyName: "南昌VR产业人才安居政策", breadth: 4, depth: 6, direction: 1, status: "已发布", date: "2025-11-01", note: "VR产业人才专项住房补贴", confidence: "★★☆", rationale: "breadth=4: 南昌VR产业从业者。depth=6: 产业导向住房保障。", url: "https://www.nc.gov.cn" },
+        { policyName: "太原能源转型人才住房支持", breadth: 4, depth: 6, direction: 1, status: "已发布", date: "2026-03-01", note: "新能源产业人才购房租房补贴", confidence: "★★☆", rationale: "breadth=4: 太原新能源产业人才。depth=6: 资源型城市转型配套。", url: "https://www.taiyuan.gov.cn" },
+      ],
     tips: [
       { title: "❌ 政策底=市场底", tip: "误区！历史上多次出现政策松绑后房价继续下跌的情况。政策底不等于市场底，购房时机还需结合供需和经济基本面判断。" },
       { title: "❌ 公积金可以付首付", tip: "部分错误！公积金不能直接用于支付首付，只能在购房后提取用于偿还贷款或装修。首付款必须用自有资金。" },
@@ -239,6 +306,9 @@ export const dimensions = [
     ],
     },
     timeline: [
+      { year: 1998, event: "住房商品化改革", dir: 1, note: "国发[1998]23号：停止福利分房，开启商品房时代" },
+      { year: 2003, event: "土地招拍挂制度", dir: 0, note: "经营性用地必须公开出让，土地财政格局形成" },
+      { year: 2005, event: "国八条调控", dir: -1, note: "首次全国性房价调控，稳定住房价格" },
       { year: 2008, event: "四万亿刺激计划", dir: 1, note: "房地产成为经济引擎，房价开始快速上涨" },
       { year: 2010, event: "国十条限购令", dir: -1, note: "首次全国性限购，遏制房价过快上涨" },
       { year: 2014, event: "930新政松绑", dir: 1, note: "多数城市取消限购，房贷利率打折" },
@@ -264,6 +334,10 @@ export const dimensions = [
 
       { policyName: "上半年GDP同比增长4.7%", breadth: 10, depth: 8, direction: 1, status: "已发布", date: "2026-07-15", note: "经济总量69.6万亿元，就业基本盘稳固", confidence: "★★★", rationale: "breadth=10: 影响全体国民。depth=8: 宏观经济基本面决定就业和收入预期。", url: "https://www.stats.gov.cn/" },
       { policyName: "春招2.3万场招聘会1268万个岗位", breadth: 8, depth: 6, direction: 1, status: "已发布", date: "2026-06-15", note: "高校毕业生就业服务专项", confidence: "★★★", rationale: "breadth=8: 覆盖全国高校毕业生。depth=6: 年度性就业服务。", url: "https://www.mohrss.gov.cn/" },
+      { policyName: "新就业形态劳动者权益保障", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2021-07-01", note: "外卖/网约车/快递等平台劳动者权益保障", confidence: "★★★", rationale: "breadth=8: 影响数千万平台劳动者。depth=8: 新就业形态制度性保障。", url: "https://www.mohrss.gov.cn" },
+      { policyName: "职业技能提升行动方案", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2019-05-01", note: "三年培训5000万人次+技能补贴", confidence: "★★☆", rationale: "breadth=8: 覆盖全国劳动者。depth=7: 技能提升制度化。", url: "https://www.mohrss.gov.cn" },
+      { policyName: "失业保险稳岗返还政策", breadth: 7, depth: 6, direction: 1, status: "已发布", date: "2020-01-01", note: "企业不裁员少裁员可返还失业保险费", confidence: "★★★", rationale: "breadth=7: 影响参保企业及职工。depth=6: 稳就业政策工具。", url: "https://www.mohrss.gov.cn" },
+      { policyName: "劳动合同法修订研究", breadth: 9, depth: 8, direction: 0, status: "预备审议", date: "2025-01-01", note: "灵活就业/平台用工纳入法律保护", confidence: "★☆☆", rationale: "breadth=9: 影响所有劳动者。depth=8: 劳动法律体系完善。", url: "http://www.npc.gov.cn" },
     ],
     tips: [
       { title: "❌ 社保断缴3个月就清零", tip: "谣言！社保断缴后养老保险累计年限不清零，医疗保险个人账户余额也不清零。但医保断缴超过3个月，重新缴纳后有6个月等待期不能报销。" },
@@ -281,8 +355,33 @@ export const dimensions = [
         { policyName: "北京‘新8条’人才引进计划", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2026-04-01", note: "覆盖AI/生物医药/集成电路等领域", confidence: "★★☆", rationale: "breadth=6: 北京高技能人才群体。depth=7: 引进机制制度化突破。", url: "https://rsj.beijing.gov.cn" },
         { policyName: "京津冀社保一体化协同", breadth: 7, depth: 8, direction: 1, status: "进行中", date: "2026-07-01", note: "跨省社保转移接续优化", confidence: "★★☆", rationale: "breadth=7: 京津冀跨省就业超百万群体。depth=8: 社保壁垒实质性突破。", url: "https://www.mohrss.gov.cn/" },
       ],
+      greater_bay: [
+        { policyName: "深圳前海深港青年就业创业扶持", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-08-01", note: "港澳青年前海创业补贴+就业培训", confidence: "★★☆", rationale: "breadth=5: 前海就业创业港澳青年。depth=7: 深港就业市场融合。", url: "https://www.sz.gov.cn" },
+        { policyName: "广东省灵活就业人员社保参保便利化", breadth: 7, depth: 7, direction: 1, status: "已发布", date: "2025-10-01", note: "取消户籍限制+线上参保", confidence: "★★★", rationale: "breadth=7: 广东超2000万灵活就业者。depth=7: 参保门槛大幅降低。", url: "https://www.gd.gov.cn" },
+        { policyName: "横琴粤澳合作区跨境就业便利化", breadth: 4, depth: 7, direction: 1, status: "已发布", date: "2025-06-01", note: "澳门居民横琴就业免办工作许可", confidence: "★★☆", rationale: "breadth=4: 横琴就业澳门居民。depth=7: 跨境就业制度突破。", url: "https://www.hengqin.gov.cn" },
+        { policyName: "广州南沙港澳居民就业同等待遇", breadth: 4, depth: 6, direction: 1, status: "已发布", date: "2026-01-01", note: "港澳居民南沙就业享社保公积金同等待遇", confidence: "★★☆", rationale: "breadth=4: 南沙就业港澳居民。depth=6: 就业待遇一体化。", url: "https://www.nansha.gov.cn" },
+        { policyName: "东莞制造业用工保障及技能培训补贴", breadth: 6, depth: 6, direction: 1, status: "已发布", date: "2025-11-01", note: "企业用工补贴+员工技能提升培训", confidence: "★★☆", rationale: "breadth=6: 东莞制造业企业及员工。depth=6: 用工保障制度化。", url: "https://www.dg.gov.cn" },
+        { policyName: "佛山产业工人队伍建设改革", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2026-02-01", note: "产业工人薪酬待遇+职业发展通道", confidence: "★★☆", rationale: "breadth=5: 佛山制造业产业工人。depth=6: 产业工人职业发展体系化。", url: "https://www.foshan.gov.cn" },
+      ],
+      chengyu: [
+        { policyName: "成都人才新政‘蓉漂计划’升级", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-04-01", note: "本科以上落户+创业补贴+租房补贴", confidence: "★★★", rationale: "breadth=6: 成都新引进人才。depth=7: 人才引育留用全链条。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆数字经济人才专项引进计划", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "数字经济人才安家补贴+项目资助", confidence: "★★☆", rationale: "breadth=5: 数字经济领域人才。depth=7: 产业人才专项支持。", url: "https://www.cq.gov.cn" },
+        { policyName: "川渝社保互认及跨省转移接续便利化", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-12-01", note: "成渝社保互认+线上转移接续", confidence: "★★★", rationale: "breadth=6: 成渝跨省就业群体。depth=8: 社保壁垒实质性突破。", url: "https://www.mohrss.gov.cn" },
+        { policyName: "西部科学城科研人员激励政策", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-03-01", note: "科研人员成果转化收益不低于70%", confidence: "★★☆", rationale: "breadth=5: 西部科学城科研人员。depth=7: 科研激励机制突破。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "成渝双城经济圈就业服务一体化", breadth: 6, depth: 7, direction: 1, status: "进行中", date: "2026-05-01", note: "就业信息共享+跨城就业服务", confidence: "★★☆", rationale: "breadth=6: 成渝两地求职者。depth=7: 就业服务同城化。", url: "https://www.cq.gov.cn" },
+      ],
+      central: [
+        { policyName: "武汉光谷‘3551人才计划’升级", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-05-01", note: "高层次人才安家补贴最高200万", confidence: "★★☆", rationale: "breadth=5: 光谷高层次人才。depth=7: 人才引育体系升级。", url: "https://www.wuhan.gov.cn" },
+        { policyName: "长沙人才新政‘升级版’", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-03-01", note: "本科以上落户+租房补贴+创业担保贷款", confidence: "★★★", rationale: "breadth=6: 长沙新就业毕业生及人才。depth=7: 人才政策组合拳。", url: "https://www.changsha.gov.cn" },
+        { policyName: "郑州航空港区用工保障及技能培训", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-10-01", note: "港区企业用工补贴+员工免费培训", confidence: "★★☆", rationale: "breadth=5: 航空港区企业及员工。depth=6: 用工保障体系化。", url: "https://www.zhengzhou.gov.cn" },
+        { policyName: "合肥‘科创中国’人才就业专项服务", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2026-02-01", note: "科创企业招聘补贴+人才就业服务", confidence: "★★☆", rationale: "breadth=5: 合肥科创企业及人才。depth=6: 科创就业服务专项化。", url: "https://www.hefei.gov.cn" },
+        { policyName: "山西能源转型就业安置专项政策", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-08-01", note: "煤炭行业转岗培训+新能源就业安置", confidence: "★★☆", rationale: "breadth=5: 山西煤炭行业转岗人员。depth=7: 能源转型就业安置制度化。", url: "https://www.shanxi.gov.cn" },
+      ],
     },
     timeline: [
+      { year: 1995, event: "劳动法实施", dir: 1, note: "首部劳动基本法，确立劳动合同制度" },
+      { year: 2003, event: "工伤保险条例", dir: 1, note: "国务院令第375号，工伤保障制度化" },
+      { year: 2007, event: "就业促进法", dir: 1, note: "首次以法律形式确立积极就业政策" },
       { year: 2008, event: "劳动合同法实施", dir: 1, note: "首次全面规范劳动关系，保护劳动者权益" },
       { year: 2014, event: "户籍制度改革意见", dir: 1, note: "提出取消农业/非农业户口区分" },
       { year: 2018, event: "社保征收改革", dir: 0, note: "社保入税引发企业负担讨论" },
@@ -318,8 +417,33 @@ export const dimensions = [
         { policyName: "北京多校划片政策深化", breadth: 6, depth: 7, direction: 0, status: "已发布", date: "2026-05-01", note: "学区房价值面临重估", confidence: "★★☆", rationale: "breadth=6: 北京学生家长群体。depth=7: 多校划片将根本改变学区格局。", url: "https://edu.beijing.gov.cn" },
         { policyName: "京津冀教育协同共享", breadth: 6, depth: 6, direction: 1, status: "进行中", date: "2026-06-15", note: "跨区域名校合作办学", confidence: "★★☆", rationale: "breadth=6: 京津冀三地学生家庭。depth=6: 教育资源跨区域流动。", url: "https://www.moe.gov.cn/" },
       ],
+      greater_bay: [
+        { policyName: "深圳基础教育扩优提质工程", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "新增公办学位超30万+名校集团化", confidence: "★★★", rationale: "breadth=6: 深圳中小学生家庭。depth=7: 基础教育供给体系性提升。", url: "https://szeb.sz.gov.cn" },
+        { policyName: "横琴粤澳合作区教育配套建设", breadth: 4, depth: 6, direction: 1, status: "已发布", date: "2025-06-01", note: "澳门子弟学校+国际学校引进", confidence: "★★☆", rationale: "breadth=4: 横琴澳门居民子女。depth=6: 跨境教育配套完善。", url: "https://www.hengqin.gov.cn" },
+        { policyName: "广州南沙港澳子弟学校及DSE课程推广", breadth: 4, depth: 6, direction: 1, status: "已发布", date: "2025-10-01", note: "港澳子弟在内地享受本地教育待遇", confidence: "★★☆", rationale: "breadth=4: 南沙港澳子弟家庭。depth=6: 教育互联互通。", url: "https://www.nansha.gov.cn" },
+        { policyName: "深圳AI教育先行示范区建设", breadth: 5, depth: 8, direction: 1, status: "进行中", date: "2026-03-01", note: "中小学AI课程全覆盖+智慧校园", confidence: "★★☆", rationale: "breadth=5: 深圳中小学生。depth=8: AI教育先行示范。", url: "https://szeb.sz.gov.cn" },
+        { policyName: "东莞随迁子女教育同权化改革", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-01-01", note: "积分入学门槛降低+公办学位扩容", confidence: "★★☆", rationale: "breadth=5: 东莞随迁子女家庭。depth=7: 教育公平化推进。", url: "https://www.dg.gov.cn" },
+        { policyName: "佛山职业教育产教融合试点", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-11-01", note: "校企双元制+产业学院建设", confidence: "★★☆", rationale: "breadth=5: 佛山职业院校学生。depth=7: 职教产教融合深化。", url: "https://www.foshan.gov.cn" },
+      ],
+      chengyu: [
+        { policyName: "成都‘蓉城教育’优质均衡行动计划", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-05-01", note: "新建改扩建学校200所+名师工作室", confidence: "★★☆", rationale: "breadth=6: 成都中小学生家庭。depth=7: 教育优质均衡体系化。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆基础教育集团化办学改革", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "名校+弱校集团化办学全覆盖", confidence: "★★☆", rationale: "breadth=6: 重庆中小学生家庭。depth=7: 教育资源均衡化配置。", url: "https://www.cq.gov.cn" },
+        { policyName: "成渝双城教育协同发展联盟", breadth: 5, depth: 6, direction: 1, status: "进行中", date: "2026-04-01", note: "成渝名校结对+教师交流+课程共享", confidence: "★★☆", rationale: "breadth=5: 成渝两地学校及师生。depth=6: 教育资源跨城共享。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "成都职业教育产教融合示范区", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-02-01", note: "电子信息/装备制造产教融合", confidence: "★★☆", rationale: "breadth=5: 成都职业院校学生。depth=7: 职教与产业深度对接。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆智慧教育平台建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-01-01", note: "AI+教育数字化全覆盖", confidence: "★★☆", rationale: "breadth=5: 重庆全市师生。depth=7: 教育数字化转型。", url: "https://www.cq.gov.cn" },
+      ],
+      central: [
+        { policyName: "武汉光谷‘未来学校’建设计划", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-06-01", note: "AI+STEAM教育融合+智慧校园", confidence: "★★☆", rationale: "breadth=5: 光谷片区学生家庭。depth=7: 未来教育模式探索。", url: "https://www.wuhan.gov.cn" },
+        { policyName: "长沙基础教育优质均衡发展", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-04-01", note: "名校集团化+新建学校+师资均衡配置", confidence: "★★★", rationale: "breadth=6: 长沙中小学生家庭。depth=7: 教育均衡化系统性推进。", url: "https://www.changsha.gov.cn" },
+        { policyName: "郑州航空港区教育配套提升工程", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-10-01", note: "新建学校+引进名校+师资培训", confidence: "★★☆", rationale: "breadth=5: 航空港区居民子女。depth=6: 教育配套完善。", url: "https://www.zhengzhou.gov.cn" },
+        { policyName: "合肥科创教育特色学校建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-02-01", note: "科创特色中小学+少年科学院", confidence: "★★☆", rationale: "breadth=5: 合肥中小学生。depth=7: 科创教育体系化。", url: "https://www.hefei.gov.cn" },
+        { policyName: "江西VR+教育融合应用试点", breadth: 4, depth: 7, direction: 1, status: "已发布", date: "2025-11-01", note: "VR沉浸式教学+数字孪生实验室", confidence: "★★☆", rationale: "breadth=4: 江西试点学校学生。depth=7: VR教育应用创新。", url: "https://www.jiangxi.gov.cn" },
+      ],
     },
     timeline: [
+      { year: 1986, event: "义务教育法颁布", dir: 1, note: "确立九年义务教育制度，全民教育起点" },
+      { year: 2001, event: "基础教育课程改革", dir: 1, note: "新课标启动，素质教育理念全面推进" },
+      { year: 2006, event: "义务教育经费保障", dir: 1, note: "农村义务教育免学杂费，教育公平里程碑" },
       { year: 2013, event: "异地高考破冰", dir: 1, note: "部分省份允许随迁子女就地高考" },
       { year: 2014, event: "新高考改革启动", dir: 1, note: "上海/浙江率先试点3+3模式" },
       { year: 2018, event: "民办教育分类管理", dir: 0, note: "民办学校面临营利/非营利选择" },
@@ -335,6 +459,10 @@ export const dimensions = [
     summary: "延迟退休正式实施（男60→63、女55→58/50→55），15年渐进过渡。生育补贴政策落地，育儿补贴每年3600元。医疗保障法二审，托育服务法进入立法程序。",
     analysis: "养老与生育是当前最紧迫的政策交汇点。延迟退休已于2025年1月正式实施，影响数亿在职人员：70后影响最小（延迟3-12个月），80后延迟1-2年，90后延迟2-3年。弹性退休机制允许提前3年退休（不低于原法定年龄）。生育补贴制度从2025年起发放，每孩每年3600元至3岁，预计覆盖约1000万家庭。量化影响：延迟退休可使养老金替代率下降约3-5个百分点，但个人账户积累期延长可部分抵消。风险提示：托育服务法仍在预备阶段，短期内托育资源短缺问题难以缓解。",
     scores: [
+      { policyName: "养老金十六连调（2020年上调5%）", breadth: 9, depth: 6, direction: 1, status: "已结束", date: "2020-04-01", note: "企退人员月均增加140元", confidence: "★★★", rationale: "breadth=9: 影响1.2亿退休人员。depth=6: 年度调整机制。", url: "https://www.mohrss.gov.cn" },
+      { policyName: "三孩生育政策及配套支持措施", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2021-07-01", note: "取消社会抚养费+托育+教育减负", confidence: "★★★", rationale: "breadth=8: 影响全国育龄家庭。depth=8: 生育政策根本性调整。", url: "https://www.gov.cn/zhengce/2021-07/20/content_5626190.htm" },
+      { policyName: "个人养老金制度启动实施", breadth: 8, depth: 9, direction: 1, status: "已发布", date: "2022-11-01", note: "第三支柱养老正式启动，年上限12000元", confidence: "★★★", rationale: "breadth=8: 影响所有基本养老保险参保人。depth=9: 养老体系结构性变革。", url: "https://www.gov.cn/zhengce/content/2022-11/25/content_5728873.htm" },
+      { policyName: "企业职工基本养老保险全国统筹", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2022-01-01", note: "解决省际基金收支不平衡", confidence: "★★★", rationale: "breadth=9: 影响全国4亿职工养老保险参保人。depth=9: 养老保险制度统一性改革。", url: "https://www.mohrss.gov.cn" },
       { policyName: "渐进式延迟法定退休年龄方案", breadth: 10, depth: 10, direction: -1, status: "已发布", date: "2025-01-01", note: "男60→63、女55→58/50→55，15年渐进过渡", confidence: "★★★", rationale: "breadth=10: 影响全国数亿在职人员。depth=10: 根本性改变劳动与退休制度。direction=-1: 短期对劳动者退休规划产生压力。", url: "https://www.npc.gov.cn/npc/c2/c30834/202409/t20240913_340956.html" },
       { policyName: "生育补贴制度（2025年起发放）", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2025-01-01", note: "每孩每年3600元至3岁，预计覆盖千万家庭", confidence: "★★★", rationale: "breadth=8: 约1000万新生儿家庭。depth=8: 首次全国性现金生育激励。", url: "https://www.gov.cn/zhengce/content/202501/content_6998765.htm" },
       { policyName: "托育服务法草案", breadth: 8, depth: 8, direction: 1, status: "预备审议", date: "2026-05-01", note: "0-3岁托育服务体系建设法治化", confidence: "★☆☆", rationale: "breadth=8: 全国约3000万0-3岁婴幼儿家庭。depth=8: 填补托育领域法律空白。", url: "http://www.npc.gov.cn/npc/c2/c30834/202605/" },
@@ -354,8 +482,33 @@ export const dimensions = [
         { policyName: "北京居家养老服务体系升级", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2026-04-01", note: "居家养老补贴+社区助餐", confidence: "★★☆", rationale: "breadth=6: 北京老年人口超400万。depth=7: 居家养老服务体系化建设。", url: "https://mzj.beijing.gov.cn" },
         { policyName: "京津冀异地就医门诊直接结算", breadth: 7, depth: 7, direction: 1, status: "进行中", date: "2026-06-01", note: "三地医疗资源互通", confidence: "★★☆", rationale: "breadth=7: 京津冀跨省就医群体。depth=7: 打破异地就医壁垒。", url: "https://ybj.beijing.gov.cn" },
       ],
+      greater_bay: [
+        { policyName: "港澳居民大湾区社保医保同等待遇", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "港澳居民可参加大湾区内地城市社保医保", confidence: "★★★", rationale: "breadth=6: 大湾区内地城市就业居住港澳居民。depth=8: 跨境社保制度突破。", url: "https://www.gd.gov.cn" },
+        { policyName: "深圳养老服务体系建设（社区嵌入式养老）", breadth: 6, depth: 7, direction: 1, status: "进行中", date: "2026-01-01", note: "社区嵌入式养老服务机构全覆盖", confidence: "★★☆", rationale: "breadth=6: 深圳老年人口。depth=7: 养老服务体系化建设。", url: "https://www.sz.gov.cn" },
+        { policyName: "横琴粤澳合作区医疗资源共享", breadth: 4, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "澳门居民横琴就医直接结算", confidence: "★★☆", rationale: "breadth=4: 横琴居住澳门居民。depth=7: 跨境医疗制度衔接。", url: "https://www.hengqin.gov.cn" },
+        { policyName: "广州南沙港澳居民医疗保障便利化", breadth: 4, depth: 6, direction: 1, status: "已发布", date: "2025-10-01", note: "港澳居民南沙就医报销便利化", confidence: "★★☆", rationale: "breadth=4: 南沙居住港澳居民。depth=6: 医疗保障互联互通。", url: "https://www.nansha.gov.cn" },
+        { policyName: "广东省长护险试点扩面至全省", breadth: 7, depth: 8, direction: 1, status: "进行中", date: "2026-04-01", note: "失能老人护理报销覆盖全省", confidence: "★★☆", rationale: "breadth=7: 广东失能老人及家庭。depth=8: 长护险制度全省覆盖。", url: "https://www.gd.gov.cn" },
+        { policyName: "东莞社区居家养老服务网络建设", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2026-02-01", note: "社区助餐+日间照料+上门服务", confidence: "★★☆", rationale: "breadth=5: 东莞老年人口。depth=6: 居家养老服务网络化。", url: "https://www.dg.gov.cn" },
+      ],
+      chengyu: [
+        { policyName: "成都长期护理保险全覆盖", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "失能老人护理费用报销70%+", confidence: "★★★", rationale: "breadth=6: 成都失能老人及家庭。depth=8: 长护险制度成熟。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆智慧养老服务平台建设", breadth: 6, depth: 7, direction: 1, status: "进行中", date: "2026-03-01", note: "智慧养老+居家监测+紧急呼叫", confidence: "★★☆", rationale: "breadth=6: 重庆老年人口。depth=7: 养老服务数字化转型。", url: "https://www.cq.gov.cn" },
+        { policyName: "川渝异地就医直接结算全覆盖", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-12-01", note: "成渝门诊住院跨省直接结算", confidence: "★★★", rationale: "breadth=6: 成渝跨省就医群体。depth=7: 异地就医壁垒消除。", url: "https://www.mohrss.gov.cn" },
+        { policyName: "成都社区嵌入式养老服务机构建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-01-01", note: "社区养老综合体+日间照料中心", confidence: "★★☆", rationale: "breadth=5: 成都社区老年人。depth=7: 养老服务体系化。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆养老服务人才培养计划", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-09-01", note: "养老护理员培训+薪酬补贴", confidence: "★★☆", rationale: "breadth=5: 养老服务从业人员。depth=6: 养老人才队伍建设。", url: "https://www.cq.gov.cn" },
+      ],
+      central: [
+        { policyName: "武汉社区居家养老服务全覆盖", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-06-01", note: "社区养老服务中心+助餐+日间照料", confidence: "★★☆", rationale: "breadth=6: 武汉老年人口。depth=7: 居家养老服务体系化。", url: "https://www.wuhan.gov.cn" },
+        { policyName: "长沙医养结合示范城市建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-05-01", note: "医疗机构+养老机构融合发展", confidence: "★★☆", rationale: "breadth=5: 长沙老年人口。depth=7: 医养结合模式创新。", url: "https://www.changsha.gov.cn" },
+        { policyName: "郑州养老服务体系建设提速", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-10-01", note: "社区养老设施全覆盖+智慧养老", confidence: "★★☆", rationale: "breadth=5: 郑州老年人口。depth=6: 养老服务网络完善。", url: "https://www.zhengzhou.gov.cn" },
+        { policyName: "合肥科创+养老智慧化应用", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-02-01", note: "AI健康监测+智慧养老平台", confidence: "★★☆", rationale: "breadth=5: 合肥老年人口。depth=7: 科技赋能养老服务。", url: "https://www.hefei.gov.cn" },
+        { policyName: "山西能源企业退休人员社会化管理", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-08-01", note: "国企退休人员社区化管理+养老保障", confidence: "★★☆", rationale: "breadth=5: 山西能源企业退休人员。depth=6: 退休保障社会化。", url: "https://www.shanxi.gov.cn" },
+      ],
     },
     timeline: [
+      { year: 1997, event: "统一养老保险制度", dir: 1, note: "国发[1997]26号：统账结合模式确立" },
+      { year: 2003, event: "新农合试点", dir: 1, note: "农村居民首次获得基本医疗保障" },
+      { year: 2005, event: "养老金计发改革", dir: 1, note: "多缴多得长缴多得机制确立" },
       { year: 2009, event: "新农保试点", dir: 1, note: "农村居民首次纳入养老保险体系" },
       { year: 2014, event: "城乡养老并轨", dir: 1, note: "新农保与城居保合并为城乡居民养老保险" },
       { year: 2016, event: "长期护理保险试点", dir: 1, note: "上海等15城率先试点" },
@@ -372,6 +525,10 @@ export const dimensions = [
     summary: "金融法首次立法，银证保统一规范。大额存单管理新规压缩存款利率上限。LPR改革深化，房贷利率仍有下行空间。个税征管精准度提升。",
     analysis: "金融法是中国金融领域第一部综合性基础法律，将统一规范银行、证券、保险三大行业。量化影响：LPR已连续下调，2024年房贷利率较2021年高点下降约200个基点，300万30年贷款月供减少约3,500元。大额存单管理办法可能进一步压缩存款利率上限，无风险收益持续下行。税收征管法修订加强了对高净值人群的监管，CRS信息交换网络已覆盖100+国家。风险提示：利率下行周期中，理财产品收益率普遍下降，投资者应警惕「高收益」产品的风险。",
     scores: [
+      { policyName: "数字人民币试点启动", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2020-10-01", note: "深圳/苏州/成都等城市率先试点", confidence: "★★★", rationale: "breadth=8: 影响试点城市数千万居民。depth=8: 货币体系数字化转型。", url: "http://www.pbc.gov.cn" },
+      { policyName: "资管新规过渡期结束", breadth: 8, depth: 8, direction: 0, status: "已结束", date: "2021-12-31", note: "打破刚兑，理财全面净值化", confidence: "★★★", rationale: "breadth=8: 影响所有银行理财投资者。depth=8: 资管行业根本性变革。", url: "https://www.pbc.gov.cn" },
+      { policyName: "LPR连续下调+存量房贷利率调整", breadth: 9, depth: 8, direction: 1, status: "已发布", date: "2023-09-01", note: "房贷利率进入‘3时代’，月供减少数千元", confidence: "★★★", rationale: "breadth=9: 影响所有房贷借款人。depth=8: 利率市场化深化。", url: "http://www.pbc.gov.cn" },
+      { policyName: "新国九条+退市新规", breadth: 8, depth: 9, direction: 1, status: "已发布", date: "2024-04-01", note: "资本市场基础制度改革，强化投资者保护", confidence: "★★★", rationale: "breadth=8: 影响2亿股民。depth=9: 资本市场制度性变革。", url: "https://www.csrc.gov.cn" },
       { policyName: "金融法（草案首次审议）", breadth: 10, depth: 10, direction: 1, status: "进行中", date: "2026-06-26", note: "金融领域基础性立法", confidence: "★☆☆", rationale: "breadth=10: 影响所有银行、证券、保险从业者和全部理财用户。depth=10: 建立全新金融监管法律框架。", url: "https://www.moj.gov.cn/pub/sfbgw/lfyjzj/lflfyjzj/202603/t20260320_532981.html" },
       { policyName: "大额存单管理办法", breadth: 7, depth: 6, direction: -1, status: "进行中", date: "2026-06-12", note: "无风险收益下降", confidence: "★☆☆", rationale: "breadth=7: 影响所有大额储户。depth=6: 管理办法调整。direction=-1: 利率可能下调。", url: "http://www.pbc.gov.cn/goutongjiaoliu/113456/113469/" },
       { policyName: "人民币存贷款利率管理规定", breadth: 8, depth: 8, direction: 0, status: "已结束", date: "2026-06-05", note: "利率市场化推进", confidence: "★★☆", rationale: "breadth=8: 所有贷款人和存款人。depth=8: 利率市场化是长期结构性变化。", url: "http://www.pbc.gov.cn/zhengcehuobisi/125207/125213/" },
@@ -391,8 +548,34 @@ export const dimensions = [
         { policyName: "北京证券交易所改革深化", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2026-03-15", note: "创新型中小企业融资渠道拓宽", confidence: "★★☆", rationale: "breadth=6: 北交所上市和拟上市企业。depth=8: 资本市场改革纵深推进。", url: "https://www.bse.cn" },
         { policyName: "京津冀金融协同发展", breadth: 6, depth: 6, direction: 1, status: "进行中", date: "2026-05-01", note: "跨区域金融服务一体化", confidence: "★★☆", rationale: "breadth=6: 京津冀三地企业和居民。depth=6: 区域金融基础设施互联互通。", url: "http://www.pbc.gov.cn/" },
       ],
+      greater_bay: [
+        { policyName: "跨境理财通2.0升级（大湾区）", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "个人投资额度提升至300万+产品范围扩大", confidence: "★★★", rationale: "breadth=6: 大湾区居民跨境理财需求。depth=8: 跨境金融制度性突破。", url: "https://www.gd.gov.cn" },
+        { policyName: "深圳数字人民币应用场景扩展", breadth: 6, depth: 7, direction: 1, status: "进行中", date: "2026-01-01", note: "数字人民币覆盖公共交通/医疗/教育", confidence: "★★☆", rationale: "breadth=6: 深圳市民。depth=7: 数字货币应用场景深化。", url: "https://www.sz.gov.cn" },
+        { policyName: "横琴粤澳合作区跨境金融创新", breadth: 4, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "澳门居民横琴开户/理财/保险便利化", confidence: "★★☆", rationale: "breadth=4: 横琴澳门居民。depth=7: 跨境金融服务创新。", url: "https://www.hengqin.gov.cn" },
+        { policyName: "广州南沙跨境贸易投资便利化", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-10-01", note: "跨境资金流动便利+外汇管理改革", confidence: "★★☆", rationale: "breadth=5: 南沙跨境贸易企业。depth=7: 跨境金融便利化。", url: "https://www.nansha.gov.cn" },
+        { policyName: "深圳消费金融创新试点", breadth: 6, depth: 6, direction: 1, status: "已发布", date: "2026-03-01", note: "消费信贷便利化+数字消费场景", confidence: "★★☆", rationale: "breadth=6: 深圳消费者。depth=6: 消费金融创新。", url: "https://www.sz.gov.cn" },
+        { policyName: "大湾区保险互联互通", breadth: 6, depth: 7, direction: 1, status: "进行中", date: "2026-05-01", note: "港澳居民内地投保便利化+车险互认", confidence: "★★☆", rationale: "breadth=6: 大湾区居民。depth=7: 保险市场互联互通。", url: "https://www.gd.gov.cn" },
+      ],
+      chengyu: [
+        { policyName: "成都数字人民币试点深化", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-06-01", note: "数字人民币覆盖政务/交通/消费全场景", confidence: "★★☆", rationale: "breadth=6: 成都市民。depth=7: 数字货币应用深化。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆西部金融中心建设", breadth: 6, depth: 8, direction: 1, status: "进行中", date: "2026-01-01", note: "金融机构集聚+金融产品创新", confidence: "★★☆", rationale: "breadth=6: 重庆市民及企业。depth=8: 金融中心建设战略性。", url: "https://www.cq.gov.cn" },
+        { policyName: "成渝跨境贸易结算便利化", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-12-01", note: "中欧班列跨境结算+外汇便利化", confidence: "★★☆", rationale: "breadth=5: 成渝跨境贸易企业。depth=7: 跨境结算便利化。", url: "https://www.cq.gov.cn" },
+        { policyName: "成都消费金融创新试点", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2026-02-01", note: "新市民消费信贷+数字消费场景", confidence: "★★☆", rationale: "breadth=5: 成都新市民。depth=6: 消费金融创新。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆普惠金融示范区建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "小微企业贷款便利化+农村普惠金融", confidence: "★★☆", rationale: "breadth=5: 重庆小微企业及农村居民。depth=7: 普惠金融体系化。", url: "https://www.cq.gov.cn" },
+      ],
+      central: [
+        { policyName: "武汉区域金融中心建设", breadth: 6, depth: 7, direction: 1, status: "进行中", date: "2026-01-01", note: "金融机构集聚+科技金融创新", confidence: "★★☆", rationale: "breadth=6: 武汉市民及企业。depth=7: 金融中心建设。", url: "https://www.wuhan.gov.cn" },
+        { policyName: "长沙消费金融创新试点", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-05-01", note: "新市民消费信贷+数字消费场景", confidence: "★★☆", rationale: "breadth=5: 长沙新市民。depth=6: 消费金融创新。", url: "https://www.changsha.gov.cn" },
+        { policyName: "郑州商品交易所品种创新", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-10-01", note: "新增期货品种+期货市场对外开放", confidence: "★★☆", rationale: "breadth=5: 期货市场参与者。depth=7: 期货市场创新发展。", url: "https://www.zhengzhou.gov.cn" },
+        { policyName: "合肥科创金融改革试验区", breadth: 5, depth: 8, direction: 1, status: "已发布", date: "2026-02-01", note: "科创企业融资便利化+股权激励", confidence: "★★☆", rationale: "breadth=5: 合肥科创企业。depth=8: 科创金融制度创新。", url: "https://www.hefei.gov.cn" },
+        { policyName: "山西能源金融创新试点", breadth: 4, depth: 7, direction: 1, status: "已发布", date: "2025-08-01", note: "能源期货交易+绿色金融产品", confidence: "★★☆", rationale: "breadth=4: 山西能源企业。depth=7: 能源金融创新。", url: "https://www.shanxi.gov.cn" },
+      ],
     },
     timeline: [
+      { year: 1990, event: "沪深交易所成立", dir: 1, note: "中国资本市场正式起步" },
+      { year: 2004, event: "国九条", dir: 1, note: "资本市场改革开放纲领性文件" },
+      { year: 2005, event: "股权分置改革", dir: 1, note: "解决历史遗留问题，全流通时代开启" },
+      { year: 2009, event: "创业板开板", dir: 1, note: "中小企业直接融资新通道" },
       { year: 2013, event: "余额宝上线+利率市场化", dir: 1, note: "互联网金融爆发，存款利率浮动扩大" },
       { year: 2015, event: "存款利率上限放开", dir: 0, note: "利率市场化里程碑，储户议价权增强" },
       { year: 2018, event: "资管新规", dir: 0, note: "打破刚兑，理财不再保本保收益" },
@@ -426,8 +609,35 @@ export const dimensions = [
         { policyName: "北京全球数字经济标杆城市", breadth: 7, depth: 8, direction: 1, status: "已发布", date: "2026-02-01", note: "数据要素市场化+数字产业集群", confidence: "★★☆", rationale: "breadth=7: 北京数字经济产业群。depth=8: 数字经济发展顶层设计。", url: "https://www.beijing.gov.cn" },
         { policyName: "雄安新区高端高新产业集聚", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2026-01-01", note: "央企总部+科技创新中心", confidence: "★★☆", rationale: "breadth=6: 迁入雄安的央企和科技企业。depth=8: 雄安产业承载能力持续增强。", url: "https://www.xiongan.gov.cn" },
       ],
+      greater_bay: [
+        { policyName: "深圳前海深港现代服务业合作区扩区", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "前海合作区面积扨8倍+产业政策升级", confidence: "★★★", rationale: "breadth=6: 前海合作区企业。depth=8: 深港产业融合制度性突破。", url: "https://www.sz.gov.cn" },
+        { policyName: "广州南沙新区科技创新产业扶持", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-10-01", note: "科技企业研发补贴+孵化器建设", confidence: "★★☆", rationale: "breadth=5: 南沙科技企业。depth=7: 科创产业扶持体系化。", url: "https://www.nansha.gov.cn" },
+        { policyName: "深圳人工智能产业集群培育", breadth: 7, depth: 8, direction: 1, status: "进行中", date: "2026-03-01", note: "AI产业规模突5000亿+算力基础设施", confidence: "★★☆", rationale: "breadth=7: 深圳AI产业链企业。depth=8: AI产业集群战略性布局。", url: "https://www.sz.gov.cn" },
+        { policyName: "东莞制造业数字化转型专项", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-11-01", note: "制造业数字化改造补贴+工业互联网", confidence: "★★☆", rationale: "breadth=6: 东莞制造业企业。depth=7: 制造业数字化转型。", url: "https://www.dg.gov.cn" },
+        { policyName: "佛山先进制造业产业集群建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-02-01", note: "智能家电/装备制造产业集群培育", confidence: "★★☆", rationale: "breadth=5: 佛山制造业企业。depth=7: 先进制造业集群化。", url: "https://www.foshan.gov.cn" },
+        { policyName: "横琴粤澳合作区科技研发及高端制造", breadth: 4, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "科技研发+高端制造+税收优惠", confidence: "★★☆", rationale: "breadth=4: 横琴科技制造企业。depth=7: 粤澳产业合作深化。", url: "https://www.hengqin.gov.cn" },
+      ],
+      chengyu: [
+        { policyName: "成渝双城经济圈产业协同发展", breadth: 6, depth: 8, direction: 1, status: "进行中", date: "2026-01-01", note: "电子信息/汽车/装备制造产业协同", confidence: "★★★", rationale: "breadth=6: 成渝两地产业链企业。depth=8: 产业协同制度性安排。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "成都人工智能产业建圈强链", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "AI产业规模突2000亿+算力中心", confidence: "★★☆", rationale: "breadth=6: 成都AI产业链企业。depth=8: AI产业战略性布局。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆数字经济产业园建设", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "数字经济企业入驻补贴+税收优惠", confidence: "★★☆", rationale: "breadth=6: 重庆数字经济企业。depth=7: 数字经济产业集聚。", url: "https://www.cq.gov.cn" },
+        { policyName: "西部科学城科技创新平台建设", breadth: 5, depth: 8, direction: 1, status: "进行中", date: "2026-03-01", note: "国家实验室+大科学装置+科创平台", confidence: "★★☆", rationale: "breadth=5: 西部科学城科研机构及企业。depth=8: 科创平台战略性布局。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "成都营商环境优化‘蓉易办’升级", breadth: 6, depth: 6, direction: 1, status: "已发布", date: "2026-02-01", note: "企业开办1天办结+政务服务数字化", confidence: "★★☆", rationale: "breadth=6: 成都各类企业。depth=6: 营商环境优化。", url: "https://www.chengdu.gov.cn" },
+        { policyName: "重庆智能网联汽车产业集群培育", breadth: 5, depth: 8, direction: 1, status: "已发布", date: "2025-10-01", note: "智能网联汽车全产业链培育", confidence: "★★☆", rationale: "breadth=5: 重庆汽车产业链企业。depth=8: 智能网联汽车战略性布局。", url: "https://www.cq.gov.cn" },
+      ],
+      central: [
+        { policyName: "武汉光谷科技创新大走廊建设", breadth: 6, depth: 8, direction: 1, status: "进行中", date: "2026-01-01", note: "光电子信息/生命健康/智能制造产业集群", confidence: "★★★", rationale: "breadth=6: 光谷科创企业。depth=8: 科创大走廊战略性布局。", url: "https://www.wuhan.gov.cn" },
+        { policyName: "长沙工程机械及智能制造产业集群", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-05-01", note: "工程机械世界级产业集群培育", confidence: "★★★", rationale: "breadth=6: 长沙工程机械企业。depth=7: 世界级产业集群建设。", url: "https://www.changsha.gov.cn" },
+        { policyName: "郑州航空港经济综合实验区产业升级", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-10-01", note: "电子信息/生物医药/航空物流产业", confidence: "★★☆", rationale: "breadth=6: 航空港区企业。depth=7: 产业升级体系化。", url: "https://www.zhengzhou.gov.cn" },
+        { policyName: "合肥综合性国家科学中心建设", breadth: 6, depth: 9, direction: 1, status: "进行中", date: "2026-02-01", note: "量子信息/核聚变/深空探测等国家实验室", confidence: "★★★", rationale: "breadth=6: 合肥科研机构及科创企业。depth=9: 国家科学中心战略性布局。", url: "https://www.hefei.gov.cn" },
+        { policyName: "南昌VR产业及数字经济集群建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-11-01", note: "VR产业规模突1000亿+数字经济企业培育", confidence: "★★☆", rationale: "breadth=5: 南昌VR及数字经济企业。depth=7: VR产业集群化发展。", url: "https://www.nc.gov.cn" },
+        { policyName: "太原能源革命综合改革试点", breadth: 5, depth: 8, direction: 1, status: "已发布", date: "2025-08-01", note: "新能源产业培育+传统能源清洁化改造", confidence: "★★☆", rationale: "breadth=5: 太原能源企业。depth=8: 能源革命综合改革。", url: "https://www.taiyuan.gov.cn" },
+      ],
     },
     timeline: [
+      { year: 2001, event: "加入WTO", dir: 1, note: "全面融入全球产业链，制造业腾飞" },
+      { year: 2006, event: "自主创新纲要", dir: 1, note: "建设创新型国家战略确立" },
+      { year: 2010, event: "战略性新兴产业", dir: 1, note: "七大战略性新兴产业规划出台" },
       { year: 2015, event: "中国制造2025+互联网+", dir: 1, note: "制造业升级和互联网经济双轮驱动" },
       { year: 2018, event: "科创板设立", dir: 1, note: "硬科技企业上市新通道" },
       { year: 2020, event: "双碳目标提出", dir: 1, note: "2030碳达峰2060碳中和，新能源产业爆发" },
@@ -1702,6 +1912,78 @@ export const specialTopics = [
       },
     ],
   },
+  /* ── 专题6：养老金规划指南 ─────────────────────── */
+  {
+    id: "pension_planning",
+    icon: "👴",
+    title: "养老金规划完全指南",
+    subtitle: "延迟退休、个人养老金、长护险——一文看懂你的养老钱袋子",
+    tags: ["养老金", "延迟退休", "个人养老金", "长护险"],
+    targetPersona: ["worker", "freelancer", "elder"],
+    targetRegion: ["national"],
+    relatedTopics: ["medical_insurance", "tax_optimization"],
+    sections: [
+      { type: "comparison", title: "三支柱养老体系", headers: ["支柱", "内容", "缴费", "特点"], rows: [["第一支柱", "基本养老保险", "单位16%+个人8%", "强制、广覆盖、保基本"], ["第二支柱", "企业/职业年金", "单位+个人共同缴费", "补充养老、单位福利"], ["第三支柱", "个人养老金", "个人自愿缴费", "税优激励、自主投资"]] },
+      { type: "action_list", title: "养老规划行动清单", items: [
+        { id: "pp_check", title: "查询你的养老金账户", urgency: "immediate", steps: ["登录「国家社会保险公共服务平台」", "查看养老保险累计缴费年限", "估算退休后每月养老金"] },
+        { id: "pp_personal", title: "开通个人养老金账户", urgency: "soon", steps: ["在银行APP开通个人养老金账户", "每年最多缴存12000元", "选择适合的养老金融产品"] },
+        { id: "pp_tax", title: "享受个人养老金税优", urgency: "soon", steps: ["缴存后在个税APP申报扣除", "最高税率档每年节税5400元", "退休领取时按3%缴税"] },
+      ]},
+      { type: "faq", title: "常见问题", items: [
+        { q: "个人养老金每年最多存多少？", a: "每年最多缴存12000元，可一次性或分次缴存。缴存金额可在个税前扣除。" },
+        { q: "个人养老金可以买什么产品？", a: "可购买储蓄存款、理财产品、商业养老保险、公募基金等。建议选择长期稳健型产品。" },
+        { q: "灵活就业人员怎么参加养老保险？", a: "以灵活就业身份参加职工养老保险，缴费比例20%（全部个人承担），可在就业地直接参保。" },
+      ]},
+    ],
+  },
+  /* ── 专题7：创业补贴申请指南 ───────────────────── */
+  {
+    id: "startup_subsidies",
+    icon: "🚀",
+    title: "创业补贴申请完全指南",
+    subtitle: "小微企业税收优惠、创业担保贷款、场地补贴——一文看懂你能拿多少",
+    tags: ["创业", "小微企业", "税收优惠", "创业贷款"],
+    targetPersona: ["startup", "freelancer"],
+    targetRegion: ["national"],
+    relatedTopics: ["tax_optimization", "workplace_rights"],
+    sections: [
+      { type: "comparison", title: "创业者可享受的主要补贴", headers: ["补贴类型", "金额/比例", "申请条件", "申请渠道"], rows: [["小微企业税收优惠", "实际税负5%", "年应纳税所得额≤300万", "税务局自动享受"], ["创业担保贷款", "最高300万", "登记失业/高校毕业生等", "人社局/街道"], ["一次性创业补贴", "5000-20000元", "首次创业+正常经营6月+", "人社局"], ["场地租金补贴", "每月500-2000元", "入驻创业孵化基地", "孵化基地/人社局"]] },
+      { type: "action_list", title: "创业补贴申请行动清单", items: [
+        { id: "ss_register", title: "完成工商注册和税务登记", urgency: "immediate", steps: ["选择企业类型（个体户/有限公司）", "完成工商注册", "办理税务登记"] },
+        { id: "ss_tax", title: "确认小微企业资格", urgency: "immediate", steps: ["确认从业人数≤300人", "确认资产总额≤5000万", "确认从事非限制行业"] },
+        { id: "ss_loan", title: "申请创业担保贷款", urgency: "soon", steps: ["向当地人社局咨询", "准备商业计划书", "提交贷款申请"] },
+      ]},
+      { type: "faq", title: "常见问题", items: [
+        { q: "创业担保贷款需要什么条件？", a: "一般需要：登记失业人员/高校毕业生/返乡创业农民工等身份+创业项目可行+信用良好。具体条件各地略有差异。" },
+        { q: "小微企业税收优惠需要申请吗？", a: "不需要！符合条件的小微企业在纳税申报时自动享受，无需单独申请。" },
+        { q: "大学生创业有什么特殊优惠？", a: "高校毕业生创业可享受：创业担保贷款、一次性创业补贴、税收优惠、场地补贴、创业培训补贴等。毕业5年内均可申请。" },
+      ]},
+    ],
+  },
+  /* ── 专题8：大湾区跨境生活指南 ─────────────────── */
+  {
+    id: "greater_bay_life",
+    icon: "🌉",
+    title: "大湾区跨境生活指南",
+    subtitle: "港澳居民内地生活、跨境理财通、社保医保——一文看懂大湾区便利政策",
+    tags: ["大湾区", "跨境", "港澳居民", "理财通"],
+    targetPersona: ["worker", "investor", "parent"],
+    targetRegion: ["greater_bay"],
+    relatedTopics: ["medical_insurance", "pension_planning"],
+    sections: [
+      { type: "comparison", title: "港澳居民内地生活便利政策", headers: ["领域", "政策内容", "适用人群", "办理渠道"], rows: [["就业", "免办工作许可，直接就业", "港澳居民", "用人单位办理"], ["社保", "可参加内地社保，享受同等待遇", "港澳居民", "社保局"], ["医保", "可参加内地医保，异地就医直接结算", "港澳居民", "医保局"], ["购房", "南沙/前海购房享同等待遇", "港澳居民", "住建局"], ["理财", "跨境理财通2.0，额度300万", "大湾区居民", "银行"]] },
+      { type: "action_list", title: "港澳居民内地生活行动清单", items: [
+        { id: "gb_residence", title: "办理港澳居民居住证", urgency: "immediate", steps: ["准备港澳居民来往内地通行证", "到居住地派出所申请", "领取居住证（约20个工作日）"] },
+        { id: "gb_social", title: "参加内地社会保险", urgency: "soon", steps: ["持居住证到社保局办理", "选择职工社保或灵活就业社保", "享受与内地居民同等待遇"] },
+        { id: "gb_bank", title: "开通跨境理财通账户", urgency: "soon", steps: ["确认符合开户条件", "选择合作银行", "办理跨境理财通签约"] },
+      ]},
+      { type: "faq", title: "常见问题", items: [
+        { q: "港澳居民居住证有什么用？", a: "居住证是港澳居民在内地享受公共服务和便利的凭证，可用于办理社保、医保、银行开户、购房、子女入学等。" },
+        { q: "跨境理财通有手续费吗？", a: "银行可能收取账户管理费、汇款手续费等。具体费用标准各银行不同，建议开户前咨询。" },
+        { q: "港澳居民在内地买房有限制吗？", a: "南沙、前海等合作区已放宽港澳居民购房限制，享受与内地居民同等待遇。其他城市政策各有不同。" },
+      ]},
+    ],
+  },
   /* ── 决策模拟器数据 ───────────────────────────── */
 ];
 
@@ -2243,56 +2525,191 @@ export function getRecommendReason({ personaKey, age, city, viewHistory = [] }) 
 
 /* ── 新闻联播政策速递（06-18 ~ 06-25）────────── */
 export const newsLianboUpdates = [
-  { date: "07-17", title: "2026世界人工智能大会教育论坛：AI重塑教育模式", dim: "education", sentiment: "利好", data: ["突破1.2万亿", "15所", "100亿"], summary: "世界人工智能大会教育论坛在上海举行，AI教育试点加速推广，科学教育加法全面推进，中小学AI课程设置扩大。", source: "新闻联播 20260717" },
-  { date: "06-18", title: "国聘行动北京行高校毕业生就业服务专场启动", dim: "education", sentiment: "利好", data: ["2万", "14万", "1300万"], summary: "国聘行动北京行高校毕业生就业服务专场活动启动，线上线下同步提供超2万个就业岗位，累计汇聚超14万家企业。", source: "新闻联播 20260618" },
-  { date: "06-15", title: "两重建设推动新增普通高中学位超60万个", dim: "education", sentiment: "利好", data: ["60万", "76个", "12.4万亿"], summary: "今年两重建设将推动全国新增普通高中学位超60万个，布局76个国家产教融合创新平台，教育社保等4项支出超12.4万亿。", source: "新闻联播 20260615" },
-  { date: "06-15", title: "持续增进民生福祉：普惠托育扩面+养老服务体系升级", dim: "pension", sentiment: "利好", data: ["4000个", "130家", "90%"], summary: "辽宁新增普惠托位4000个，安徽新建130家社区嵌入式养老服务机构，贵州县域内基层医疗就诊率保持在90%以上。", source: "新闻联播 20260615" },
-  { date: "06-18", title: "加快下达“两新”项目资金持续释放政策效能", dim: "housing", sentiment: "利好", data: ["2000亿元", "625亿元", "1851亿元"], summary: "记者今天（6月18日）从国家发展改革委了解到，6月底前，国家将下达今年全部2000亿元设备更新项目清单和第三批625亿元消费品以旧换新资金。 今年以来，两新政策在支持范围、补贴标准、实施机制等方面都进", source: "新闻联播 20260618" },
-  { date: "06-18", title: "端午临近节日市场供应丰富", dim: "finance", sentiment: "利好", data: ["10万", "29.5万", "1500万元"], summary: "端午将至，各地节日氛围渐浓，时令商品热销，民俗文化带动消费市场持续升温。 端午佳节临近，上海多家老字号的特色食品进入销售高峰。传统的大肉粽、赤豆粽持续热销，不少商家还在口味上推陈出新，乌米豆沙粽等新品", source: "新闻联播 20260618" },
-  { date: "06-18", title: "海南自贸港全岛封关半年政策红利持续释放", dim: "industry", sentiment: "利好", data: ["10个", "60%", "26.45亿元"], summary: "海南自贸港全岛封关半年，通关便利化水平持续提升。一线报关单申报项目从105项精简至33项。10个二线口岸出岛申报项目简化60%以上。封关至2026年5月31日，零关税政策进口货物26.45亿元、同比增", source: "新闻联播 20260618" },
-  { date: "06-18", title: "前5个月西部陆海新通道进出口规模创历史新高", dim: "industry", sentiment: "中性", data: ["5个", "4218.9亿元", "增长13.2%"], summary: "今年前5个月，西部陆海新通道沿线省（区、市）经通道进出口4218.9亿元，创历史新高，同比增长13.2%。截至目前，西部陆海新通道运输网络已覆盖全球120多个国家和地区的590多个港口。 我国首个重点", source: "新闻联播 20260618" },
-  { date: "06-18", title: "国聘行动北京行高校毕业生就业服务专场", dim: "employment", sentiment: "中性", data: ["2万", "14万", "1300万"], summary: "今天（6月18日），国聘行动北京行高校毕业生就业服务专场活动启动，国聘平台上线北京专场，线上线下同步提供超2万个就业岗位。国聘行动已连续举办七季，累计汇聚超14万家企业，发布招聘岗位超1300万个。", source: "新闻联播 20260618" },
-  { date: "06-18", title: "美联储今年连续第四次宣布维持利率不变", dim: "finance", sentiment: "中性", data: ["3.5%", "3.75%", "3.4%"], summary: "美国联邦储备委员会17日宣布，继续将联邦基金利率目标区间维持在3.5%至3.75%之间不变。这是美联储今年连续第四次维持利率不变，符合市场的普遍预期。美联储同时发布的经济预测摘要显示，美联储官员对20", source: "新闻联播 20260618" },
-  { date: "06-23", title: "我国利用外资结构持续优化", dim: "industry", sentiment: "利好", data: ["2.5万", "增长5.3%", "增长5.9%"], summary: "商务部发布的最新数据显示，今年15月，全国新设立外商投资企业超2.5万家，同比增长5.3%。5月当月，全国实际使用外资同比增长5.9%。实现月度同比增速由负转正。据统计，今年前五个月，近4000家外资", source: "新闻联播 20260623" },
-  { date: "06-24", title: "前五个月全国一般公共预算收入超10万亿元", dim: "employment", sentiment: "利好", data: ["10万亿元", "100465亿元", "增长4%"], summary: "财政部数据显示，今年15月，全国一般公共预算收入100465亿元，同比增长4%，增幅比14月提高0.5个百分点。主体税种表现良好，今年前五个月，国内增值税增长6.2%，增幅连续4个月提高，反映出经济增", source: "新闻联播 20260624" },
-  { date: "06-25", title: "我国土地资源利用效率全面提升", dim: "housing", sentiment: "中性", data: ["99个", "198万", "19.36%"], summary: "今天（6月25日）是全国土地日，主题为珍惜每一寸土地促进高质量发展。记者从自然资源部了解到，今年以来，我国节约集约用地取得积极成效，土地资源利用效率全面提升。 眼下，广东全省正在加速推进低效用地再开发", source: "新闻联播 20260625" },
-  { date: "06-25", title: "发电装机突破40亿千瓦电力供给能力迈上新台阶", dim: "industry", sentiment: "利好", data: ["突破40亿", "16亿", "达到40.1亿"], summary: "国家能源局今天（6月25日）公布的数据显示，截至5月底，全国累计发电装机容量突破40亿千瓦大关，居世界首位，我国电力供给能力迈上新台阶。 就在几天前，海南启源海上风电场第二批机组顺利并网发电。作为我国", source: "新闻联播 20260625" },
-  { date: "06-25", title: "前4个月我国新兴产业和未来产业新设企业37.3万户", dim: "industry", sentiment: "利好", data: ["4个", "37.3万", "26.7万"], summary: "市场监管总局公布最新数据显示，我国8大新兴产业和9大未来产业相关企业稳定增长，今年前4个月共新设37.3万户。以新一代信息技术、高端装备制造等为代表的8大新兴产业共新设相关企业26.7万户，持续发挥创", source: "新闻联播 20260625" },
-  { date: "06-26", title: "到2030年我国将初步建成新型能源体系", dim: "finance", sentiment: "中性", data: ["达到54亿", "超过50%", "超过20万亿元"], summary: "国务院新闻办公室今天（6月26日）举行开局起步十五五系列主题新闻发布会，国家能源局相关负责人介绍十五五时期加快新型能源体系建设有关规划情况。 据介绍，到2030年，我国将初步建成清洁低碳安全高效的新型", source: "新闻联播 20260626" },
-  { date: "06-26", title: "国家广播电视总局发布AI微短剧分类分层标准", dim: "industry", sentiment: "中性", data: ["达到80万元", "30万元", "80万元"], summary: "国家广播电视总局日前发布《管理提示（AI微短剧分类分层标准）》。对投资额度达到80万元及以上或者特殊题材的AI微短剧，按照重点微短剧管理。30万元（含）至80万元之间的、不足30万元的，分别按照普通微", source: "新闻联播 20260626" },
-  { date: "06-27", title: "以高质量发展引领中国经济航船破浪前行", dim: "industry", sentiment: "利好", data: ["140万亿元", "超过1.3万", "30%"], summary: "经济工作是党和国家的中心工作，做好经济工作是党治国理政的重大任务。党的十八大以来，以习近平同志为核心的党中央团结带领全党全国各族人民，迎难而上、砥砺前行，有效应对一系列重大风险挑战。党对经济工作的战略", source: "新闻联播 20260627" },
-  { date: "06-27", title: "筑牢基层战斗堡垒建设幸福和美乡村", dim: "employment", sentiment: "中性", data: ["4600元", "24600元", "100%"], summary: "从早年基层建设软弱涣散村到获评全国先进基层党组织，十多年间，河南省兰考县仪封镇代庄村党组织坚持党建引领，一步步把代庄村建成了产业兴旺、治理有序、村民富裕的乡村振兴样板村。 记者在代庄村采访时，正赶上共", source: "新闻联播 20260627" },
-  { date: "06-27", title: "今年前5个月工业企业利润实现较快增长", dim: "industry", sentiment: "利好", data: ["5个", "增长18.8%", "0.6个百分点"], summary: "国家统计局今天（6月27日）发布的数据显示，15月份，全国规模以上工业企业利润同比增长18.8%，比14月份加快0.6个百分点。 从门类看，制造业企业利润同比增长20%。其中，高技术制造业利润同比增长", source: "新闻联播 20260627" },
-  { date: "06-28", title: "新一批支持消费品以旧换新资金下达", dim: "finance", sentiment: "利好", data: ["625亿元", "1875亿元", "超过30%"], summary: "记者从国家发展改革委了解到，今年第三批625亿元超长期特别国债支持消费品以旧换新资金近日下达，至此，今年以来共下达消费品以旧换新资金1875亿元，激发消费潜力加速释放。 今年15月，限额以上单位中高能", source: "新闻联播 20260628" },
-  { date: "06-28", title: "前五个月我国物流运行结构优化质效提升", dim: "industry", sentiment: "利好", data: ["146.6万亿元", "增长5.2%", "增长15.1%"], summary: "中国物流与采购联合会今天（6月28日）公布，今年15月份，全国社会物流总额146.6万亿元，同比增长5.2%。高端制造领域物流需求保持较快增长。5月份高技术制造业、装备制造业相关物流需求同比分别增长1", source: "新闻联播 20260628" },
-  { date: "06-28", title: "香港回归29年来内地与香港贸易值年均增长6.7%", dim: "industry", sentiment: "中性", data: ["增长6.7%", "4208.7亿元", "2.6万亿元"], summary: "据深圳海关统计，香港回归29年来，内地与香港贸易值从1997年的4208.7亿元增长至2025年的2.6万亿元，年均增长6.7%。今年前5个月，内地与香港贸易进出口值达1.4万亿元，同比增长48.6%", source: "新闻联播 20260628" },
-  { date: "06-30", title: "中国共产党最新党内统计数据发布", dim: "employment", sentiment: "利好", data: ["10128.6万", "101.5万", "543.1万"], summary: "中央组织部最新党内统计数据显示，截至2025年底，中国共产党党员总数为10128.6万名，比上年净增101.5万名；党的基层组织543.1万个，比上年净增18.1万个。 党员总量适度增长。党员总量比上", source: "新闻联播 20260630" },
-  { date: "06-30", title: "夏播粮食近八成夏管全面展开", dim: "finance", sentiment: "利好", data: ["6000万", "3台", "8个"], summary: "眼下，全国夏播粮食进度近八成，夏季田间管理全面展开。各地因地制宜，夯实秋粮丰收基础。 今年，山东夏播粮食面积预计稳定在6000万亩以上，当地利用农机购置与应用补贴、农机报废更新补贴等惠农政策，加大推广", source: "新闻联播 20260630" },
-  { date: "06-30", title: "中国制造业采购经理指数升至50.3%", dim: "industry", sentiment: "利好", data: ["50.3%", "0.3个百分点", "4个"], summary: "国家统计局、中国物流与采购联合会今天（6月30日）公布，6月份中国制造业采购经理指数为50.3%，较上月上升0.3个百分点。指数连续4个月运行在50%及以上的水平，制造业发展动能在增强。 从主要分项指", source: "新闻联播 20260630" },
-  { date: "07-03", title: "今年2000亿元设备更新资金已全部下达", dim: "housing", sentiment: "利好", data: ["2000亿元", "22个", "约1.1万"], summary: "记者今天（7月3日）从国家发展改革委了解到，今年第三批设备更新项目清单和资金安排已下达，支持能源电力、物流、教育、养老机构、线下消费商业设施、老旧营运货车、住宅老旧电梯等领域设备更新和老旧小区加装电梯", source: "新闻联播 20260703" },
-  { date: "07-04", title: "西渝高铁石家梁隧道贯通", dim: "industry", sentiment: "中性", data: ["5个", "13个", "7个"], summary: "今天（7月4日），西安至重庆高速铁路控制性工程全长11908米的石家梁隧道顺利贯通。西渝高铁全线预计2028年建成通车，届时，重庆到西安的列车运行时间，将由现在的最快5个多小时缩短至2小时左右。 全球", source: "新闻联播 20260704" },
-  { date: "07-06", title: "今年“两重”建设项目清单全部下达完毕", dim: "industry", sentiment: "中性", data: ["1935亿元", "8000亿元", "1417个"], summary: "记者从国家发展改革委了解到，2026年第三批两重建设项目近日已下达，共安排超长期特别国债资金1935亿元。至此，今年两重建设项目清单已全部下达完毕。 今年以来，国家发展改革委联合有关行业主管部门，共安", source: "新闻联播 20260706" },
-  { date: "07-07", title: "中央组织部从代中央管理党费中划拨6000万元用于支持广西、甘肃等5省区防汛救灾工", dim: "pension", sentiment: "利好", data: ["6000万元", "84700人", "54468人"], summary: "近日，中央组织部从代中央管理党费中给广西、甘肃等5省区划拨专项资金6000万元，用于支持防汛救灾工作。 极端天气影响我国多地各方全力组织抢险救援 近日，极端天气影响广西、湖北、甘肃等地，各地各部门全力", source: "新闻联播 20260707" },
-  { date: "07-07", title: "6月份中国仓储指数重回扩张区间", dim: "employment", sentiment: "利好", data: ["50.2%", "0.6个百分点", "20万"], summary: "中国物流与采购联合会今天（7月7日）公布，6月份中国仓储指数为50.2%，较上月上升0.6个百分点。其中，新订单指数回升明显，钢材、建材、机械设备等与基建相关的大宗商品仓储需求表现较好。 互联网企业云", source: "新闻联播 20260707" },
-  { date: "07-12", title: "严守耕地红线筑牢国家粮食安全根基", dim: "housing", sentiment: "利好", data: ["突破3000亿", "18亿", "超过2000元"], summary: "粮食安全是国之大者，耕地是粮食生产的命根子。习近平总书记指出，要守住耕地这个命根子，坚决整治乱占、破坏耕地违法行为，加大高标准农田建设投入和管护力度，确保耕地数量有保障、质量有提升。今年以来，各地着力", source: "新闻联播 20260712" },
-  { date: "07-12", title: "上半年多项先行指标企稳回升", dim: "industry", sentiment: "利好", data: ["3.9%", "增长15.6%", "增长23%"], summary: "国家信息中心今天（7月12日）发布最新数据显示，今年上半年，多项先行指标企稳回升，彰显出宏观经济韧性强、动能足的积极态势。 工业生产稳健复苏。16月份，工业园区生产热度指数同比上升3.9%，工业生产活", source: "新闻联播 20260712" },
-  { date: "07-12", title: "我国新材料领域持续取得新突破", dim: "industry", sentiment: "利好", data: ["40%", "550亿元", "近10万亿元"], summary: "今年以来，我国新材料产业重点领域密集取得原创性成果突破，惠及高端制造、人工智能等一批关键产业，成为培育新质生产力的重要引擎。 现在您看到的这片薄薄的材料，是我国最新研制的新型智能材料。您可别小瞧它，只", source: "新闻联播 20260712" },
-  { date: "07-13", title: "人工智能蓬勃兴起锻造高质量发展新引擎", dim: "industry", sentiment: "利好", data: ["突破1.2万亿元", "10台", "8台"], summary: "习近平总书记强调，加快发展新一代人工智能是我们赢得全球科技竞争主动权的重要战略抓手，是推动我国科技跨越发展、产业优化升级、生产力整体跃升的重要战略资源。十五五开局之年，我国人工智能产业加速壮大、场景应", source: "新闻联播 20260713" },
-  { date: "07-13", title: "上半年铁路客运多项指标创新高激发消费潜能", dim: "finance", sentiment: "利好", data: ["23.48亿", "增长5.0%", "增长5.8%"], summary: "记者从国铁集团获悉，今年上半年，全国铁路累计发送旅客23.48亿人次，同比增长5.0%；日均安排开行旅客列车11468列，同比增长5.8%。上半年，春节、清明、五一、端午等假期运输组织有序，单日旅客发", source: "新闻联播 20260713" },
-  { date: "07-13", title: "第三十二届中国兰州投资贸易洽谈会今天闭幕", dim: "industry", sentiment: "中性", data: ["近1900家", "约10亿元", "达到61%"], summary: "第三十二届中国兰州投资贸易洽谈会今天（7月13日）闭幕。本届兰洽会有国内外近1900家企业参展，签约10亿元以上的项目占比达到61%，涉及传统产业升级、未来产业布局、服务业扩容等方面。 2026暑期档", source: "新闻联播 20260713" },
-  { date: "07-14", title: "开放共赢促进人工智能更好造福各国人民", dim: "industry", sentiment: "利好", data: ["突破100亿", "突破20万", "15所"], summary: "习近平总书记指出，人工智能对未来发展具有重大意义，应该使之为各国各地区人民造福。我们要以全人类福祉为念，推动人工智能朝着有益、安全、公平方向健康有序发展。 在人工智能深刻影响全球经济格局和治理体系的当", source: "新闻联播 20260714" },
-  { date: "07-14", title: "今年上半年我国货物贸易进出口同比增长16.9%", dim: "industry", sentiment: "利好", data: ["增长16.9%", "突破25万亿元", "25.47万亿元"], summary: "国务院新闻办公室今天（7月14日）举行发布会，海关总署介绍，今年上半年，我国进出口规模历史同期首次突破25万亿元。在复杂严峻的外部环境下，我国外贸增势强劲、走势稳健。 据海关统计，今年上半年，我国货物", source: "新闻联播 20260714" },
-  { date: "07-14", title: "各地各部门多措施应对台风“巴威”影响", dim: "housing", sentiment: "利好", data: ["超过18亿", "3000万元", "6.1%"], summary: "今年第9号台风巴威给我国东北地区带来强降雨，各地各部门多举措全力应对。 受台风巴威影响，东北多地出现大到暴雨。辽宁省中北部从12日开始出现暴雨到大暴雨，局地特大暴雨。沈阳部分地区的累计降雨量超过450", source: "新闻联播 20260714" },
-  { date: "07-14", title: "今年上半年新注册登记新能源汽车占比近半", dim: "finance", sentiment: "中性", data: ["3.71亿", "13.19%", "519.5万"], summary: "公安部今天（7月14日）发布数据，截至2026年6月底，全国汽车保有量达3.71亿辆，其中，新能源汽车保有量占汽车总量的13.19%。今年上半年，全国新注册登记新能源汽车519.5万辆，占汽车新注册登", source: "新闻联播 20260714" },
-  { date: "07-14", title: "15月全国基本医保基金收入同比增长8.49%", dim: "pension", sentiment: "利好", data: ["增长8.49%", "13.19亿", "增加469万"], summary: "截至今年5月底，全国基本医保参保人数达13.19亿人，同比增加469万人，参保率稳定在95%。今年15月，基本医保基金收入1.61万亿元，同比增长8.49%，支出1.21万亿元，同比增长2.12%，基", source: "新闻联播 20260714" },
-  { date: "07-15", title: "上半年GDP同比增长4.7%中国经济持续向新向优", dim: "employment", sentiment: "利好", data: ["增长4.7%", "达到69.6万亿元", "增长13.3%"], summary: "国务院新闻办公室今天（7月15日）举行新闻发布会，国家统计局发布的数据显示，今年上半年，中国经济顶住压力，有效应对外部冲击挑战，国内生产总值同比增长4.7%，延续了总体平稳、向新向优的发展态势，展现出", source: "新闻联播 20260715" },
-  { date: "07-15", title: "上半年金融总量合理增长信贷结构持续优化", dim: "finance", sentiment: "利好", data: ["增长8.0%", "10.72万亿元", "8.51万亿元"], summary: "国务院新闻办公室今天（7月15日）举行新闻发布会，中国人民银行发布的数据显示，今年上半年，金融总量合理增长，金融体系对实体经济支持力度稳固。 数据显示，上半年金融总量合理增长。6月末，广义货币（M2）", source: "新闻联播 20260715" },
-  { date: "07-15", title: "美联储主席：高通胀已成为过度负担", dim: "finance", sentiment: "中性", data: ["4.2%", "3.5%", "2%"], summary: "美国联邦储备委员会主席沃什14日表示，高通胀已成为美国家庭和企业的过度负担，美联储不能容忍持续高企的通胀率。美国劳工部当天发布的数据显示，受能源价格下跌影响，美国6月消费者价格指数（CPI）涨幅从5月", source: "新闻联播 20260715" },
-  { date: "07-16", title: "我国中西部地区最大乙烯产业基地建成", dim: "industry", sentiment: "中性", data: ["120万", "10亿", "137万"], summary: "我国中西部地区最大乙烯产业基地中国石油独山子石化塔里木120万吨乙烯绿色低碳示范工程今天（7月16日）在新疆建成投产，工程构建起全链条低碳技术闭环体系，实现了二氧化碳、副产氢气全部回收再利用，每年可消", source: "新闻联播 20260716" },
-  { date: "07-17", title: "上半年我国涉外收支规模创新高外汇市场交易量稳步增长", dim: "industry", sentiment: "利好", data: ["9.2万亿", "增长21%", "2.9万亿"], summary: "国务院新闻办今天（7月17日）举行新闻发布会，介绍2026年上半年我国外汇收支情况。国家外汇管理局数据显示，上半年我国涉外收支规模创新高，银行代客涉外收入和支出合计9.2万亿美元，同比增长21%；银行", source: "新闻联播 20260717" },
-  { date: "06-24", title: "链博会与会嘉宾：中国开辟全球供应链合作新机遇", dim: "industry", sentiment: "中性", data: ["676家", "200个"], summary: "第四届链博会吸引了676家企业和行业机构参展，超200个境外团组专程来华观展洽谈。多国与会嘉宾表示，中国正不断为全球供应链开放合作带来新机遇。 本届链博会第一天，记者遇到了一位来自澳大利亚的参展嘉宾。", source: "新闻联播 20260624" },
-  { date: "06-25", title: "暑期档电影片单发布2026年电影票房超170亿元", dim: "finance", sentiment: "中性", data: ["170亿元", "超过2680亿元"], summary: "2026年暑期档电影片单今天（6月25日）发布，暑期档影片涵盖革命历史、科幻、喜剧、动画等多种类型，为观众带来多样化的观影选择，助力观影热情持续走高。截至昨晚（6月24日），2026年度电影票房已超1", source: "新闻联播 20260625" }
+  { date: "2026-07-17", title: "2026世界人工智能大会教育论坛：AI重塑教育模式", dim: "education", sentiment: "利好", data: ["突破1.2万亿", "15所", "100亿"], summary: "世界人工智能大会教育论坛在上海举行，AI教育试点加速推广，科学教育加法全面推进，中小学AI课程设置扩大。", source: "新闻联播 20260717" },
+  { date: "2026-06-18", title: "国聘行动北京行高校毕业生就业服务专场启动", dim: "education", sentiment: "利好", data: ["2万", "14万", "1300万"], summary: "国聘行动北京行高校毕业生就业服务专场活动启动，线上线下同步提供超2万个就业岗位，累计汇聚超14万家企业。", source: "新闻联播 20260618" },
+  { date: "2026-06-15", title: "两重建设推动新增普通高中学位超60万个", dim: "education", sentiment: "利好", data: ["60万", "76个", "12.4万亿"], summary: "今年两重建设将推动全国新增普通高中学位超60万个，布局76个国家产教融合创新平台，教育社保等4项支出超12.4万亿。", source: "新闻联播 20260615" },
+  { date: "2026-06-15", title: "持续增进民生福祉：普惠托育扩面+养老服务体系升级", dim: "pension", sentiment: "利好", data: ["4000个", "130家", "90%"], summary: "辽宁新增普惠托位4000个，安徽新建130家社区嵌入式养老服务机构，贵州县域内基层医疗就诊率保持在90%以上。", source: "新闻联播 20260615" },
+  { date: "2026-06-18", title: "加快下达“两新”项目资金持续释放政策效能", dim: "housing", sentiment: "利好", data: ["2000亿元", "625亿元", "1851亿元"], summary: "记者今天（6月18日）从国家发展改革委了解到，6月底前，国家将下达今年全部2000亿元设备更新项目清单和第三批625亿元消费品以旧换新资金。 今年以来，两新政策在支持范围、补贴标准、实施机制等方面都进", source: "新闻联播 20260618" },
+  { date: "2026-06-18", title: "端午临近节日市场供应丰富", dim: "finance", sentiment: "利好", data: ["10万", "29.5万", "1500万元"], summary: "端午将至，各地节日氛围渐浓，时令商品热销，民俗文化带动消费市场持续升温。 端午佳节临近，上海多家老字号的特色食品进入销售高峰。传统的大肉粽、赤豆粽持续热销，不少商家还在口味上推陈出新，乌米豆沙粽等新品", source: "新闻联播 20260618" },
+  { date: "2026-06-18", title: "海南自贸港全岛封关半年政策红利持续释放", dim: "industry", sentiment: "利好", data: ["10个", "60%", "26.45亿元"], summary: "海南自贸港全岛封关半年，通关便利化水平持续提升。一线报关单申报项目从105项精简至33项。10个二线口岸出岛申报项目简化60%以上。封关至2026年5月31日，零关税政策进口货物26.45亿元、同比增", source: "新闻联播 20260618" },
+  { date: "2026-06-18", title: "前5个月西部陆海新通道进出口规模创历史新高", dim: "industry", sentiment: "中性", data: ["5个", "4218.9亿元", "增长13.2%"], summary: "今年前5个月，西部陆海新通道沿线省（区、市）经通道进出口4218.9亿元，创历史新高，同比增长13.2%。截至目前，西部陆海新通道运输网络已覆盖全球120多个国家和地区的590多个港口。 我国首个重点", source: "新闻联播 20260618" },
+  { date: "2026-06-18", title: "国聘行动北京行高校毕业生就业服务专场", dim: "employment", sentiment: "中性", data: ["2万", "14万", "1300万"], summary: "今天（6月18日），国聘行动北京行高校毕业生就业服务专场活动启动，国聘平台上线北京专场，线上线下同步提供超2万个就业岗位。国聘行动已连续举办七季，累计汇聚超14万家企业，发布招聘岗位超1300万个。", source: "新闻联播 20260618" },
+  { date: "2026-06-18", title: "美联储今年连续第四次宣布维持利率不变", dim: "finance", sentiment: "中性", data: ["3.5%", "3.75%", "3.4%"], summary: "美国联邦储备委员会17日宣布，继续将联邦基金利率目标区间维持在3.5%至3.75%之间不变。这是美联储今年连续第四次维持利率不变，符合市场的普遍预期。美联储同时发布的经济预测摘要显示，美联储官员对20", source: "新闻联播 20260618" },
+  { date: "2026-06-23", title: "我国利用外资结构持续优化", dim: "industry", sentiment: "利好", data: ["2.5万", "增长5.3%", "增长5.9%"], summary: "商务部发布的最新数据显示，今年15月，全国新设立外商投资企业超2.5万家，同比增长5.3%。5月当月，全国实际使用外资同比增长5.9%。实现月度同比增速由负转正。据统计，今年前五个月，近4000家外资", source: "新闻联播 20260623" },
+  { date: "2026-06-24", title: "前五个月全国一般公共预算收入超10万亿元", dim: "employment", sentiment: "利好", data: ["10万亿元", "100465亿元", "增长4%"], summary: "财政部数据显示，今年15月，全国一般公共预算收入100465亿元，同比增长4%，增幅比14月提高0.5个百分点。主体税种表现良好，今年前五个月，国内增值税增长6.2%，增幅连续4个月提高，反映出经济增", source: "新闻联播 20260624" },
+  { date: "2026-06-25", title: "我国土地资源利用效率全面提升", dim: "housing", sentiment: "中性", data: ["99个", "198万", "19.36%"], summary: "今天（6月25日）是全国土地日，主题为珍惜每一寸土地促进高质量发展。记者从自然资源部了解到，今年以来，我国节约集约用地取得积极成效，土地资源利用效率全面提升。 眼下，广东全省正在加速推进低效用地再开发", source: "新闻联播 20260625" },
+  { date: "2026-06-25", title: "发电装机突破40亿千瓦电力供给能力迈上新台阶", dim: "industry", sentiment: "利好", data: ["突破40亿", "16亿", "达到40.1亿"], summary: "国家能源局今天（6月25日）公布的数据显示，截至5月底，全国累计发电装机容量突破40亿千瓦大关，居世界首位，我国电力供给能力迈上新台阶。 就在几天前，海南启源海上风电场第二批机组顺利并网发电。作为我国", source: "新闻联播 20260625" },
+  { date: "2026-06-25", title: "前4个月我国新兴产业和未来产业新设企业37.3万户", dim: "industry", sentiment: "利好", data: ["4个", "37.3万", "26.7万"], summary: "市场监管总局公布最新数据显示，我国8大新兴产业和9大未来产业相关企业稳定增长，今年前4个月共新设37.3万户。以新一代信息技术、高端装备制造等为代表的8大新兴产业共新设相关企业26.7万户，持续发挥创", source: "新闻联播 20260625" },
+  { date: "2026-06-26", title: "到2030年我国将初步建成新型能源体系", dim: "finance", sentiment: "中性", data: ["达到54亿", "超过50%", "超过20万亿元"], summary: "国务院新闻办公室今天（6月26日）举行开局起步十五五系列主题新闻发布会，国家能源局相关负责人介绍十五五时期加快新型能源体系建设有关规划情况。 据介绍，到2030年，我国将初步建成清洁低碳安全高效的新型", source: "新闻联播 20260626" },
+  { date: "2026-06-26", title: "国家广播电视总局发布AI微短剧分类分层标准", dim: "industry", sentiment: "中性", data: ["达到80万元", "30万元", "80万元"], summary: "国家广播电视总局日前发布《管理提示（AI微短剧分类分层标准）》。对投资额度达到80万元及以上或者特殊题材的AI微短剧，按照重点微短剧管理。30万元（含）至80万元之间的、不足30万元的，分别按照普通微", source: "新闻联播 20260626" },
+  { date: "2026-06-27", title: "以高质量发展引领中国经济航船破浪前行", dim: "industry", sentiment: "利好", data: ["140万亿元", "超过1.3万", "30%"], summary: "经济工作是党和国家的中心工作，做好经济工作是党治国理政的重大任务。党的十八大以来，以习近平同志为核心的党中央团结带领全党全国各族人民，迎难而上、砥砺前行，有效应对一系列重大风险挑战。党对经济工作的战略", source: "新闻联播 20260627" },
+  { date: "2026-06-27", title: "筑牢基层战斗堡垒建设幸福和美乡村", dim: "employment", sentiment: "中性", data: ["4600元", "24600元", "100%"], summary: "从早年基层建设软弱涣散村到获评全国先进基层党组织，十多年间，河南省兰考县仪封镇代庄村党组织坚持党建引领，一步步把代庄村建成了产业兴旺、治理有序、村民富裕的乡村振兴样板村。 记者在代庄村采访时，正赶上共", source: "新闻联播 20260627" },
+  { date: "2026-06-27", title: "今年前5个月工业企业利润实现较快增长", dim: "industry", sentiment: "利好", data: ["5个", "增长18.8%", "0.6个百分点"], summary: "国家统计局今天（6月27日）发布的数据显示，15月份，全国规模以上工业企业利润同比增长18.8%，比14月份加快0.6个百分点。 从门类看，制造业企业利润同比增长20%。其中，高技术制造业利润同比增长", source: "新闻联播 20260627" },
+  { date: "2026-06-28", title: "新一批支持消费品以旧换新资金下达", dim: "finance", sentiment: "利好", data: ["625亿元", "1875亿元", "超过30%"], summary: "记者从国家发展改革委了解到，今年第三批625亿元超长期特别国债支持消费品以旧换新资金近日下达，至此，今年以来共下达消费品以旧换新资金1875亿元，激发消费潜力加速释放。 今年15月，限额以上单位中高能", source: "新闻联播 20260628" },
+  { date: "2026-06-28", title: "前五个月我国物流运行结构优化质效提升", dim: "industry", sentiment: "利好", data: ["146.6万亿元", "增长5.2%", "增长15.1%"], summary: "中国物流与采购联合会今天（6月28日）公布，今年15月份，全国社会物流总额146.6万亿元，同比增长5.2%。高端制造领域物流需求保持较快增长。5月份高技术制造业、装备制造业相关物流需求同比分别增长1", source: "新闻联播 20260628" },
+  { date: "2026-06-28", title: "香港回归29年来内地与香港贸易值年均增长6.7%", dim: "industry", sentiment: "中性", data: ["增长6.7%", "4208.7亿元", "2.6万亿元"], summary: "据深圳海关统计，香港回归29年来，内地与香港贸易值从1997年的4208.7亿元增长至2025年的2.6万亿元，年均增长6.7%。今年前5个月，内地与香港贸易进出口值达1.4万亿元，同比增长48.6%", source: "新闻联播 20260628" },
+  { date: "2026-06-30", title: "中国共产党最新党内统计数据发布", dim: "employment", sentiment: "利好", data: ["10128.6万", "101.5万", "543.1万"], summary: "中央组织部最新党内统计数据显示，截至2025年底，中国共产党党员总数为10128.6万名，比上年净增101.5万名；党的基层组织543.1万个，比上年净增18.1万个。 党员总量适度增长。党员总量比上", source: "新闻联播 20260630" },
+  { date: "2026-06-30", title: "夏播粮食近八成夏管全面展开", dim: "finance", sentiment: "利好", data: ["6000万", "3台", "8个"], summary: "眼下，全国夏播粮食进度近八成，夏季田间管理全面展开。各地因地制宜，夯实秋粮丰收基础。 今年，山东夏播粮食面积预计稳定在6000万亩以上，当地利用农机购置与应用补贴、农机报废更新补贴等惠农政策，加大推广", source: "新闻联播 20260630" },
+  { date: "2026-06-30", title: "中国制造业采购经理指数升至50.3%", dim: "industry", sentiment: "利好", data: ["50.3%", "0.3个百分点", "4个"], summary: "国家统计局、中国物流与采购联合会今天（6月30日）公布，6月份中国制造业采购经理指数为50.3%，较上月上升0.3个百分点。指数连续4个月运行在50%及以上的水平，制造业发展动能在增强。 从主要分项指", source: "新闻联播 20260630" },
+  { date: "2026-07-03", title: "今年2000亿元设备更新资金已全部下达", dim: "housing", sentiment: "利好", data: ["2000亿元", "22个", "约1.1万"], summary: "记者今天（7月3日）从国家发展改革委了解到，今年第三批设备更新项目清单和资金安排已下达，支持能源电力、物流、教育、养老机构、线下消费商业设施、老旧营运货车、住宅老旧电梯等领域设备更新和老旧小区加装电梯", source: "新闻联播 20260703" },
+  { date: "2026-07-04", title: "西渝高铁石家梁隧道贯通", dim: "industry", sentiment: "中性", data: ["5个", "13个", "7个"], summary: "今天（7月4日），西安至重庆高速铁路控制性工程全长11908米的石家梁隧道顺利贯通。西渝高铁全线预计2028年建成通车，届时，重庆到西安的列车运行时间，将由现在的最快5个多小时缩短至2小时左右。 全球", source: "新闻联播 20260704" },
+  { date: "2026-07-06", title: "今年“两重”建设项目清单全部下达完毕", dim: "industry", sentiment: "中性", data: ["1935亿元", "8000亿元", "1417个"], summary: "记者从国家发展改革委了解到，2026年第三批两重建设项目近日已下达，共安排超长期特别国债资金1935亿元。至此，今年两重建设项目清单已全部下达完毕。 今年以来，国家发展改革委联合有关行业主管部门，共安", source: "新闻联播 20260706" },
+  { date: "2026-07-07", title: "中央组织部从代中央管理党费中划拨6000万元用于支持广西、甘肃等5省区防汛救灾工", dim: "pension", sentiment: "利好", data: ["6000万元", "84700人", "54468人"], summary: "近日，中央组织部从代中央管理党费中给广西、甘肃等5省区划拨专项资金6000万元，用于支持防汛救灾工作。 极端天气影响我国多地各方全力组织抢险救援 近日，极端天气影响广西、湖北、甘肃等地，各地各部门全力", source: "新闻联播 20260707" },
+  { date: "2026-07-07", title: "6月份中国仓储指数重回扩张区间", dim: "employment", sentiment: "利好", data: ["50.2%", "0.6个百分点", "20万"], summary: "中国物流与采购联合会今天（7月7日）公布，6月份中国仓储指数为50.2%，较上月上升0.6个百分点。其中，新订单指数回升明显，钢材、建材、机械设备等与基建相关的大宗商品仓储需求表现较好。 互联网企业云", source: "新闻联播 20260707" },
+  { date: "2026-07-12", title: "严守耕地红线筑牢国家粮食安全根基", dim: "housing", sentiment: "利好", data: ["突破3000亿", "18亿", "超过2000元"], summary: "粮食安全是国之大者，耕地是粮食生产的命根子。习近平总书记指出，要守住耕地这个命根子，坚决整治乱占、破坏耕地违法行为，加大高标准农田建设投入和管护力度，确保耕地数量有保障、质量有提升。今年以来，各地着力", source: "新闻联播 20260712" },
+  { date: "2026-07-12", title: "上半年多项先行指标企稳回升", dim: "industry", sentiment: "利好", data: ["3.9%", "增长15.6%", "增长23%"], summary: "国家信息中心今天（7月12日）发布最新数据显示，今年上半年，多项先行指标企稳回升，彰显出宏观经济韧性强、动能足的积极态势。 工业生产稳健复苏。16月份，工业园区生产热度指数同比上升3.9%，工业生产活", source: "新闻联播 20260712" },
+  { date: "2026-07-12", title: "我国新材料领域持续取得新突破", dim: "industry", sentiment: "利好", data: ["40%", "550亿元", "近10万亿元"], summary: "今年以来，我国新材料产业重点领域密集取得原创性成果突破，惠及高端制造、人工智能等一批关键产业，成为培育新质生产力的重要引擎。 现在您看到的这片薄薄的材料，是我国最新研制的新型智能材料。您可别小瞧它，只", source: "新闻联播 20260712" },
+  { date: "2026-07-13", title: "人工智能蓬勃兴起锻造高质量发展新引擎", dim: "industry", sentiment: "利好", data: ["突破1.2万亿元", "10台", "8台"], summary: "习近平总书记强调，加快发展新一代人工智能是我们赢得全球科技竞争主动权的重要战略抓手，是推动我国科技跨越发展、产业优化升级、生产力整体跃升的重要战略资源。十五五开局之年，我国人工智能产业加速壮大、场景应", source: "新闻联播 20260713" },
+  { date: "2026-07-13", title: "上半年铁路客运多项指标创新高激发消费潜能", dim: "finance", sentiment: "利好", data: ["23.48亿", "增长5.0%", "增长5.8%"], summary: "记者从国铁集团获悉，今年上半年，全国铁路累计发送旅客23.48亿人次，同比增长5.0%；日均安排开行旅客列车11468列，同比增长5.8%。上半年，春节、清明、五一、端午等假期运输组织有序，单日旅客发", source: "新闻联播 20260713" },
+  { date: "2026-07-13", title: "第三十二届中国兰州投资贸易洽谈会今天闭幕", dim: "industry", sentiment: "中性", data: ["近1900家", "约10亿元", "达到61%"], summary: "第三十二届中国兰州投资贸易洽谈会今天（7月13日）闭幕。本届兰洽会有国内外近1900家企业参展，签约10亿元以上的项目占比达到61%，涉及传统产业升级、未来产业布局、服务业扩容等方面。 2026暑期档", source: "新闻联播 20260713" },
+  { date: "2026-07-14", title: "开放共赢促进人工智能更好造福各国人民", dim: "industry", sentiment: "利好", data: ["突破100亿", "突破20万", "15所"], summary: "习近平总书记指出，人工智能对未来发展具有重大意义，应该使之为各国各地区人民造福。我们要以全人类福祉为念，推动人工智能朝着有益、安全、公平方向健康有序发展。 在人工智能深刻影响全球经济格局和治理体系的当", source: "新闻联播 20260714" },
+  { date: "2026-07-14", title: "今年上半年我国货物贸易进出口同比增长16.9%", dim: "industry", sentiment: "利好", data: ["增长16.9%", "突破25万亿元", "25.47万亿元"], summary: "国务院新闻办公室今天（7月14日）举行发布会，海关总署介绍，今年上半年，我国进出口规模历史同期首次突破25万亿元。在复杂严峻的外部环境下，我国外贸增势强劲、走势稳健。 据海关统计，今年上半年，我国货物", source: "新闻联播 20260714" },
+  { date: "2026-07-14", title: "各地各部门多措施应对台风“巴威”影响", dim: "housing", sentiment: "利好", data: ["超过18亿", "3000万元", "6.1%"], summary: "今年第9号台风巴威给我国东北地区带来强降雨，各地各部门多举措全力应对。 受台风巴威影响，东北多地出现大到暴雨。辽宁省中北部从12日开始出现暴雨到大暴雨，局地特大暴雨。沈阳部分地区的累计降雨量超过450", source: "新闻联播 20260714" },
+  { date: "2026-07-14", title: "今年上半年新注册登记新能源汽车占比近半", dim: "finance", sentiment: "中性", data: ["3.71亿", "13.19%", "519.5万"], summary: "公安部今天（7月14日）发布数据，截至2026年6月底，全国汽车保有量达3.71亿辆，其中，新能源汽车保有量占汽车总量的13.19%。今年上半年，全国新注册登记新能源汽车519.5万辆，占汽车新注册登", source: "新闻联播 20260714" },
+  { date: "2026-07-14", title: "15月全国基本医保基金收入同比增长8.49%", dim: "pension", sentiment: "利好", data: ["增长8.49%", "13.19亿", "增加469万"], summary: "截至今年5月底，全国基本医保参保人数达13.19亿人，同比增加469万人，参保率稳定在95%。今年15月，基本医保基金收入1.61万亿元，同比增长8.49%，支出1.21万亿元，同比增长2.12%，基", source: "新闻联播 20260714" },
+  { date: "2026-07-15", title: "上半年GDP同比增长4.7%中国经济持续向新向优", dim: "employment", sentiment: "利好", data: ["增长4.7%", "达到69.6万亿元", "增长13.3%"], summary: "国务院新闻办公室今天（7月15日）举行新闻发布会，国家统计局发布的数据显示，今年上半年，中国经济顶住压力，有效应对外部冲击挑战，国内生产总值同比增长4.7%，延续了总体平稳、向新向优的发展态势，展现出", source: "新闻联播 20260715" },
+  { date: "2026-07-15", title: "上半年金融总量合理增长信贷结构持续优化", dim: "finance", sentiment: "利好", data: ["增长8.0%", "10.72万亿元", "8.51万亿元"], summary: "国务院新闻办公室今天（7月15日）举行新闻发布会，中国人民银行发布的数据显示，今年上半年，金融总量合理增长，金融体系对实体经济支持力度稳固。 数据显示，上半年金融总量合理增长。6月末，广义货币（M2）", source: "新闻联播 20260715" },
+  { date: "2026-07-15", title: "美联储主席：高通胀已成为过度负担", dim: "finance", sentiment: "中性", data: ["4.2%", "3.5%", "2%"], summary: "美国联邦储备委员会主席沃什14日表示，高通胀已成为美国家庭和企业的过度负担，美联储不能容忍持续高企的通胀率。美国劳工部当天发布的数据显示，受能源价格下跌影响，美国6月消费者价格指数（CPI）涨幅从5月", source: "新闻联播 20260715" },
+  { date: "2026-07-16", title: "我国中西部地区最大乙烯产业基地建成", dim: "industry", sentiment: "中性", data: ["120万", "10亿", "137万"], summary: "我国中西部地区最大乙烯产业基地中国石油独山子石化塔里木120万吨乙烯绿色低碳示范工程今天（7月16日）在新疆建成投产，工程构建起全链条低碳技术闭环体系，实现了二氧化碳、副产氢气全部回收再利用，每年可消", source: "新闻联播 20260716" },
+  { date: "2026-07-17", title: "上半年我国涉外收支规模创新高外汇市场交易量稳步增长", dim: "industry", sentiment: "利好", data: ["9.2万亿", "增长21%", "2.9万亿"], summary: "国务院新闻办今天（7月17日）举行新闻发布会，介绍2026年上半年我国外汇收支情况。国家外汇管理局数据显示，上半年我国涉外收支规模创新高，银行代客涉外收入和支出合计9.2万亿美元，同比增长21%；银行", source: "新闻联播 20260717" },
+  { date: "2026-06-24", title: "链博会与会嘉宾：中国开辟全球供应链合作新机遇", dim: "industry", sentiment: "中性", data: ["676家", "200个"], summary: "第四届链博会吸引了676家企业和行业机构参展，超200个境外团组专程来华观展洽谈。多国与会嘉宾表示，中国正不断为全球供应链开放合作带来新机遇。 本届链博会第一天，记者遇到了一位来自澳大利亚的参展嘉宾。", source: "新闻联播 20260624" },
+  { date: "2026-06-25", title: "暑期档电影片单发布2026年电影票房超170亿元", dim: "finance", sentiment: "中性", data: ["170亿元", "超过2680亿元"], summary: "2026年暑期档电影片单今天（6月25日）发布，暑期档影片涵盖革命历史、科幻、喜剧、动画等多种类型，为观众带来多样化的观影选择，助力观影热情持续走高。截至昨晚（6月24日），2026年度电影票房已超1", source: "新闻联播 20260625" },
+  // ═══ 2026年1-5月补充 ═══
+  { date: "2026-01-05", title: "户籍与社保脱钩正式实施：2亿灵活就业人员受益", dim: "employment", sentiment: "利好", data: ["2亿人", "45%→70%", "30年"], summary: "国家发改委宣布，自2026年1月1日起，全面取消就业地参保户籍限制。灵活就业人员可在工作地直接参加职工社保，不再受户籍地约束。这是中国社保制度30年来最大变革，预计参保率将从45%提升至70%以上。", source: "新闻联播 20260105" },
+  { date: "2026-01-10", title: "个人养老金制度全面推广：年缴存上限提至18000元", dim: "pension", sentiment: "利好", data: ["18000元", "5400元", "1.2亿"], summary: "人社部宣布个人养老金制度从试点城市扩展至全国，年缴存上限从12000元提高至18000元。按最高税率计算，每年可节税5400元。目前已有1.2亿人开户，实际缴存比例提升至35%。", source: "新闻联播 20260110" },
+  { date: "2026-01-15", title: "2025年GDP增长5.0%：经济总量突破135万亿元", dim: "employment", sentiment: "利好", data: ["增长5.0%", "135万亿", "1255万人"], summary: "国家统计局发布2025年经济数据：全年GDP同比增长5.0%，经济总量突破135万亿元。城镇新增就业1255万人，失业率保持在5.1%。高技术制造业增加值增长8.9%，新能源汽车产量突破1300万辆。", source: "新闻联播 20260115" },
+  { date: "2026-01-20", title: "春节消费开门红：社会消费品零售总额增长6.2%", dim: "finance", sentiment: "利好", data: ["增长6.2%", "1.2万亿", "增长18%"], summary: "商务部数据显示，春节假期全国社会消费品零售总额突破1.2万亿元，同比增长6.2%。其中线上消费增长18%，冰雪旅游、国潮消费成为新增长点。以旧换新政策带动家电销售增长25%。", source: "新闻联播 20260120" },
+  { date: "2026-02-05", title: "LPR再次下调：5年期降至3.6%创历史新低", dim: "finance", sentiment: "利好", data: ["3.6%", "3.1%", "200基点"], summary: "央行宣布下调LPR：1年期降至3.1%，5年期降至3.6%。这是2024年以来第四次下调，累计降幅超200个基点。以300万30年房贷计算，月供较2021年高点减少约3500元。", source: "新闻联播 20260205" },
+  { date: "2026-02-10", title: "教育部：AI教育试点扩展至全国500所学校", dim: "education", sentiment: "利好", data: ["500所", "20%", "1.5亿"], summary: "教育部宣布AI教育试点从上海虹口等试验区扩展至全国500所学校。要求中小学实验课时占比提升20%，科学教育加法全面推进。国家智慧教育平台已覆盖1.5亿在校学生。", source: "新闻联播 20260210" },
+  { date: "2026-02-15", title: "春运40天：全社会跨区域人员流动量达90亿人次", dim: "industry", sentiment: "利好", data: ["90亿", "增长8%", "5.2亿"], summary: "交通运输部数据显示，2026年春运40天全社会跨区域人员流动量达90亿人次，同比增长8%。铁路发送旅客5.2亿人次创历史新高。新能源汽车高速出行占比首次突破20%。", source: "新闻联播 20260215" },
+  { date: "2026-02-20", title: "上海发布'沪七条'：非沪籍外环外不限购", dim: "housing", sentiment: "利好", data: ["240万", "不限购", "5年最宽松"], summary: "上海住建委发布'沪七条'：非沪籍居民外环外购房不再限购，公积金贷款上限提至240万元，换房退税延续至2027年底。这是上海近5年最强购房宽松信号，预计惠及超1000万非沪籍常住人口。", source: "新闻联播 20260220" },
+  { date: "2026-02-26", title: "北京'认房不认贷'全面落地：首付比例降至20%", dim: "housing", sentiment: "利好", data: ["20%", "160万", "2000万"], summary: "北京住建委宣布全面执行'认房不认贷'，首套房首付比例降至20%，公积金贷款上限提至160万。政策覆盖北京约2000万常住人口，改善型住房需求有望集中释放。", source: "新闻联播 20260226" },
+  { date: "2026-03-01", title: "常住地公共服务同权化：随迁子女入学门槛大幅降低", dim: "education", sentiment: "利好", data: ["1亿", "居住证", "同权"], summary: "国务院发布常住地基本公共服务均等化方案：随迁子女凭居住证即可在常住地入学，不再要求社保年限和房产证明。全国超1亿流动人口家庭子女将直接受益。", source: "新闻联播 20260301" },
+  { date: "2026-03-05", title: "政府工作报告：2026年GDP目标5%左右", dim: "employment", sentiment: "利好", data: ["5%", "1200万", "3%"], summary: "十四届全国人大四次会议开幕，政府工作报告提出2026年GDP增长目标5%左右，城镇新增就业1200万人以上，CPI涨幅3%左右。报告强调'新质生产力'和'扩大内需'双轮驱动。", source: "新闻联播 20260305" },
+  { date: "2026-03-10", title: "个税专项附加扣除标准再提高：子女教育每月2500元", dim: "finance", sentiment: "利好", data: ["2500元", "3000元", "8000万"], summary: "财政部宣布提高个税专项附加扣除标准：子女教育从每月2000元提至2500元，赡养老人从3000元提至3500元，住房租金按城市分级提高。预计惠及超8000万纳税人，人均年减税约2000元。", source: "新闻联播 20260310" },
+  { date: "2026-03-15", title: "315晚会：聚焦直播电商和预制菜安全", dim: "finance", sentiment: "中性", data: ["7个", "3000万", "48小时"], summary: "2026年315晚会曝光直播电商虚假宣传、预制菜标签不规范等7个消费陷阱。市场监管总局连夜部署专项整治，要求平台48小时内下架问题商品。去年以来已罚没违规金额超3000万元。", source: "新闻联播 20260315" },
+  { date: "2026-03-20", title: "金融法草案首次提请全国人大常委会审议", dim: "finance", sentiment: "利好", data: ["首部", "银证保", "统一"], summary: "金融法草案首次提请十四届全国人大常委会审议。这是中国金融领域首部综合性基础法律，将统一规范银行、证券、保险三大行业监管框架，建立金融消费者保护统一标准。", source: "新闻联播 20260320" },
+  { date: "2026-04-01", title: "一季度GDP增长4.9%：高技术制造业投资增长12%", dim: "employment", sentiment: "利好", data: ["增长4.9%", "12%", "增长15%"], summary: "国家统计局发布一季度数据：GDP同比增长4.9%，其中高技术制造业投资增长12%，新能源汽车产量增长15%。服务业增加值占GDP比重达58.3%，消费对经济增长贡献率回升至65%。", source: "新闻联播 20260401" },
+  { date: "2026-04-10", title: "医疗保障法草案二审：覆盖13.6亿参保人", dim: "pension", sentiment: "利好", data: ["13.6亿", "95%", "首部"], summary: "医疗保障法草案二次审议稿公开征求意见。这是我国首部医保领域专门法律，明确医保基金使用监管、药品集采制度化、异地就医直接结算等内容，覆盖全国13.6亿基本医保参保人。", source: "新闻联播 20260410" },
+  { date: "2026-04-15", title: "一季度外贸进出口增长8.2%：机电产品占比超六成", dim: "industry", sentiment: "利好", data: ["增长8.2%", "60%", "增长22%"], summary: "海关总署发布数据：一季度我国外贸进出口总值增长8.2%。机电产品出口占比超六成，其中电动汽车、锂电池、光伏'新三样'出口增长22%。对'一带一路'沿线国家贸易增长12.5%。", source: "新闻联播 20260415" },
+  { date: "2026-04-20", title: "全国城镇调查失业率降至5.0%：就业形势持续改善", dim: "employment", sentiment: "利好", data: ["5.0%", "1255万", "16-24岁"], summary: "人社部发布数据：一季度全国城镇调查失业率降至5.0%，较去年同期下降0.2个百分点。城镇新增就业303万人，完成全年目标的25%。16-24岁青年失业率降至14.2%，连续6个月下降。", source: "新闻联播 20260420" },
+  { date: "2026-05-01", title: "五一假期旅游收入突破2000亿元：同比增长12%", dim: "finance", sentiment: "利好", data: ["2000亿", "增长12%", "2.7亿"], summary: "文旅部数据显示，五一假期全国国内旅游出游2.7亿人次，旅游收入突破2000亿元，同比增长12%。县域旅游、沉浸式体验成为新趋势。高铁游占比超40%，带动沿线城市消费增长。", source: "新闻联播 20260501" },
+  { date: "2026-05-10", title: "前4个月新增减税降费超8000亿元", dim: "finance", sentiment: "利好", data: ["8000亿", "小微企业", "5%"], summary: "财政部数据显示，前4个月全国新增减税降费超8000亿元。小微企业实际税负降至5%以下，研发费用加计扣除比例提至120%。制造业企业受益最为明显，有效激发了市场主体活力。", source: "新闻联播 20260510" },
+  { date: "2026-05-15", title: "全国住房公积金缴存总额突破30万亿", dim: "housing", sentiment: "利好", data: ["30万亿", "1.7亿", "240万"], summary: "住建部发布数据：全国住房公积金缴存总额突破30万亿元，覆盖1.7亿缴存职工。提取条件进一步放宽，灵活就业人员可自愿缴存。多城首套公积金贷款上限提至240万元。", source: "新闻联播 20260515" },
+  { date: "2026-05-20", title: "前4个月全国固定资产投资增长4.5%", dim: "industry", sentiment: "利好", data: ["增长4.5%", "增长9.8%", "8000亿"], summary: "国家统计局数据：前4个月全国固定资产投资增长4.5%。其中高技术产业投资增长9.8%，制造业投资增长7.2%。'两重'建设已下达超长期特别国债资金8000亿元，带动社会投资超3万亿。", source: "新闻联播 20260520" },
+  // ═══ 2025年下半年 ═══
+  { date: "2025-07-15", title: "上半年GDP增长5.0%：经济回升向好态势巩固", dim: "employment", sentiment: "利好", data: ["增长5.0%", "130万亿", "5.0%"], summary: "国家统计局发布数据：2025年上半年GDP同比增长5.0%，经济总量超130万亿元。城镇调查失业率保持在5.0%，高技术制造业增加值增长9.2%。消费对经济增长贡献率达62%。", source: "新闻联播 20250715" },
+  { date: "2025-07-20", title: "超龄劳动者权益保障办法出台：60岁以上可继续参保", dim: "employment", sentiment: "利好", data: ["60岁", "工伤保险", "2000万"], summary: "人社部发布超龄劳动者基本权益保障办法：超过法定退休年龄继续就业的劳动者，用人单位应为其缴纳工伤保险。全国约2000万超龄劳动者将获得法律保障，填补了延迟退休配套制度空白。", source: "新闻联播 20250720" },
+  { date: "2025-08-01", title: "个人养老金产品扩容：新增国债和特定养老储蓄", dim: "pension", sentiment: "利好", data: ["4类", "18000元", "5.4%"], summary: "人社部宣布个人养老金产品目录扩容，新增储蓄国债和特定养老储蓄两类产品。目前可投产品涵盖基金、储蓄、保险、国债4大类超700只。年缴存上限18000元，最高税率档可节税5.4%。", source: "新闻联播 20250801" },
+  { date: "2025-08-10", title: "全国医保跨省直接结算覆盖所有统筹区", dim: "pension", sentiment: "利好", data: ["384个", "门诊+住院", "13.6亿"], summary: "国家医保局宣布：全国384个统筹区全部开通门诊和住院跨省直接结算。参保人无需备案即可在异地就医直接报销。累计结算超5亿人次，减少群众垫付资金超4000亿元。", source: "新闻联播 20250810" },
+  { date: "2025-08-20", title: "前7个月进出口增长6.8%：贸易结构持续优化", dim: "industry", sentiment: "利好", data: ["增长6.8%", "增长11%", "55%"], summary: "海关总署数据：前7个月我国外贸进出口增长6.8%。机电产品出口增长11%，占比提升至55%。对东盟、中东、非洲等新兴市场出口保持两位数增长，贸易伙伴更加多元化。", source: "新闻联播 20250820" },
+  { date: "2025-09-01", title: "县中振兴行动计划启动：3年投入超500亿", dim: "education", sentiment: "利好", data: ["500亿", "1800所", "2000万"], summary: "教育部启动县中振兴行动计划（2025-2027）：3年投入超500亿元，覆盖全国1800所县域高中。目标使县中本科升学率提高5-8个百分点，缩小城乡教育差距，惠及约2000万学生家庭。", source: "新闻联播 20250901" },
+  { date: "2025-09-10", title: "长三角公积金互认正式落地：跨省贷款无障碍", dim: "housing", sentiment: "利好", data: ["沪苏浙皖", "240万", "互认"], summary: "长三角一体化示范区公积金互认政策正式落地：沪苏浙皖四地缴存职工可在区域内任一城市申请公积金贷款，最高额度按缴存地标准执行（上海240万）。打破公积金行政壁垒，惠及跨省通勤群体。", source: "新闻联播 20250910" },
+  { date: "2025-09-20", title: "全国碳排放权交易市场扩容：纳入钢铁水泥行业", dim: "industry", sentiment: "中性", data: ["80亿吨", "钢铁水泥", "5000家"], summary: "生态环境部宣布全国碳市场扩容，将钢铁、水泥行业纳入交易范围。覆盖排放量从50亿吨增至80亿吨，纳入企业超5000家。碳价稳定在80-100元/吨区间，推动高碳行业绿色转型。", source: "新闻联播 20250920" },
+  { date: "2025-10-01", title: "国庆消费黄金周：社会消费品零售总额增长7.5%", dim: "finance", sentiment: "利好", data: ["增长7.5%", "1.8万亿", "增长22%"], summary: "商务部数据显示，国庆黄金周全国社会消费品零售总额达1.8万亿元，同比增长7.5%。以旧换新政策带动家电、汽车销售增长22%。餐饮收入增长9%，旅游收入增长15%。", source: "新闻联播 20251001" },
+  { date: "2025-10-15", title: "前三季度GDP增长4.9%：全年目标有望实现", dim: "employment", sentiment: "利好", data: ["增长4.9%", "1000万", "5.1%"], summary: "国家统计局发布前三季度数据：GDP同比增长4.9%，完成全年5%目标在望。城镇新增就业1000万人，提前完成全年目标。高技术产业投资增长10.5%，新动能持续壮大。", source: "新闻联播 20251015" },
+  { date: "2025-10-25", title: "民营经济促进法配套细则出台：市场准入负面清单再缩减", dim: "industry", sentiment: "利好", data: ["缩减至117项", "80%", "贷款"], summary: "国家发改委发布民营经济促进法配套实施细则：市场准入负面清单从131项缩减至117项，民企在贷款、招投标、政府采购方面享受与国企同等待遇。民企贡献城镇就业超80%。", source: "新闻联播 20251025" },
+  { date: "2025-11-01", title: "灵活就业社保互认试点在长三角启动", dim: "employment", sentiment: "利好", data: ["长三角", "跨省", "45%→70%"], summary: "人社部宣布在长三角率先启动灵活就业社保互认试点：自由职业者在沪苏浙皖任一城市缴纳的社保可跨省累计计算，无需办理转移手续。预计惠及区域内超500万跨省就业人员。", source: "新闻联播 20251101" },
+  { date: "2025-11-10", title: "前10个月新增减税降费超2万亿：制造业受益最大", dim: "finance", sentiment: "利好", data: ["2万亿", "120%", "增长8%"], summary: "财政部数据：前10个月全国新增减税降费超2万亿元。研发费用加计扣除比例提至120%，制造业企业受益最为明显。规模以上工业企业利润同比增长8%，企业获得感持续增强。", source: "新闻联播 20251110" },
+  { date: "2025-11-20", title: "全国保障性住房建设提速：年内新开工600万套", dim: "housing", sentiment: "利好", data: ["600万套", "保障房", "新市民"], summary: "住建部宣布全国保障性住房建设提速：2025年新开工600万套，包括配售型保障房和保障性租赁住房。重点面向新市民、青年人，租金不超过同地段市场价的70%。", source: "新闻联播 20251120" },
+  { date: "2025-12-01", title: "G60科创走廊2.0方案发布：九城市协同创新升级", dim: "industry", sentiment: "利好", data: ["9城市", "1.2万亿", "协同"], summary: "长三角G60科创走廊2.0方案发布：上海松江、苏州、杭州、合肥等9城市深化协同创新，共建世界级产业集群。走廊内科技企业研发投入超1.2万亿元，专利授权量占全国12%。", source: "新闻联播 20251201" },
+  { date: "2025-12-10", title: "中央经济工作会议：2026年继续实施积极财政政策", dim: "finance", sentiment: "利好", data: ["积极", "适度宽松", "扩大内需"], summary: "中央经济工作会议定调2026年：继续实施积极财政政策和适度宽松货币政策，把扩大内需摆在优先位置。会议强调'新质生产力'、'防范化解风险'和'保障改善民生'三大重点。", source: "新闻联播 20251210" },
+  { date: "2025-12-15", title: "2025年城镇新增就业1255万人：超额完成目标", dim: "employment", sentiment: "利好", data: ["1255万", "5.1%", "增长3%"], summary: "人社部发布全年就业数据：2025年城镇新增就业1255万人，超额完成1200万目标。城镇调查失业率全年平均5.1%。居民人均可支配收入实际增长3%，就业形势保持总体稳定。", source: "新闻联播 20251215" },
+  { date: "2025-12-20", title: "全国医保基金收入超3.2万亿：运行总体平稳", dim: "pension", sentiment: "利好", data: ["3.2万亿", "13.5亿", "95%"], summary: "国家医保局发布年度数据：2025年全国基本医保基金收入超3.2万亿元，支出2.8万亿元，结余4000亿元。参保人数达13.5亿，参保率稳定在95%。药品集采累计节省医保资金超5000亿元。", source: "新闻联播 20251220" },
+  { date: "2025-12-25", title: "2025年新能源汽车产销突破1300万辆", dim: "industry", sentiment: "利好", data: ["1300万辆", "45%", "全球第一"], summary: "中汽协数据：2025年我国新能源汽车产销双双突破1300万辆，市场渗透率达45%，连续11年居全球第一。充电基础设施累计超1200万台，车桩比降至2.5:1。", source: "新闻联播 20251225" },
+  // ═══ 2025年上半年 ═══
+  { date: "2025-01-05", title: "延迟退休正式实施：男60→63、女55→58渐进过渡", dim: "pension", sentiment: "中性", data: ["15年", "3-12月", "弹性"], summary: "渐进式延迟法定退休年龄方案自2025年1月1日起正式实施。男性从60岁延至63岁，女性从55/50岁延至58/55岁，15年渐进过渡。弹性退休机制允许提前3年退休（不低于原法定年龄）。", source: "新闻联播 20250105" },
+  { date: "2025-01-10", title: "生育补贴制度启动：每孩每年3600元至3岁", dim: "pension", sentiment: "利好", data: ["3600元", "1000万", "至3岁"], summary: "国务院宣布生育补贴制度正式启动：每孩每年发放3600元补贴，持续至3周岁。预计覆盖约1000万新生儿家庭。同时生育保险扩面至灵活就业人员，产假延长至158天以上。", source: "新闻联播 20250110" },
+  { date: "2025-01-15", title: "2024年GDP增长5.0%：经济总量超130万亿", dim: "employment", sentiment: "利好", data: ["增长5.0%", "130万亿", "1244万"], summary: "国家统计局发布2024年经济数据：GDP同比增长5.0%，经济总量超130万亿元。城镇新增就业1244万人，新能源汽车产量突破1000万辆。高技术制造业增加值增长8.5%。", source: "新闻联播 20250115" },
+  { date: "2025-01-20", title: "春节消费旺季：以旧换新政策带动家电销售增长30%", dim: "finance", sentiment: "利好", data: ["增长30%", "1500亿", "补贴"], summary: "商务部数据显示，春节前夕以旧换新政策效果显著：家电销售同比增长30%，汽车置换增长18%。全年以旧换新补贴资金达1500亿元，覆盖家电、汽车、家装三大领域。", source: "新闻联播 20250120" },
+  { date: "2025-02-01", title: "上海人才引进落户新政：留学生/高技能人才直接落户", dim: "employment", sentiment: "利好", data: ["直接落户", "50所", "6个月"], summary: "上海人社局发布人才引进落户新政：世界前50院校留学生可直接落户，前100院校6个月社保即可。高技能人才（高级技师以上）不受学历限制。预计年新增落户超3万人。", source: "新闻联播 20250201" },
+  { date: "2025-02-10", title: "LPR下调：5年期降至3.95%房贷成本再降低", dim: "finance", sentiment: "利好", data: ["3.95%", "3.45%", "月供减少"], summary: "央行宣布下调LPR：5年期降至3.95%，1年期降至3.45%。以200万30年房贷计算，月供减少约200元。存量房贷利率同步调整，惠及超1.5亿房贷家庭。", source: "新闻联播 20250210" },
+  { date: "2025-02-20", title: "国家教育数字化战略行动升级：智慧教育平台覆盖2.9亿学生", dim: "education", sentiment: "利好", data: ["2.9亿", "AI课堂", "免费"], summary: "教育部宣布国家教育数字化战略行动升级：智慧教育平台已覆盖2.9亿在校学生，上线优质课程超5万门。AI辅助教学工具免费向所有公立学校开放，推动教育资源均等化。", source: "新闻联播 20250220" },
+  { date: "2025-03-01", title: "上海生物医药外资高能级项目扶持计划发布", dim: "industry", sentiment: "利好", data: ["500亿", "外资", "全链条"], summary: "上海发布生物医药外资高能级项目扶持计划：设立500亿元产业基金，覆盖研发、临床、生产、商业化全链条。对重大外资项目给予最高10亿元补贴，打造世界级生物医药产业集群。", source: "新闻联播 20250301" },
+  { date: "2025-03-05", title: "政府工作报告：2025年GDP目标5%左右", dim: "employment", sentiment: "利好", data: ["5%", "1200万", "新质生产力"], summary: "十四届全国人大三次会议开幕，政府工作报告提出2025年GDP增长目标5%左右，城镇新增就业1200万人以上。报告首提'新质生产力'为第一驱动力，强调科技自立自强。", source: "新闻联播 20250305" },
+  { date: "2025-03-15", title: "税收征管法修订：高收入群体监管精准化", dim: "finance", sentiment: "中性", data: ["CRS", "100国", "精准"], summary: "全国人大常委会审议通过税收征收管理法修订案。强化高收入群体税收监管，CRS信息交换网络覆盖100+国家。同时优化小微企业税收优惠，年应纳税所得额300万以下实际税负降至5%。", source: "新闻联播 20250315" },
+  { date: "2025-03-20", title: "一季度GDP增长5.3%：实现良好开局", dim: "employment", sentiment: "利好", data: ["增长5.3%", "303万", "8.5%"], summary: "国家统计局发布一季度数据：GDP同比增长5.3%，高于全年目标。城镇新增就业303万人，高技术制造业增加值增长8.5%。消费市场回暖，社会消费品零售总额增长5.8%。", source: "新闻联播 20250320" },
+  { date: "2025-04-01", title: "全国已有超200城取消或放松限购：购房门槛历史最低", dim: "housing", sentiment: "利好", data: ["200城", "取消限购", "历史最低"], summary: "住建部统计：全国已有超200个城市取消或大幅放松住房限购政策。一线城市外环区域限购松绑，二三线城市基本全面取消。购房首付比例降至历史最低，房贷利率进入'3时代'。", source: "新闻联播 20250401" },
+  { date: "2025-04-10", title: "新质生产力人才缺口报告：新能源/AI/芯片缺口超2000万", dim: "employment", sentiment: "利好", data: ["2000万", "30万+", "6-12月"], summary: "人社部发布新质生产力人才缺口报告：新能源、半导体、AI、生物医药四大领域人才缺口超2000万。芯片设计、AI算法等岗位起薪30万+，技能岗培训6-12个月即可上岗。", source: "新闻联播 20250410" },
+  { date: "2025-04-20", title: "个人养老金制度试点满一年：开户超6000万", dim: "pension", sentiment: "利好", data: ["6000万", "12000元", "35%"], summary: "个人养老金制度试点满一年：全国开户超6000万人，实际缴存比例35%。年缴存上限12000元，可投基金、储蓄、保险三类产品。人社部表示将适时提高缴存上限并扩大产品范围。", source: "新闻联播 20250420" },
+  { date: "2025-05-01", title: "五一假期旅游人次达2.5亿：旅游收入超1500亿", dim: "finance", sentiment: "利好", data: ["2.5亿", "1500亿", "增长10%"], summary: "文旅部数据：五一假期全国国内旅游出游2.5亿人次，旅游收入超1500亿元，同比增长10%。高铁游、自驾游、县域游成为主流。沉浸式文旅、国潮消费受年轻人追捧。", source: "新闻联播 20250501" },
+  { date: "2025-05-10", title: "职业教育法实施三周年：职教毕业生就业率达95%", dim: "education", sentiment: "利好", data: ["95%", "1500所", "同等地位"], summary: "职业教育法修订实施三周年成效：全国1500所高职院校毕业生就业率达95%，部分热门专业超98%。职教与普教同等地位深入人心，'技能中国'行动培养高技能人才超6000万。", source: "新闻联播 20250510" },
+  { date: "2025-05-20", title: "前4个月全国一般公共预算收入增长5.2%", dim: "finance", sentiment: "利好", data: ["增长5.2%", "6.2%", "回升"], summary: "财政部数据：前4个月全国一般公共预算收入增长5.2%。国内增值税增长6.2%，反映经济活力持续回升。企业所得税增长4.8%，表明企业盈利能力改善。", source: "新闻联播 20250520" },
+  { date: "2025-06-01", title: "上海自贸区金融创新试点扩容：跨境理财通升级", dim: "finance", sentiment: "利好", data: ["跨境", "数字人民币", "扩容"], summary: "上海自贸区金融创新试点扩容：跨境理财通额度提升至300万元，数字人民币跨境支付场景扩大。自贸区内企业跨境融资更加便利，外资金融机构准入进一步放宽。", source: "新闻联播 20250601" },
+  { date: "2025-06-10", title: "全国高校毕业生就业促进月启动：1268万个岗位", dim: "employment", sentiment: "利好", data: ["1268万", "2.3万场", "1187万"], summary: "人社部启动2025年高校毕业生就业促进月：全国举办2.3万场招聘会，提供1268万个就业岗位。今年高校毕业生预计1187万人，同比增加21万人。重点帮扶困难毕业生就业。", source: "新闻联播 20250610" },
+  { date: "2025-06-15", title: "上半年新能源汽车产销超600万辆：渗透率突破40%", dim: "industry", sentiment: "利好", data: ["600万辆", "40%", "全球第一"], summary: "中汽协数据：上半年新能源汽车产销超600万辆，市场渗透率突破40%。充电基础设施加速布局，公共充电桩超350万台。智能网联汽车占比超30%，中国汽车产业加速转型升级。", source: "新闻联播 20250615" },
+  { date: "2025-06-20", title: "全国住房公积金制度惠及面扩大：灵活就业可自愿缴存", dim: "housing", sentiment: "利好", data: ["灵活就业", "自愿", "提取放宽"], summary: "住建部宣布住房公积金制度扩面：灵活就业人员可自愿缴存公积金，享受与在职职工同等贷款权益。提取条件进一步放宽，租房提取额度提高，装修提取取消限制。", source: "新闻联播 20250620" },
+  { date: "2025-06-25", title: "'十四五'规划主要指标提前完成：经济总量超130万亿", dim: "industry", sentiment: "利好", data: ["130万亿", "提前", "高质量"], summary: "国家发改委宣布'十四五'规划主要经济指标提前完成：经济总量超130万亿元，人均GDP超9万元。研发投入占GDP比重达2.8%，城镇化率超67%。绿色发展指标全面达标。", source: "新闻联播 20250625" }
 ];
+
+/* ── 新闻富化：人物相关性标签 + 行动建议 ──────────────────── */
+// 维度→人物画像映射
+const dimPersonaMap = {
+  housing: ['worker','homebuyer','investor'],
+  employment: ['worker','startup','parent'],
+  education: ['parent','worker'],
+  pension: ['elder','parent'],
+  elderly: ['elder'],
+  finance: ['worker','investor','startup','homebuyer'],
+  industry: ['startup','investor','worker'],
+}
+// 新闻维度→风向标决策域映射
+const newsDimToCompass = { housing:'housing', employment:'career', education:'education', pension:'retirement', elderly:'retirement', finance:'investment', industry:'business' }
+// 根据新闻维度和情感生成行动建议
+// userProfile: 可选，传入后可计算个人匹配度
+const compassKeyDomains = ['investment','career','housing','education','fertility','retirement','consumption','business']
+export function enrichNewsForPersona(news, personaKey, userProfile) {
+  const relevantPersonas = dimPersonaMap[news.dim] || ['worker']
+  const isRelevant = personaKey ? relevantPersonas.includes(personaKey) : true
+  const impact = news.sentiment === '利好' ? '高' : news.sentiment === '利空' ? '高' : '中'
+  const compassDomain = newsDimToCompass[news.dim] || 'career'
+  let actionHint = ''
+  if (news.dim === 'housing') actionHint = '关注购房/租房相关补贴和利率变化'
+  else if (news.dim === 'employment') actionHint = '关注社保、就业补贴和灵活就业政策'
+  else if (news.dim === 'education') actionHint = '关注子女教育和入学政策变化'
+  else if (news.dim === 'pension' || news.dim === 'elderly') actionHint = '关注养老、医保和长期护理政策'
+  else if (news.dim === 'finance') actionHint = '关注个税、贷款利率和投资环境'
+  else if (news.dim === 'industry') actionHint = '关注产业政策和创业扶持'
+  // 计算个人匹配度（基于风向标数据）
+  let personalMatch = 'low'
+  if (userProfile && Object.keys(userProfile).length > 0) {
+    try {
+      const compass = getPolicyCompass(personaKey || 'worker', userProfile)
+      if (compass && compass.byDomain) {
+        const domainData = compass.byDomain[compassDomain]
+        if (domainData && domainData.length >= 2) personalMatch = 'high'
+        else if (domainData && domainData.length >= 1) personalMatch = 'medium'
+      }
+    } catch { personalMatch = 'low' }
+  }
+  const matchLabel = { high:'⚡与你的决策高度相关', medium:'📡与你相关', low:'' }
+  return { ...news, impact, relevance: relevantPersonas, actionHint, isRelevant, dimIcon: dimensionIcons[news.dim] || '📡', compassDomain, personalMatch, personalMatchLabel: matchLabel[personalMatch] || '' }
+}
+// 按人物画像过滤+排序新闻
+// userProfile: 可选，用于计算个人匹配度
+export function getNewsForPersona(personaKey, limit = 10, userProfile) {
+  return newsLianboUpdates
+    .map(n => enrichNewsForPersona(n, personaKey, userProfile))
+    .filter(n => n.isRelevant)
+    .sort((a, b) => {
+      // 利好优先，然后按日期
+      if (a.sentiment === '利好' && b.sentiment !== '利好') return -1
+      if (a.sentiment !== '利好' && b.sentiment === '利好') return 1
+      return b.date.localeCompare(a.date)
+    })
+    .slice(0, limit)
+}
+// 新闻按维度分组
+export function getNewsByDimension() {
+  const groups = {}
+  newsLianboUpdates.forEach(n => {
+    const enriched = enrichNewsForPersona(n, null)
+    if (!groups[n.dim]) groups[n.dim] = { dim: n.dim, icon: dimensionIcons[n.dim] || '📡', label: {housing:'住房',employment:'就业',education:'教育',pension:'养老',elderly:'养老',finance:'金融',industry:'产业'}[n.dim] || n.dim, items: [],利好:0,中性:0,利空:0 }
+    groups[n.dim].items.push(enriched)
+    groups[n.dim][n.sentiment] = (groups[n.dim][n.sentiment] || 0) + 1
+  })
+  return Object.values(groups).sort((a, b) => b.items.length - a.items.length)
+}
 
 /* ── 人生雷达数据 ──────────────────────────────────────────── */
 export const lifeRadar = {
@@ -2926,3 +3343,1340 @@ export function getActionProgress(personaKey, stageKey) {
   return { total, done, weekDone, topSource: topSource ? topSource[0] : null }
 }
 
+// ═══════════════════════════════════════════════════════════
+// 7. 政策盲区自测题库（33题 + 多模式辅助函数）
+// ═══════════════════════════════════════════════════════════
+export const selfTestQuestions = [
+  { id:'qz1', question:'公积金贷款额度主要受什么影响？', options:['只受缴存年限影响','缴存基数+账户余额+缴存年限','只受月收入影响'], correct:1, difficulty:'easy', region:'national', explanation:'公积金贷款额度与缴存基数正相关，也与账户余额挂钩。部分城市已提高上限。', dim:'housing', cost:{min:20000,max:120000} },
+  { id:'qz2', question:'北上广深购房通常需要连续缴纳社保多少年？', options:['1年','2-3年','5年'], correct:2, difficulty:'easy', region:'national', explanation:'一线城市通常要求连续缴纳社保5年（中间不得断缴），这是最容易被忽略的门槛。', dim:'housing', cost:{min:50000,max:300000} },
+  { id:'qz3', question:'"认房不认贷"政策的核心是什么？', options:['不管有无房贷记录只看名下房产','只要有贷款记录就算二套','完全取消贷款限制'], correct:0, difficulty:'medium', region:'national', explanation:'认房不认贷=只看你名下有没有房，不看有没有贷款记录。这对改善型购房者是重大利好。', dim:'housing', cost:{min:30000,max:200000} },
+  { id:'qz4', question:'北京公积金贷款上限调整到多少？', options:['120万','180万','240万'], correct:2, difficulty:'easy', region:'beijing', explanation:'北京公积金贷款最高额度已从120万上调至240万（首套），这对购房者是重大利好。', dim:'housing', cost:{min:50000,max:240000} },
+  { id:'qz5', question:'上海二套房公积金贷款利率是多少？', options:['2.85%','3.325%','3.575%'], correct:1, difficulty:'medium', region:'shanghai', explanation:'上海二套房公积金贷款利率为3.325%（首套2.85%），比商贷低很多，很多人不知道可以组合贷。', dim:'housing', cost:{min:30000,max:150000} },
+  { id:'qz6', question:'换工作期间社保断缴1个月会怎样？', options:['补缴即可无影响','可能导致购房资格重新计算','只影响医保'], correct:1, difficulty:'medium', region:'national', explanation:'多数限购城市要求"连续"缴纳社保，断缴1个月可能导致购房资格清零重新计算。', dim:'housing', cost:{min:50000,max:500000} },
+  { id:'qz7', question:'共有产权房和个人商品房的主要区别？', options:['没有区别','产权部分归政府，价格更低但转让有限制','只能出租不能自住'], correct:1, difficulty:'medium', region:'national', explanation:'共有产权房价格约为同地段商品房的50-70%，但转让时需优先卖给政府或其他符合条件的家庭。', dim:'housing', cost:{min:100000,max:500000} },
+  { id:'qz8', question:'购房"满五唯一"免征什么税？', options:['契税','个人所得税','房产税'], correct:1, difficulty:'medium', region:'national', explanation:'满五唯一=持有满5年且是唯一住房，卖房时可免征个人所得税（差额的20%），很多人卖房时不知道这个。', dim:'housing', cost:{min:20000,max:100000} },
+  { id:'qz9', question:'自由职业者可以参加职工社保吗？', options:['不能，只能参加居民社保','可以，以灵活就业身份参加','只有注册公司才能参加'], correct:1, difficulty:'easy', region:'national', explanation:'自由职业者可以以灵活就业身份参加职工养老和医疗保险，这是很多人不知道的政策盲区。', dim:'employment', cost:{min:12000,max:60000} },
+  { id:'qz10', question:'深圳灵活就业人员可以自己缴公积金吗？', options:['不可以','可以，且享受与职工同等贷款权益','可以缴但不能贷款'], correct:1, difficulty:'medium', region:'shenzhen', explanation:'深圳已开放灵活就业人员自愿缴存公积金，连续缴存半年以上即可申请公积金贷款。', dim:'employment', cost:{min:20000,max:100000} },
+  { id:'qz11', question:'失业金最长能领多少个月？', options:['6个月','12个月','24个月'], correct:2, difficulty:'easy', region:'national', explanation:'失业保险缴费满10年以上的，最长可领取24个月失业金，金额约为当地最低工资的80-90%。', dim:'employment', cost:{min:10000,max:50000} },
+  { id:'qz12', question:'产假天数各省差异有多大？', options:['全国统一98天','98天+30天奖励=128天起，各省不同','可以随意休'], correct:1, difficulty:'easy', region:'national', explanation:'国家规定98天基础产假，各省再加30-90天不等的奖励假，部分地区如西藏长达365天。', dim:'employment', cost:{min:5000,max:30000} },
+  { id:'qz13', question:'被裁员后公司不给N+1赔偿怎么办？', options:['自认倒霉','可以申请劳动仲裁，这是法定权利','只能私下协商'], correct:1, difficulty:'easy', region:'national', explanation:'N+1是法定经济补偿标准（N=工作年限×月工资），公司不给可申请劳动仲裁，免费且效率高。', dim:'employment', cost:{min:10000,max:100000} },
+  { id:'qz14', question:'灵活就业人员的养老保险缴费比例是多少？', options:['8%','20%','28%'], correct:1, difficulty:'medium', region:'national', explanation:'灵活就业人员养老保险缴费比例为20%（职工是8%+单位16%=24%），全部由个人承担。', dim:'employment', cost:{min:5000,max:20000} },
+  { id:'qz15', question:'落户上海最常见的方式是？', options:['买房直接落户','居转户（居住证转户口）','交社保满1年'], correct:1, difficulty:'easy', region:'shanghai', explanation:'上海不存在"买房直接落户"，主要途径是居转户（居住证满7年+社保满7年），部分人才引进可缩短。', dim:'employment', cost:{min:50000,max:200000} },
+  { id:'qz16', question:'个人养老金每年最多可以省多少税？', options:['1200元','5400元','12000元'], correct:1, difficulty:'easy', region:'national', explanation:'年缴12000元进入个人养老金账户，最高税率档（45%）下每年省税5400元。这是被严重低估的节税工具。', dim:'finance', cost:{min:3600,max:5400} },
+  { id:'qz17', question:'小微企业年应纳税所得额300万以下实际税率是多少？', options:['25%','5%','10%'], correct:1, difficulty:'medium', region:'national', explanation:'小微企业年应纳税所得额不超过300万元的部分，实际税负仅5%（减按25%计入×20%税率）。', dim:'finance', cost:{min:10000,max:80000} },
+  { id:'qz18', question:'房贷利息专项附加扣除每月多少？最长几年？', options:['500元/月×10年','1000元/月×20年','1500元/月×30年'], correct:1, difficulty:'easy', region:'national', explanation:'首套房贷利息每月可扣除1000元，最长240个月（20年）。很多人忘记申报，白白多缴税。', dim:'finance', cost:{min:2400,max:6000} },
+  { id:'qz19', question:'存款保险制度最高保障多少？', options:['20万','50万','100万'], correct:1, difficulty:'easy', region:'national', explanation:'存款保险最高偿付限额为50万元/人/银行。超过50万的大额存款建议分散存入不同银行。', dim:'finance', cost:{min:0,max:500000} },
+  { id:'qz20', question:'个税汇算清缴每年什么时候截止？', options:['3月31日','6月30日','12月31日'], correct:1, difficulty:'easy', region:'national', explanation:'每年6月30日前完成上一年度个税汇算清缴，逾期可能产生滞纳金。很多人不知道可以退税。', dim:'finance', cost:{min:500,max:10000} },
+  { id:'qz21', question:'数字人民币和微信支付的主要区别是什么？', options:['没有区别','数字人民币是法定货币，无手续费且支持双离线','数字人民币只能政府使用'], correct:1, difficulty:'medium', region:'national', explanation:'数字人民币是央行发行的法定数字货币，与现金等价，不需要绑定银行卡，支持无网络支付。', dim:'finance', cost:{min:0,max:0} },
+  { id:'qz22', question:'年终奖单独计税政策已延续到哪一年？', options:['2023年','2025年','2027年'], correct:2, difficulty:'medium', region:'national', explanation:'年终奖单独计税优惠已延续至2027年底。选择单独计税vs并入综合所得，差额可达数千元。', dim:'finance', cost:{min:1000,max:10000} },
+  { id:'qz23', question:'赠与房产给子女和买卖过户，哪种税费更低？', options:['赠与更低','买卖过户可能更低','两者一样'], correct:1, difficulty:'hard', region:'national', explanation:'直系亲属之间，"买卖过户"按评估价交易可能比"赠与"税费更低（赠与需缴3%契税+未来出售时20%个税）。', dim:'finance', cost:{min:30000,max:200000} },
+  { id:'qz24', question:'"多校划片"是什么意思？', options:['一个小区对应多所学校随机分配','多个小区共享一所学校','学校可以任意招生'], correct:0, difficulty:'medium', region:'national', explanation:'多校划片=一个小区不再固定对口一所学校，而是在片区多所学校中随机分配。学区房的价值因此被稀释。', dim:'education', cost:{min:100000,max:1000000} },
+  { id:'qz25', question:'非户籍子女在大城市入学需要什么？', options:['租房合同即可','通常需要居住证+社保+积分达标','交钱就行'], correct:1, difficulty:'medium', region:'national', explanation:'非户籍子女入学一般需要父母一方持有居住证、连续缴纳社保、积分达到当地入学线。提前规划很关键。', dim:'education', cost:{min:50000,max:300000} },
+  { id:'qz26', question:'子女教育专项附加扣除每个子女每月多少？', options:['500元','1000元','2000元'], correct:2, difficulty:'easy', region:'national', explanation:'每个子女每月可扣除2000元（从3岁到博士），父母可选择一方100%或双方各50%扣除。', dim:'education', cost:{min:2400,max:4800} },
+  { id:'qz27', question:'上海入学积分中，房产和户口哪个权重大？', options:['房产','户口','两者权重相当'], correct:1, difficulty:'medium', region:'shanghai', explanation:'上海入学积分体系中，户口（人户一致）权重远大于房产。仅有房产无户口的情况下积分很低。', dim:'education', cost:{min:100000,max:500000} },
+  { id:'qz28', question:'学区房"学位锁定"是什么意思？', options:['买了就能上学','一套房6年内只能一个家庭用该学位','锁定后永远不能上学'], correct:1, difficulty:'medium', region:'national', explanation:'多数热点城市实行"六年一学位"，即同一套房产6年内只能有一个家庭的孩子用该学区入学。买二手房必查。', dim:'education', cost:{min:200000,max:1000000} },
+ { id:'qz29', question:'延迟退休方案目前的状态是？', options:['已全面实施','2025年起渐进实施，男63/女58/女工55','已取消'], correct:1, difficulty:'easy', region:'national', explanation:'2024年9月全国人大常委会通过决定：2025年1月1日起用15年逐步延迟，男职工60→63岁，女干部55→58岁，女职工50→55岁。"小步调整、弹性实施"原则。', dim:'elderly', cost:{min:0,max:0} },
+  { id:'qz30', question:'3岁以下婴幼儿照护个税专项附加扣除，每月每孩可扣多少？', options:['500元','1000元','2000元'], correct:2, difficulty:'easy', region:'national', explanation:'2023年起，3岁以下婴幼儿照护专项附加扣除标准从每月1000元提高至2000元（每个子女24000元/年），父母可选择一方100%或双方各50%扣除。已覆盖灵活就业人员。', dim:'finance', cost:{min:2400,max:4800} },
+  { id:'qz31', question:'养老并轨后，体制内外养老金待遇还有差距吗？', options:['完全一样','差距缩小但仍有差异（职业年金等）','差距更大了'], correct:1, difficulty:'hard', region:'national', explanation:'养老并轨后基本养老金计算方式统一，但体制内通常有职业年金（强制缴存）作为补充，总体待遇仍有一定优势。', dim:'elderly', cost:{min:0,max:0} },
+  { id:'qz32', question:'长期护理保险已覆盖多少个城市？', options:['只在上海试点','49个试点城市，覆盖超1.8亿人','已覆盖全国'], correct:1, difficulty:'medium', region:'national', explanation:'长期护理保险已在49个城市试点，覆盖超1.8亿人。失能老人每月可获得数千元的护理服务报销，2025年进一步扩面。', dim:'elderly', cost:{min:10000,max:50000} },
+  { id:'qz33', question:'独生子女父母退休后有什么额外补贴？', options:['没有','独生子女父母奖励金','额外发放养老金'], correct:1, difficulty:'medium', region:'national', explanation:'独生子女父母退休后可领取一次性奖励金或每月补贴（各地标准不同，数百到数千元不等）。很多人不知道。', dim:'elderly', cost:{min:2000,max:10000} },
+]
+
+// ── 题库辅助函数 ──
+const quizHistoryKey = 'quiz_history'
+export function getQuizHistory() { try { return JSON.parse(localStorage.getItem(quizHistoryKey) || '[]') } catch { return [] } }
+export function recordQuizAttempt(qid, correct) { const h = getQuizHistory(); h.push({ qid, correct, date: new Date().toISOString().slice(0, 10) }); localStorage.setItem(quizHistoryKey, JSON.stringify(h.slice(-100))) }
+export function getDailyQuizQuestions(count = 3) { const history = getQuizHistory(); const recentQids = history.slice(-30).map(h => h.qid); const wrongQids = [...new Set(history.filter(h => !h.correct).map(h => h.qid))]; const all = [...selfTestQuestions]; const priority = (a, b) => { const aWrong = wrongQids.includes(a.id) ? 0 : 1; const bWrong = wrongQids.includes(b.id) ? 0 : 1; const aRecent = recentQids.includes(a.id) ? 1 : 0; const bRecent = recentQids.includes(b.id) ? 1 : 0; return (aWrong - bWrong) || (aRecent - bRecent) || (Math.random() - 0.5) }; return all.sort(priority).slice(0, count) }
+export function getFullQuizQuestions(count = 15) { const history = getQuizHistory(); const recentQids = history.slice(-15).map(h => h.qid); const shuffled = [...selfTestQuestions].sort(() => Math.random() - 0.5); const fresh = shuffled.filter(q => !recentQids.includes(q.id)); const result = [...fresh, ...shuffled.filter(q => recentQids.includes(q.id))]; return result.slice(0, Math.min(count, selfTestQuestions.length)) }
+export function getRegionQuizQuestions(regionKey, count = 5) { const matched = selfTestQuestions.filter(q => q.region === regionKey || q.region === 'national'); const others = selfTestQuestions.filter(q => q.region !== regionKey && q.region !== 'national'); const result = [...matched.sort(() => Math.random() - 0.5), ...others.sort(() => Math.random() - 0.5)]; return result.slice(0, Math.min(count, result.length)) }
+export function getQuizStats() { const history = getQuizHistory(); const total = selfTestQuestions.length; const done = [...new Set(history.map(h => h.qid))].length; const correct = history.filter(h => h.correct).length; const totalAttempts = history.length; return { total, done, undone: total - done, correct, totalAttempts, accuracy: totalAttempts > 0 ? Math.round(correct / totalAttempts * 100) : 0 } }
+export function scoreSelfTest(answers, questions) { const qs = questions || selfTestQuestions; let correct = 0; let totalCost = { min: 0, max: 0 }; qs.forEach(q => { const ans = answers[q.id]; if (ans === q.correct) { correct++ } else if (q.cost) { totalCost.min += q.cost.min; totalCost.max += q.cost.max } }); const pct = Math.round((correct / qs.length) * 100); const level = pct >= 80 ? { icon: '🟢', label: '政策达人' } : pct >= 60 ? { icon: '🟡', label: '还需补课' } : { icon: '🔴', label: '盲区较多' }; return { score: correct, total: qs.length, pct, level, missedCost: totalCost, missedCount: qs.length - correct } }
+
+/* ── 盲区成本估算 ──────────────────────────────────────────── */
+export function getBlindspotCost(answers, questions) {
+  const qs = questions || selfTestQuestions
+  let min = 0, max = 0
+  qs.forEach(q => {
+    const ans = answers[q.id]
+    if (ans !== q.correct && q.cost) { min += q.cost.min; max += q.cost.max }
+  })
+  return { min, max, label: min > 50000 ? '重大盲区' : min > 10000 ? '中等盲区' : '轻微盲区' }
+}
+
+/* ── 增强案例墙数据 ────────────────────────────────────────── */
+export const enhancedTestimonials = [
+  { id:'t1', name:'小李', avatar:'👨‍💻', age:28, city:'北京', scenario:'housing', stage:'young_single', persona:'worker', title:'首套房上车', desc:'利用公积金贷款+共有产权房政策，用市场价65%买到朝阳区两居室', quote:'之前完全不知道共有产权房门槛这么低，策查查帮我省了至少80万', value:800000, date:'2026-03-15' },
+  { id:'t2', name:'阿芳', avatar:'👩‍💼', age:32, city:'上海', scenario:'employment', stage:'newlywed', persona:'worker', title:'生育津贴最大化', desc:'提前规划社保基数+灵活就业衔接，产假期间多领了4万生育津贴', quote:'如果不是策查查提醒我调整社保基数，我根本不知道这个钱可以多拿', value:40000, date:'2026-04-20' },
+  { id:'t3', name:'老王', avatar:'👨‍🏫', age:45, city:'深圳', scenario:'education', stage:'young_parent', persona:'parent', title:'学区房避坑', desc:'通过多校划片政策分析，放弃了溢价学区房，选择教育质量相当的普通学区', quote:'差一点就高位接盘了，策查查的政策分析救了我们家200万', value:2000000, date:'2026-02-10' },
+  { id:'t4', name:'张叔', avatar:'👴', age:58, city:'广州', scenario:'elderly', stage:'approaching_retire', persona:'elder', title:'退休规划', desc:'利用个人养老金账户+延迟退休弹性方案，退休金比预期高出30%', quote:'原来个人养老金每年能省5400的税，还能稳健增值，后悔没早点知道', value:120000, date:'2026-05-08' },
+  { id:'t5', name:'大刘', avatar:'🚀', age:35, city:'杭州', scenario:'entrepreneur', stage:'entrepreneur', persona:'startup', title:'创业补贴', desc:'申请了小微企业税收优惠+创业担保贷款，一年节省税费8万+拿到50万低息贷款', quote:'小微企业实际税率才5%，之前按25%预估差点放弃创业', value:580000, date:'2026-06-01' },
+  { id:'t6', name:'小美', avatar:'👩‍🎓', age:25, city:'成都', scenario:'employment', stage:'young_single', persona:'worker', title:'自由职业社保', desc:'以灵活就业身份参加职工社保，比居民社保多领一倍的养老金预期', quote:'一直以为自由职业只能交居民社保，策查查告诉我灵活就业也可以交职工社保', value:60000, date:'2026-06-18' },
+  { id:'t7', name:'陈总', avatar:'👨‍💼', age:42, city:'苏州', scenario:'housing', stage:'mid_career', persona:'investor', title:'改善置换', desc:'利用“卖一买一”退税政策，置换大房子退了12万个税', quote:'换房退税的政策窗口期只剩不到半年，幸好策查查提醒了我', value:120000, date:'2026-07-02' },
+  { id:'t8', name:'阿杰', avatar:'🧑‍🔧', age:30, city:'武汉', scenario:'employment', stage:'young_single', persona:'worker', title:'个税汇算', desc:'补申报了房贷利息+赡养老人+继续教育三项扣除，退税8000+', quote:'以为个税汇算很复杂一直没弄，策查查的指南让我3分钟搞定', value:8000, date:'2026-07-10' },
+  { id:'t9', name:'婷婷', avatar:'👩‍🍼', age:29, city:'南京', scenario:'elderly', stage:'young_parent', persona:'parent', title:'生育补贴申领', desc:'每孩每年3600元生育补贴+婴幼儿照护专项扣除，两年拿了近万', quote:'生育补贴从孩子出生就能领，策查查提醒我别错过申报时间', value:9600, date:'2026-05-20' },
+  { id:'t10', name:'老周', avatar:'👨‍🏭', age:52, city:'重庆', scenario:'elderly', stage:'approaching_retire', persona:'worker', title:'延迟退休规划', desc:'利用弹性退休机制，选择提前3年退休，养老金损失最小化', quote:'策查查帮我算清楚了提前退休和延后退休的养老金差异，心里有底了', value:85000, date:'2026-04-15' },
+  { id:'t11', name:'小雪', avatar:'👩‍💻', age:26, city:'深圳', scenario:'housing', stage:'young_single', persona:'worker', title:'保障性租赁住房', desc:'申请到深圳保障性租赁住房，月租比市场价低40%', quote:'深圳房租太贵了，保障性租赁住房真的救了我，每月省2000+', value:48000, date:'2026-06-25' },
+  { id:'t12', name:'建国', avatar:'👨‍🌾', age:48, city:'长沙', scenario:'housing', stage:'mid_career', persona:'buyer', title:'低房价红利', desc:'长沙房价洼地+人才购房补贴，总价60万买到三室两厅', quote:'长沙房价收入比全国最低，策查查帮我算清了购房成本', value:300000, date:'2026-03-08' },
+  { id:'t13', name:'美玲', avatar:'👩‍🏫', age:38, city:'上海', scenario:'education', stage:'young_parent', persona:'parent', title:'中考名额分配', desc:'利用名额分配到校政策，孩子进入市重点高中', quote:'多校划片后学区房不值钱了，策查查让我关注名额分配政策', value:500000, date:'2026-06-10' },
+  { id:'t14', name:'大鹏', avatar:'👨‍🚀', age:33, city:'成都', scenario:'entrepreneur', stage:'entrepreneur', persona:'startup', title:'蓉漂计划创业', desc:'申请蓉漂计划创业补贴+天府新区办公场地优惠，节省启动资金30万', quote:'成都对创业者太友好了，策查查帮我梳理了所有能申请的补贴', value:300000, date:'2026-05-15' },
+  { id:'t15', name:'秀英', avatar:'👵', age:62, city:'北京', scenario:'elderly', stage:'retired', persona:'elder', title:'长护险报销', desc:'申请长期护理保险，失能老伴每月护理费用报销70%', quote:'老伴失能后护理费压力很大，长护险每月能报销4000多', value:50000, date:'2026-04-28' },
+  { id:'t16', name:'志强', avatar:'👨‍💼', age:40, city:'广州', scenario:'finance', stage:'mid_career', persona:'investor', title:'跨境理财通', desc:'通过跨境理财通2.0投资港澳理财产品，年化收益提升2%', quote:'跨境理财通额度提升到300万，策查查让我抓住了这个机会', value:60000, date:'2026-07-05' },
+  { id:'t17', name:'小芳', avatar:'👩‍🎨', age:27, city:'杭州', scenario:'employment', stage:'young_single', persona:'freelancer', title:'灵活就业社保', desc:'以灵活就业身份参加职工社保，取消户籍限制后顺利参保', quote:'以前外地户口不能在杭州交职工社保，现在政策放开了', value:36000, date:'2026-06-20' },
+  { id:'t18', name:'海涛', avatar:'👨‍🔬', age:36, city:'合肥', scenario:'entrepreneur', stage:'entrepreneur', persona:'startup', title:'科创金融支持', desc:'科创企业获得股权激励+低息贷款，融资成本降低40%', quote:'合肥科创金融改革试验区政策太给力了，策查查帮我对接了所有资源', value:200000, date:'2026-05-28' },
+  { id:'t19', name:'丽华', avatar:'👩‍⚕️', age:45, city:'武汉', scenario:'elderly', stage:'mid_career', persona:'worker', title:'医保异地结算', desc:'父母从老家来武汉带娃，异地就医门诊直接结算', quote:'以前父母看病要回老家报销，现在武汉直接结算太方便了', value:15000, date:'2026-06-15' },
+  { id:'t20', name:'小明', avatar:'👦', age:24, city:'郑州', scenario:'employment', stage:'young_single', persona:'worker', title:'航空港区就业', desc:'通过航空港区用工保障政策，获得免费技能培训+入职补贴', quote:'港区企业用工补贴让我顺利入职，还免费学了技能', value:12000, date:'2026-07-08' },
+  { id:'t21', name:'王姐', avatar:'👩‍💼', age:35, city:'上海', scenario:'housing', stage:'newlywed', persona:'buyer', title:'公积金提额', desc:'沪七条后公积金贷款额度提升，多贷了40万', quote:'公积金提额政策让我多贷了40万，月供压力小了很多', value:400000, date:'2026-03-20' },
+  { id:'t22', name:'老李', avatar:'👨‍🏫', age:55, city:'深圳', scenario:'elderly', stage:'approaching_retire', persona:'worker', title:'个人养老金', desc:'每年缴纳12000元个人养老金，节税5400元+稳健增值', quote:'个人养老金既能节税又能增值，策查查让我明白了这个政策红利', value:54000, date:'2026-04-10' },
+  { id:'t23', name:'婷婷', avatar:'👩‍🎓', age:23, city:'成都', scenario:'education', stage:'young_single', persona:'worker', title:'职教产教融合', desc:'通过产教融合项目进入电子信息企业实习，毕业即就业', quote:'职业教育产教融合让我毕业前就拿到了offer', value:80000, date:'2026-06-30' },
+  { id:'t24', name:'张伟', avatar:'👨‍💻', age:31, city:'北京', scenario:'finance', stage:'young_single', persona:'investor', title:'数字人民币', desc:'使用数字人民币享受消费红包+支付优惠，一年省了2000+', quote:'数字人民币红包和优惠真的很多，策查查让我没错过任何一个', value:2000, date:'2026-07-12' },
+  { id:'t25', name:'刘姐', avatar:'👩‍🍳', age:42, city:'佛山', scenario:'entrepreneur', stage:'mid_career', persona:'startup', title:'制造业转型', desc:'申请制造业数字化转型补贴，改造生产线节省成本30%', quote:'数字化转型补贴让我有资金升级设备，生产效率提升明显', value:150000, date:'2026-05-25' },
+  { id:'t26', name:'小军', avatar:'👨‍✈️', age:29, city:'西安', scenario:'employment', stage:'young_single', persona:'worker', title:'西渝高铁就业', desc:'西渝高铁建设带来就业机会，参与隧道工程获得技能认证', quote:'西渝高铁建设让我学到了隧道工程技术，以后就业更有竞争力', value:50000, date:'2026-07-04' },
+  { id:'t27', name:'陈姨', avatar:'👩‍🦳', age:60, city:'广州', scenario:'elderly', stage:'retired', persona:'elder', title:'社区养老服务', desc:'享受社区嵌入式养老服务，助餐+日间照料+上门服务', quote:'社区养老服务让我在家门口就能享受专业照护，子女放心了', value:24000, date:'2026-06-05' },
+  { id:'t28', name:'阿强', avatar:'👨‍🔧', age:34, city:'东莞', scenario:'employment', stage:'mid_career', persona:'worker', title:'技能培训补贴', desc:'参加制造业技能提升培训，获得高级技工认证+补贴', quote:'技能培训补贴让我免费提升了技能，工资涨了30%', value:18000, date:'2026-06-22' },
+  { id:'t29', name:'小雪', avatar:'👩‍💼', age:28, city:'南昌', scenario:'entrepreneur', stage:'young_single', persona:'startup', title:'VR产业创业', desc:'入驻南昌VR产业基地，获得场地补贴+项目孵化支持', quote:'南昌VR产业政策很给力，策查查帮我找到了所有扶持资源', value:100000, date:'2026-05-18' },
+  { id:'t30', name:'老赵', avatar:'👨‍🏭', age:50, city:'太原', scenario:'employment', stage:'approaching_retire', persona:'worker', title:'能源转型安置', desc:'煤炭行业转岗培训后进入新能源企业，薪资不降反升', quote:'能源转型让我从煤矿工人变成了新能源技术员，策查查帮我规划了转岗路径', value:60000, date:'2026-04-25' },
+  { id:'t31', name:'小丽', avatar:'👩‍🎨', age:26, city:'深圳', scenario:'housing', stage:'young_single', persona:'worker', title:'前海人才住房', desc:'申请前海人才住房补贴，每月节省房租3000元', quote:'前海人才住房补贴让我在深圳安居乐业，策查查让我没错过申请', value:72000, date:'2026-06-28' },
+  { id:'t32', name:'大伟', avatar:'👨‍💼', age:38, city:'重庆', scenario:'finance', stage:'mid_career', persona:'investor', title:'西部金融中心', desc:'利用重庆西部金融中心政策，获得企业融资便利化支持', quote:'西部金融中心建设让企业融资更方便了，策查查帮我对接了金融产品', value:80000, date:'2026-07-01' },
+]
+
+/* ── 政策预演场景分组 ──────────────────────────────────────── */
+export const scenarioGroups = [
+  { key:'buy_house', icon:'🏠', label:'买房决策', desc:'首套/改善/学区房', dims:['housing'], policies:[{title:'公积金贷款上限提高',impact:'利好',note:'首套最高240万'},{title:'认房不认贷',impact:'利好',note:'改善型购房受益'},{title:'多校划片',impact:'利空',note:'学区房价值稀释'}] },
+  { key:'have_baby', icon:'👶', label:'生育规划', desc:'备孕/产假/育儿补贴', dims:['employment','elderly'], policies:[{title:'婴幼儿照护扣除',impact:'利好',note:'每月2000元/孩'},{title:'生育津贴',impact:'利好',note:'与社保基数挂钩'},{title:'普惠托育',impact:'利好',note:'新增4000个托位'}] },
+  { key:'job_change', icon:'💼', label:'跳槽/创业', desc:'换工作/灵活就业/创业', dims:['employment','finance'], policies:[{title:'灵活就业社保',impact:'利好',note:'可参加职工社保'},{title:'小微企业优惠',impact:'利好',note:'实际税率仅5%'},{title:'创业担保贷款',impact:'利好',note:'最高300万'}] },
+  { key:'retire_plan', icon:'🏖️', label:'退休规划', desc:'养老金/延迟退休/护理', dims:['elderly','finance'], policies:[{title:'个人养老金',impact:'利好',note:'年省税最高5400'},{title:'延迟退休',impact:'中性',note:'渐进实施中'},{title:'长期护理险',impact:'利好',note:'49城试点'}] },
+  { key:'invest_tax', icon:'📊', label:'投资理财', desc:'买房/股票/理财/节税', dims:['finance','housing'], policies:[{title:'年终奖单独计税',impact:'利好',note:'延续至2027'},{title:'存款保险',impact:'利好',note:'50万保障'},{title:'数字人民币',impact:'利好',note:'法定货币'}] },
+]
+export function getScenarioImpacts(scenarioKey) { const sg = scenarioGroups.find(s=>s.key===scenarioKey); return sg ? { label:sg.label, policies:sg.policies, net:sg.policies.filter(p=>p.impact==='利好').length-sg.policies.filter(p=>p.impact==='利空').length } : null }
+
+/* ── 成就系统 ───────────────────────────────────────────────── */
+export const achievementDefs = [
+  { id:'first_quiz', icon:'🎯', label:'初识政策', desc:'完成第一次盲区自测', category:'quiz' },
+  { id:'quiz_master', icon:'🏆', label:'政策达人', desc:'自测得分达到80分以上', category:'quiz' },
+  { id:'perfect_score', icon:'💎', label:'满分通关', desc:'自测获得满分', category:'quiz' },
+  { id:'streak_3', icon:'🔥', label:'初露锋芒', desc:'连续打卡3天', category:'streak' },
+  { id:'streak_7', icon:'⭐', label:'持之以恒', desc:'连续打卡7天', category:'streak' },
+  { id:'streak_30', icon:'👑', label:'政策守望者', desc:'连续打卡30天', category:'streak' },
+  { id:'first_action', icon:'✅', label:'行动派', desc:'完成第一个行动项', category:'action' },
+  { id:'action_10', icon:'📋', label:'高效执行者', desc:'完成10个行动项', category:'action' },
+  { id:'value_100k', icon:'💰', label:'价值发现者', desc:'累计发现价值超10万', category:'value' },
+  { id:'value_1m', icon:'🏦', label:'百万智囊', desc:'累计发现价值超100万', category:'value' },
+  { id:'first_project', icon:'📁', label:'决策规划师', desc:'创建第一个决策项目', category:'project' },
+  { id:'first_share', icon:'📤', label:'乐于分享', desc:'首次分享报告', category:'share' },
+  { id:'wrong_master', icon:'📚', label:'学以致用', desc:'消灭5道错题', category:'learn' },
+  { id:'health_check', icon:'🔍', label:'全面体检', desc:'完成政策体检诊断', category:'health' },
+]
+
+/* ── 政策提醒与订阅 ─────────────────────────────────────────── */
+const alertsKey = 'policy_alerts'
+const subsKey = 'policy_subscriptions'
+export function getPolicyAlerts() {
+  const now = new Date()
+  const alerts = []
+  deadlines.forEach(d => {
+    const deadlineDate = new Date(d.date)
+    const daysLeft = Math.ceil((deadlineDate - now) / 86400000)
+    if (daysLeft > 0 && daysLeft <= 30) {
+      alerts.push({ id: d.id, title: d.title, deadline: d.date, daysLeft, status: daysLeft <= 7 ? '紧急' : daysLeft <= 14 ? '临近' : '关注', type: 'deadline', dim: d.dim || 'housing' })
+    }
+  })
+  legislativeOutlook.forEach?.(lo => {
+    if (lo.status && lo.status.includes('审议')) {
+      alerts.push({ id: lo.id || lo.name, title: lo.name || lo.title, status: '审议中', type: 'legislation', dim: lo.dim || 'housing' })
+    }
+  })
+  if (typeof legislativeOutlook === 'object' && !Array.isArray(legislativeOutlook)) {
+    Object.values(legislativeOutlook).forEach(arr => {
+      if (Array.isArray(arr)) {
+        arr.forEach(lo => {
+          if (lo.status && lo.status.includes('审议') && !alerts.find(a => a.id === (lo.id || lo.name))) {
+            alerts.push({ id: lo.id || lo.name, title: lo.name || lo.title, status: '审议中', type: 'legislation', dim: lo.dim || 'housing' })
+          }
+        })
+      }
+    })
+  }
+  return alerts.slice(0, 5)
+}
+export function getPolicySubscriptions() {
+  try { return JSON.parse(localStorage.getItem(subsKey) || '[]') } catch { return [] }
+}
+export function togglePolicySubscription(policyId, policyName) {
+  const subs = getPolicySubscriptions()
+  const idx = subs.findIndex(s => s.id === policyId)
+  if (idx >= 0) subs.splice(idx, 1)
+  else subs.push({ id: policyId, name: policyName, subscribedAt: new Date().toISOString() })
+  localStorage.setItem(subsKey, JSON.stringify(subs))
+  return subs
+}
+
+/* ── 用户见证 UGC ──────────────────────────────────────────── */
+const testimonialsKey = 'user_testimonials'
+export function submitUserTestimonial(data) {
+  const list = getUserTestimonials()
+  list.unshift({ id: 'ut' + Date.now(), ...data, date: new Date().toISOString() })
+  localStorage.setItem(testimonialsKey, JSON.stringify(list.slice(0, 50)))
+  return list
+}
+export function getUserTestimonials() {
+  try { return JSON.parse(localStorage.getItem(testimonialsKey) || '[]') } catch { return [] }
+}
+export function getAllTestimonials() {
+  const userGenerated = getUserTestimonials()
+  return [...userGenerated, ...enhancedTestimonials]
+}
+
+/* ── 用户画像存储 ──────────────────────────────────────────── */
+const profileKey = 'user_profile'
+const toolResultsKey = 'tool_results'
+export function getUserProfile() {
+  try { return JSON.parse(localStorage.getItem(profileKey) || '{}') } catch { return {} }
+}
+export function saveUserProfile(data) {
+  const existing = getUserProfile()
+  const merged = { ...existing, ...data, updatedAt: new Date().toISOString() }
+  localStorage.setItem(profileKey, JSON.stringify(merged))
+  return merged
+}
+export function saveToolResult(toolName, inputs, outputs) {
+  const results = getToolResults()
+  results.unshift({ id: 'tr' + Date.now(), toolName, inputs, outputs, date: new Date().toISOString() })
+  localStorage.setItem(toolResultsKey, JSON.stringify(results.slice(0, 30)))
+  return results
+}
+export function getToolResults() {
+  try { return JSON.parse(localStorage.getItem(toolResultsKey) || '[]') } catch { return [] }
+}
+
+/* ── 每日洞察挑战 v2 — 三模式：个人关联·趋势预判·连接生活 ──── */
+const challengeKey = 'daily_challenge'
+const streakKey = 'daily_streak'
+const challengeDoneKey = 'challenge_done'
+const insightVotesKey = 'insight_votes'
+
+// ═══ 题库 ═══
+const insightPool = [
+  // ── impact: 个人关联型 ──
+  { mode:'impact', id:'i1',
+    title:'🏠 房贷利率下调，你的机会来了？',
+    hook:'最新LPR继续下行，多地首套房贷利率已降至3%出头。这个变化，跟你有关系吗？',
+    check: (p) => p.hasHouse, reason:'你有房贷，利率每降0.1%每年约省1000-3000元',
+    altCheck: (p) => !p.hasHouse && p.age >= 25, altReason:'你还没买房，低利率时代首套上车成本更低',
+    calc:(p)=>{ if(p.hasHouse) return { save:Math.round(300000*0.0015*(p.city?.includes('北京')||p.city?.includes('上海')?1.5:1)), unit:'/年省（LPR联动）'}; return { save:Math.round(50000*0.01), unit:'首付门槛降低（估值）'} }
+  },
+  { mode:'impact', id:'i2',
+    title:'👶 婴幼儿照护扣除又提了，你能多拿多少？',
+    hook:'个税专项扣除中婴幼儿照护项从每月1000元提至2000元，每年多退240-1080元。你家有3岁以下宝宝吗？',
+    check: (p) => p.hasChild, reason:'你有子女，若孩子在3岁以下，每月2000元照护扣除可节税',
+    altCheck: (p) => !p.hasChild && p.age >= 25 && p.age <= 40, altReason:'你还未育，这个政策信号：国家在真金白银鼓励生育',
+    calc:(p)=>{ return { save:2400, unit:'/年·孩退税'} }
+  },
+  { mode:'impact', id:'i3',
+    title:'💼 灵活就业社保补贴，你符合条件吗？',
+    hook:'多省市对灵活就业人员缴纳社保给予3-5年补贴，每人每年最多补贴数千元。你是自由职业者吗？',
+    check: (p) => p.isSelfEmployed, reason:'作为自由职业者，以灵活就业身份参保可享缴费补贴，部分地区补贴比例达2/3',
+    altCheck: (p) => !p.isSelfEmployed && p.age <= 35, altReason:'你目前在职，但了解灵活就业社保权益有助于未来职业选择',
+    calc:(p)=>{ return p.isSelfEmployed ? {save:4500,unit:'/年补贴'} : {save:3000,unit:'潜在补贴（若切换灵活就业）'} }
+  },
+  { mode:'impact', id:'i4',
+    title:'🎓 人才落户门槛再降，你的城市在抢你吗？',
+    hook:'2025年多地放宽落户限制，本科即可落户大多数城市，硕士博士还有额外安家费。',
+    check: (p) => ['本科','硕士','博士'].includes(p.education), reason:`你的${p.education}学历在多城可走人才绿色通道，安家费10-50万`,
+    altCheck: (p) => ['高中及以下','大专'].includes(p.education), altReason:'你的学历在部分城市需积分落户，可考虑"学历+技能"双通道',
+    calc:(p)=>{ const bonus={硕士:150000,博士:300000,本科:50000}; return {save:bonus[p.education]||20000, unit:'安家补贴（估值）'} }
+  },
+  { mode:'impact', id:'i5',
+    title:'👴 个人养老金账户，现在开还是再等等？',
+    hook:'个人养老金年缴12000元上限，最高节税5400元/年。越早开户复利效应越强。',
+    check: (p) => p.age >= 35, reason:`你${p.age}岁，现在开户到退休还有${60-p.age}年，复利效应显著`,
+    altCheck: (p) => p.age < 35, altReason:'你还年轻，但"时间就是最大的复利"——越早越划算',
+    calc:(p)=>{ const years=60-p.age; return {save:Math.round(5400*years*0.7),unit:`到退休累计退税额`} }
+  },
+  // ── forecast: 趋势预判型（无标准答案，看社群分布）──
+  { mode:'forecast', id:'f1',
+    title:'📊 1-5月企业利润增长3.4%，释放什么信号？',
+    hook:'统计局数据：前5个月工业企业利润总额同比增长3.4%。这条数据背后，你看到了什么趋势？',
+    options: [
+      { key:'A', label:'持续复苏，消费回暖在即', angle:'利好消费、服务业。企业盈利改善→扩大招工→居民收入预期好转→消费力回升。重点关注餐饮旅游、文娱等可选消费。', sectors:'消费服务', indicator:'⬆️' },
+      { key:'B', label:'增长后劲不足，成本压力仍在', angle:'利润增3.4%但收入仅增2.9%，说明"降本"驱动而非"增收"。PPI持续低迷，企业议价能力弱，需谨慎。', sectors:'制造业', indicator:'➡️' },
+      { key:'C', label:'结构性分化，高端制造领跑', angle:'新能源汽车、光伏、高端装备利润增速远超平均。传统行业仍在出清。"新质生产力"才是真主线。', sectors:'科技制造', indicator:'⬆️' },
+      { key:'D', label:'利润修复≠经济见底，观望为宜', angle:'1-5月数据存在基期效应（去年同期低基数）。需看下半年地产+出口走向才能确认趋势。', sectors:'整体', indicator:'⬇️' },
+    ],
+    connect:(p)=>{ return `如果复苏持续，${p.city||'你的城市'}的制造业/服务业岗位需求可能上升，薪资谈判空间增大。` },
+    dims:['industry','finance']
+  },
+  { mode:'forecast', id:'f2',
+    title:'🏠 2025下半年全国房价会怎么走？',
+    hook:'上半年多个一二线城市二手房成交量回暖，但价格仍在阴跌。下半年房价会企稳反弹吗？',
+    options: [
+      { key:'A', label:'核心区率先企稳，远郊继续阴跌', angle:'一线城市核心地段供需关系健康，刚需支撑。但三四线库存压力大、人口流出，远郊没有反弹基础。"分化"是主题词。', sectors:'房产', indicator:'↗️' },
+      { key:'B', label:'政策大招在路上，整体反弹可期', angle:'政府收购存量房转保障房、城中村改造、降息降首付等组合拳，信心修复后量价齐升。', sectors:'房产', indicator:'⬆️' },
+      { key:'C', label:'"房住不炒"定调未变，长期横盘', angle:'政策托底不刺激。人口拐点+高杠杆率制约房价上行空间，大概率进入"L型"底部区间。', sectors:'房产', indicator:'➡️' },
+      { key:'D', label:'不确定性太大，继续观望', angle:'地缘政治、经济增速、就业市场等多变量交织，单一判断失准风险高。', sectors:'整体', indicator:'❓' },
+    ],
+    connect:(p)=>{ return p.hasHouse?`你已有房产，重点关注${p.city||'所在城市'}核心区域成交量和挂牌价变化，判断是否适合改善置换。`: `你尚未购房，${p.city||'你的城市'}若选择核心区/地铁房，抗跌性更强。`},
+    dims:['housing','finance']
+  },
+  { mode:'forecast', id:'f3',
+    title:'🤖 AI对就业市场的影响：威胁还是机会？',
+    hook:'2025年AI应用加速落地，部分岗位开始"被替代"。你认为未来3年，AI对你所在行业的影响是？',
+    options: [
+      { key:'A', label:'大幅替代：基础文案/客服/翻译等岗位锐减', angle:'OpenAI CEO预测"AGI在2027年到来"。重复性脑力劳动首当其冲。但"提示词工程师""AI训练师"等新岗位涌现。', sectors:'全行业', indicator:'⬇️' },
+      { key:'B', label:'工具增强：AI是副驾驶，人还是决策者', angle:'AI提升效率但无法替代判断力、同理心和创造力。会用AI的人将淘汰不会用的人，而非AI淘汰人。', sectors:'知识服务', indicator:'⬆️' },
+      { key:'C', label:'创造性毁灭：短期阵痛，长期新机会', angle:'每次技术革命都先"替代"后"创造"。工业革命消灭手工纺织却创造了工程师。关键是终身学习能力。', sectors:'创新产业', indicator:'🔄' },
+    ],
+    connect:(p)=>{ const pname={worker:'上班族',startup:'创业者',investor:'投资者',parent:'家长',homebuyer:'购房者'}; return `作为${pname[p.personaKey]||'职场人'}，关注AI工具提升你的核心竞争力，而非恐惧替代。`},
+    dims:['employment','industry']
+  },
+  { mode:'forecast', id:'f4',
+    title:'💹 A股下半年会突破3500点吗？',
+    hook:'上证指数在3000-3300区间震荡已超半年。下半年是否有望突破？你的判断是？',
+    options: [
+      { key:'A', label:'政策+资金共振，突破3500', angle:'降准降息预期+国家队护盘+外资回流+企业盈利改善="戴维斯双击"。关注券商+科技板块。', sectors:'证券/科技', indicator:'⬆️' },
+      { key:'B', label:'3000-3300区间震荡为主', angle:'经济复苏"一波三折"，增量资金有限，存量博弈。但结构性机会存在（AI、新能源、高股息）。', sectors:'结构轮动', indicator:'➡️' },
+      { key:'C', label:'风险事件或导致破3000', angle:'地缘政治+中美关系+房地产风险出清未完。情绪脆弱时可能出现恐慌性杀跌。', sectors:'防御板块', indicator:'⬇️' },
+    ],
+    connect:(p)=>{ return `无论判断如何，核心原则：不预测点位，管理仓位。${p.age<40?'你年轻，可承受更高风险比例。':'你接近退休年龄，建议控制权益类资产占比。'}`},
+    dims:['finance']
+  },
+  { mode:'forecast', id:'f5',
+    title:'🏥 医保DRG改革后，看病会更难还是更便宜？',
+    hook:'DRG/DIP支付方式改革2025年全覆盖，按病种"一口价"付费。这会让就医体验变好还是变差？',
+    options: [
+      { key:'A', label:'总体利好：控费降负，减少过度医疗', angle:'DRG倒逼医院控制成本，减少不必要的检查和药品。患者自付比例有望下降。但需警惕"推诿重症"问题。', sectors:'医疗', indicator:'✅' },
+      { key:'B', label:'双刃剑：费用降了但就医体验可能变差', angle:'医院为控费可能压缩住院天数、减少高值耗材使用。重症、罕见病可能面临"被出院"风险。商业保险重要性上升。', sectors:'医疗/保险', indicator:'⚠️' },
+      { key:'C', label:'短期阵痛，长期规范', angle:'DRG本质是"倒逼医院精细化管理"。初期不适应，但3-5年后就医流程将更标准化、透明化。', sectors:'医疗', indicator:'🔄' },
+    ],
+    connect:(p)=>{ return `无论DRG如何演变，建议：①关注自己及家人的商业医疗保险配置；②慢性病定期复查不可因"控费"而中断。`},
+    dims:['elderly','finance']
+  },
+  // ── connect: 连接生活型 ──
+  { mode:'connect', id:'c1',
+    title:'💡 如果你月入1.5万，个税改革能省多少？',
+    hook:'个税起征点、专项扣除、年终奖计税方式……这些税改跟你钱包直接相关。我们帮你算笔账。',
+    exploreSteps: [
+      { label:'基础扣除', detail:'月薪15000，年18万。基本减除6万/年→应税所得12万。税率10%，速算扣除2520→年税约9480元。' },
+      { label:'叠加专项扣除', detail:'若有房贷(1000/月)+子女教育(2000/月)+赡养老人(3000/月)=6000/月×12=72000/年。应税所得降为4.8万，税率3%→年税1440元。'},
+      { label:'对比差额', detail:'从9480→1440，每年多退8040元！三项扣除是否都申报了？去个税APP检查。' },
+    ],
+    dims:['finance']
+  },
+  { mode:'connect', id:'c2',
+    title:'🔗 延迟退休→养老金→你的退休生活，一条链看清',
+    hook:'从"延迟退休"到"每月领多少养老金"到"退休后能维持什么生活水平"——这是一条完整的政策影响链。',
+    exploreSteps: [
+      { label:'延迟退休时间', detail:'男性60→63岁，女干部55→58岁，女职工50→55岁。2025年起15年逐步过渡。晚退休3年=多缴3年+少领3年。' },
+      { label:'养老金计算', detail:'养老金=基础养老金+个人账户。缴费每多1年，基础养老金约增1%。多缴3年≈养老金增3-5%。' },
+      { label:'退休生活水平', detail:'以月薪1万为例，缴30年退休金约4000-5000/月。远低于在职收入。差额需靠个人养老金+商业保险+储蓄补足。' },
+    ],
+    dims:['elderly','finance']
+  },
+  { mode:'connect', id:'c3',
+    title:'📱 新能源汽车降价潮→二手车→你的购车决策',
+    hook:'新能源车企价格战愈演愈烈，新车一降再降。这会影响二手车残值、保险定价、甚至充电基础设施布局。买还是不买？',
+    exploreSteps: [
+      { label:'价格传导', detail:'新车降价→二手车加速贬值→燃油车二手车"跌得更猛"。现在卖旧车买新车，旧车可能折价超预期。' },
+      { label:'隐性成本', detail:'新能源车保险费用比同级燃油车高20-30%。部分车型维修难、配件贵。总拥有成本需算总账。' },
+      { label:'决策建议', detail:'不急用→等等（价格还在下行通道）；急用→选"保价协议"车型；二手→关注3年内、续航400+车型，性价比最高。' },
+    ],
+    dims:['industry','finance']
+  },
+]
+
+// ═══ 核心函数 ═══
+export function getDailyChallenge(personaKey, userProfile) {
+  const today = new Date().toISOString().slice(0, 10)
+  const cached = (() => {
+    try { const c = JSON.parse(localStorage.getItem(challengeKey) || '{}'); return c.date === today ? c : null } catch { return null }
+  })()
+  if (cached) return cached
+
+  const profile = userProfile || {}
+  // 按日期轮换，确保每天不同
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000)
+  const idx = dayOfYear % insightPool.length
+  const template = insightPool[idx]
+
+  const challenge = {
+    ...template,
+    id: 'dc' + today.replace(/-/g, ''),
+    date: today,
+    cachedAt: Date.now(),
+  }
+
+  // impact模式：预计算个人结果
+  if (template.mode === 'impact') {
+    const matched = template.check(profile)
+    const alt = template.altCheck?.(profile)
+    challenge.personalMatch = matched
+    challenge.personalReason = matched ? template.reason : (alt ? template.altReason : '根据你的情况，这条政策可能与你正相关')
+    challenge.personalCalc = template.calc(profile)
+  }
+
+  // forecast模式：获取社群投票分布
+  if (template.mode === 'forecast') {
+    challenge.votes = getInsightVotes(template.id)
+    challenge.personalConnect = template.connect(profile)
+  }
+
+  localStorage.setItem(challengeKey, JSON.stringify(challenge))
+  return challenge
+}
+
+// 获取/模拟社群投票分布
+export function getInsightVotes(challengeId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(insightVotesKey) || '{}')
+    return all[challengeId] || null
+  } catch { return null }
+}
+
+export function submitInsightVote(challengeId, optionKey) {
+  try {
+    const all = JSON.parse(localStorage.getItem(insightVotesKey) || '{}')
+    if (!all[challengeId]) {
+      // 首次创建，用伪随机种子生成初始投票分布（模拟社群）
+      const seed = challengeId.charCodeAt(challengeId.length-1) + new Date().getDate()
+      const mock = (offset) => Math.max(8, Math.floor(20 + (seed + offset * 7) % 40))
+      all[challengeId] = { A:mock(0), B:mock(1), C:mock(2), D:mock(3), total:0, userVote:null }
+      all[challengeId].total = all[challengeId].A + all[challengeId].B + all[challengeId].C + all[challengeId].D
+    }
+    all[challengeId].userVote = optionKey
+    all[challengeId][optionKey] = (all[challengeId][optionKey] || 0) + 1
+    all[challengeId].total += 1
+    localStorage.setItem(insightVotesKey, JSON.stringify(all))
+    return all[challengeId]
+  } catch { return null }
+}
+
+export function submitDailyChallenge(challengeId, selected, correct) {
+  const today = new Date().toISOString().slice(0, 10)
+  localStorage.setItem(challengeDoneKey, today)
+  const streak = getStreak()
+  const lastDate = localStorage.getItem('last_challenge_date')
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+  if (lastDate === yesterday || lastDate === today) {
+    localStorage.setItem(streakKey, streak + 1)
+  } else if (lastDate !== today) {
+    localStorage.setItem(streakKey, '1')
+  }
+  localStorage.setItem('last_challenge_date', today)
+  return { correct: correct !== undefined ? correct : true, streak: getStreak() }
+}
+export function getStreak() {
+  const lastDate = localStorage.getItem('last_challenge_date')
+  if (!lastDate) return 0
+  const today = new Date().toISOString().slice(0, 10)
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+  if (lastDate !== today && lastDate !== yesterday) return 0
+  return parseInt(localStorage.getItem(streakKey) || '0') || 0
+}
+export function getTodayChallengeDone() {
+  return localStorage.getItem(challengeDoneKey) === new Date().toISOString().slice(0, 10)
+}
+
+/* ── 用户段位系统 ──────────────────────────────────────────── */
+const tierKey = 'user_tier'
+const wrongAnswersKey = 'wrong_answers'
+export function getUserTier() {
+  try {
+    const data = JSON.parse(localStorage.getItem(tierKey) || '{}')
+    const total = (data.totalCorrect || 0) + (data.totalWrong || 0)
+    const accuracy = total > 0 ? Math.round((data.totalCorrect || 0) / total * 100) : 0
+    const tierPct = total > 0 ? Math.min(100, Math.round(accuracy * 0.6 + Math.min(total * 2, 40))) : 0
+    let tier
+    if (tierPct >= 90) tier = { icon: '👑', label: '政策大师', color: '#8e44ad' }
+    else if (tierPct >= 70) tier = { icon: '💎', label: '政策专家', color: '#2980b9' }
+    else if (tierPct >= 50) tier = { icon: '🥇', label: '政策达人', color: '#27ae60' }
+    else if (tierPct >= 30) tier = { icon: '🥈', label: '政策新手', color: '#e67e22' }
+    else tier = { icon: '🟤', label: '政策小白', color: '#95a5a6' }
+    return { ...data, total, accuracy, tierPct, tier }
+  } catch { return { totalCorrect: 0, totalWrong: 0, total: 0, accuracy: 0, tierPct: 0, tier: { icon: '🟤', label: '政策小白', color: '#95a5a6' } } }
+}
+export function updateUserTier(correct, wrong) {
+  const existing = getUserTier()
+  const updated = {
+    totalCorrect: (existing.totalCorrect || 0) + correct,
+    totalWrong: (existing.totalWrong || 0) + wrong,
+  }
+  localStorage.setItem(tierKey, JSON.stringify(updated))
+  return getUserTier()
+}
+export function getWrongAnswers() {
+  try { return JSON.parse(localStorage.getItem(wrongAnswersKey) || '[]') } catch { return [] }
+}
+export function addWrongAnswer(question, userAnswer, correctAnswer, explanation, dim) {
+  const list = getWrongAnswers()
+  list.unshift({ id: 'wa' + Date.now(), question, userAnswer, correctAnswer, explanation, dim, mastered: false, date: new Date().toISOString() })
+  localStorage.setItem(wrongAnswersKey, JSON.stringify(list.slice(0, 100)))
+  return list
+}
+export function markWrongAnswerMastered(id) {
+  const list = getWrongAnswers()
+  const item = list.find(w => w.id === id)
+  if (item) { item.mastered = true; localStorage.setItem(wrongAnswersKey, JSON.stringify(list)) }
+  return list
+}
+
+/* ── 价值总览与通知 ─────────────────────────────────────────── */
+export function getValueSummary(personaKey, stageKey) {
+  const tierData = getUserTier()
+  const actions = (() => { try { const saved = JSON.parse(localStorage.getItem('unified_actions') || '{}'); return saved.items || [] } catch { return [] } })()
+  const doneActions = actions.filter(a => a.status === 'done').length
+  const totalActions = actions.length || 5
+  const actionPct = totalActions > 0 ? Math.round(doneActions / totalActions * 100) : 0
+  const blindspotCost = (() => {
+    try {
+      const history = getQuizHistory()
+      const wrongQids = history.filter(h => !h.correct).map(h => h.qid)
+      let min = 0, max = 0
+      selfTestQuestions.filter(q => wrongQids.includes(q.id)).forEach(q => { if (q.cost) { min += q.cost.min; max += q.cost.max } })
+      return { min, max }
+    } catch { return { min: 0, max: 0 } }
+  })()
+  const potentialMin = blindspotCost.min + doneActions * 5000
+  const potentialMax = blindspotCost.max + doneActions * 20000
+  const potentialLabel = potentialMin > 100000 ? '显著价值' : potentialMin > 10000 ? '值得关注' : '开始探索'
+  return {
+    tier: tierData.tier, tierPct: tierData.tierPct,
+    doneActions, totalActions, actionPct,
+    potentialMin, potentialMax, potentialLabel,
+    blindspotCost,
+  }
+}
+export function getNotificationCount() {
+  let count = 0
+  if (!getTodayChallengeDone()) count++
+  const alerts = getPolicyAlerts()
+  count += Math.min(alerts.filter(a => a.status === '紧急').length, 3)
+  try {
+    const newAchievements = JSON.parse(localStorage.getItem('new_achievements') || '[]')
+    count += newAchievements.length
+  } catch {}
+  return count
+}
+
+/* ── 成就系统逻辑 ───────────────────────────────────────────── */
+const achievementsKey = 'user_achievements'
+export function getUserAchievements() {
+  try { return JSON.parse(localStorage.getItem(achievementsKey) || '[]') } catch { return [] }
+}
+export function getUserStats() {
+  const tier = getUserTier()
+  const achievements = getUserAchievements()
+  const wrongs = getWrongAnswers()
+  const mastered = wrongs.filter(w => w.mastered).length
+  const actions = (() => { try { const s = JSON.parse(localStorage.getItem('unified_actions') || '{}'); return s.items || [] } catch { return [] } })()
+  const doneActions = actions.filter(a => a.status === 'done').length
+  const projects = getDecisionProjects()
+  const streak = getStreak()
+  const quizHistory = getQuizHistory()
+  const quizDone = quizHistory.length > 0
+  const quizScore = quizDone ? Math.round(quizHistory.filter(h => h.correct).length / quizHistory.length * 100) : 0
+  const shared = localStorage.getItem('has_shared') === 'true'
+  const healthChecked = localStorage.getItem('health_checked') === 'true'
+  return { tier, achievements, wrongs, mastered, actions, doneActions, projects, streak, quizDone, quizScore, shared, healthChecked }
+}
+export function checkAndAwardAchievements(stats) {
+  const existing = getUserAchievements()
+  const existingIds = existing.map(a => a.id)
+  const newAwards = []
+  const award = (id) => {
+    if (!existingIds.includes(id)) {
+      const def = achievementDefs.find(d => d.id === id)
+      if (def) {
+        const awarded = { id: def.id, icon: def.icon, label: def.label, desc: def.desc, awardedAt: new Date().toISOString() }
+        existing.push(awarded)
+        newAwards.push(awarded)
+      }
+    }
+  }
+  if (stats.quizDone) award('first_quiz')
+  if (stats.quizScore >= 80) award('quiz_master')
+  if (stats.quizScore >= 100) award('perfect_score')
+  if (stats.streak >= 3) award('streak_3')
+  if (stats.streak >= 7) award('streak_7')
+  if (stats.streak >= 30) award('streak_30')
+  if (stats.doneActions >= 1) award('first_action')
+  if (stats.doneActions >= 10) award('action_10')
+  // 价值估算
+  let totalValue = 0
+  const actions2 = (() => { try { const s = JSON.parse(localStorage.getItem('unified_actions') || '{}'); return s.items || [] } catch { return [] } })()
+  actions2.filter(a => a.status === 'done').forEach(() => { totalValue += 10000 })
+  const wrongQids = getQuizHistory().filter(h => !h.correct).map(h => h.qid)
+  selfTestQuestions.filter(q => wrongQids.includes(q.id)).forEach(q => { if (q.cost) totalValue += q.cost.min })
+  if (totalValue >= 100000) award('value_100k')
+  if (totalValue >= 1000000) award('value_1m')
+  if (stats.projects.length >= 1) award('first_project')
+  if (stats.shared) award('first_share')
+  if (stats.mastered >= 5) award('wrong_master')
+  if (stats.healthChecked) award('health_check')
+  if (existing.length > 0) localStorage.setItem(achievementsKey, JSON.stringify(existing))
+  if (newAwards.length > 0) {
+    try { localStorage.setItem('new_achievements', JSON.stringify(newAwards)) } catch {}
+  }
+  return { all: existing, new: newAwards }
+}
+
+/* ── 价值闭环 ───────────────────────────────────────────────── */
+export function getRealizedValue() {
+  const actions = (() => { try { const s = JSON.parse(localStorage.getItem('unified_actions') || '{}'); return s.items || [] } catch { return [] } })()
+  const done = actions.filter(a => a.status === 'done')
+  const pending = actions.filter(a => a.status !== 'done')
+  const doneCount = done.length
+  const pendingCount = pending.length
+  const total = doneCount + pendingCount
+  const realizedPct = total > 0 ? Math.round(doneCount / total * 100) : 0
+  // 每个行动预估价值
+  const actionItems = done.map(a => ({ id: a.id, title: a.title, cost: { min: 2000 + Math.floor(Math.random() * 5000), max: 8000 + Math.floor(Math.random() * 20000) } }))
+  const realizedMax = actionItems.reduce((sum, a) => sum + a.cost.max, 0)
+  const potentialMax = realizedMax + pendingCount * 15000
+  return { doneCount, pendingCount, realizedPct, realizedMax, potentialMax, actionItems: actionItems.slice(0, 5) }
+}
+
+/* ── 关键时刻提醒 ───────────────────────────────────────────── */
+export function getUrgencyItems() {
+  const now = new Date()
+  const items = []
+  deadlines.filter(d => {
+    const dl = new Date(d.date)
+    const daysLeft = Math.ceil((dl - now) / 86400000)
+    return daysLeft > 0 && daysLeft <= 30
+  }).forEach(d => {
+    const daysLeft = Math.ceil((new Date(d.date) - now) / 86400000)
+    items.push({ title: d.title, daysLeft, severity: daysLeft <= 7 ? 'critical' : 'high', type: 'deadline' })
+  })
+  // 加入养老金并轨等重大节点
+  items.push({ title: '延迟退休渐进实施持续推进中', daysLeft: 180, severity: 'medium', type: 'legislation' })
+  items.push({ title: '年终奖单独计税政策2027年底到期', daysLeft: 530, severity: 'medium', type: 'deadline' })
+  return items.sort((a, b) => a.daysLeft - b.daysLeft).slice(0, 5)
+}
+
+/* ── 增长曲线 ───────────────────────────────────────────────── */
+const growthKey = 'growth_history'
+export function recordGrowthSnapshot() {
+  const tier = getUserTier()
+  const snapshots = getGrowthHistory()
+  const today = new Date().toISOString().slice(0, 10)
+  const todaySnap = snapshots.find(s => s.date === today)
+  if (todaySnap) {
+    todaySnap.tierPct = tier.tierPct
+    todaySnap.tierLabel = tier.tier.label
+  } else {
+    snapshots.push({ date: today, tierPct: tier.tierPct, tierLabel: tier.tier.label })
+  }
+  if (snapshots.length > 90) snapshots.shift()
+  localStorage.setItem(growthKey, JSON.stringify(snapshots))
+  return snapshots
+}
+export function getGrowthHistory() {
+  try { return JSON.parse(localStorage.getItem(growthKey) || '[]') } catch { return [] }
+}
+
+/* ── 分享报告 ───────────────────────────────────────────────── */
+export function getShareReport() {
+  const tier = getUserTier()
+  const rv = getRealizedValue()
+  const achievements = getUserAchievements()
+  const streak = getStreak()
+  const realizedLabel = rv.realizedMax > 100000 ? '重大决策价值' : rv.realizedMax > 10000 ? '可观价值' : '初始价值'
+  return {
+    date: new Date().toISOString().slice(0, 10),
+    tier: tier.tier,
+    tierPct: tier.tierPct,
+    realizedMax: rv.realizedMax,
+    realizedLabel,
+    actionsDone: rv.doneCount,
+    totalAchievements: achievements.length,
+    achievements: achievements.slice(0, 5),
+    streak,
+  }
+}
+export function markShared() {
+  localStorage.setItem('has_shared', 'true')
+}
+
+/* ── 决策项目管理 ──────────────────────────────────────────── */
+const projectsKey = 'decision_projects'
+export function getDecisionProjects() {
+  try { return JSON.parse(localStorage.getItem(projectsKey) || '[]') } catch { return [] }
+}
+export function createDecisionProject(name, goal, dims) {
+  const projects = getDecisionProjects()
+  projects.push({ id: 'dp' + Date.now(), name, goal, dims: dims || [], status: 'active', progress: 0, createdAt: new Date().toISOString() })
+  localStorage.setItem(projectsKey, JSON.stringify(projects))
+  return projects
+}
+export function updateDecisionProject(id, updates) {
+  const projects = getDecisionProjects()
+  const idx = projects.findIndex(p => p.id === id)
+  if (idx >= 0) {
+    projects[idx] = { ...projects[idx], ...updates, updatedAt: new Date().toISOString() }
+    if (updates.status === 'done') projects[idx].progress = 100
+    localStorage.setItem(projectsKey, JSON.stringify(projects))
+  }
+  return projects
+}
+export function deleteDecisionProject(id) {
+  const projects = getDecisionProjects().filter(p => p.id !== id)
+  localStorage.setItem(projectsKey, JSON.stringify(projects))
+  return projects
+}
+
+/* ── 时间机器场景 ───────────────────────────────────────────── */
+export function getTimeMachineScenarios() {
+  return [
+    { id:'tm1', icon:'🏠', title:'早一年买房', desc:'如果2024年底前买入', calc:() => { const saved = 80000 + Math.floor(Math.random() * 120000); return { totalSaved: saved, detail: `公积金利率更低（2.85% vs 3.25%），多校划片前学区溢价未稀释，预估节省 ¥${saved.toLocaleString()}` } } },
+    { id:'tm2', icon:'💼', title:'早一年缴灵活就业社保', desc:'如果2024年开始缴纳', calc:() => { const saved = 24000 + Math.floor(Math.random() * 36000); return { totalSaved: saved, detail: `多缴一年社保意味着多一个月失业金 + 养老金缴费年限+1，预估价值 ¥${saved.toLocaleString()}` } } },
+    { id:'tm3', icon:'💰', title:'早开户个人养老金', desc:'如果2023年开户并缴满', calc:() => { const saved = 16200 + Math.floor(Math.random() * 5400); return { totalSaved: saved, detail: `3年×12000元×45%税率=已省税¥16200，加上账户收益，预估价值 ¥${saved.toLocaleString()}` } } },
+    { id:'tm4', icon:'🎓', title:'早规划子女入学积分', desc:'如果提前3年准备', calc:() => { const saved = 100000 + Math.floor(Math.random() * 300000); return { totalSaved: saved, detail: `提前准备居住证+社保+积分材料，避免高价私立/跨区择校，预估节省 ¥${saved.toLocaleString()}` } } },
+  ]
+}
+
+/* ── 里程碑检查 ─────────────────────────────────────────────── */
+export function checkMilestones() {
+  const milestones = []
+  const tier = getUserTier()
+  const streak = getStreak()
+  const achievements = getUserAchievements()
+  if (tier.tierPct >= 50 && !milestones.find(m => m.id === 'tier_50')) milestones.push({ id:'tier_50', icon:'🥇', msg:`政策感知力达到 ${tier.tierPct} 分！`, type:'tier' })
+  if (streak === 7) milestones.push({ id:'streak_7_m', icon:'🔥', msg:'连续7天打卡！习惯正在养成', type:'streak' })
+  if (streak === 30) milestones.push({ id:'streak_30_m', icon:'👑', msg:'连续30天！你是政策守望者', type:'streak' })
+  if (achievements.length === 5) milestones.push({ id:'ach_5', icon:'🏅', msg:'已解锁5个成就徽章！', type:'achievement' })
+  if (achievements.length === 10) milestones.push({ id:'ach_10', icon:'🌟', msg:'已解锁10个成就！太厉害了', type:'achievement' })
+  return milestones
+}
+
+/* ── 地区政策对比 ──────────────────────────────────────────── */
+export function getRegionComparison() {
+  const regions_list = ['北京','上海','深圳','广州','杭州','成都','武汉']
+  const dims_list = ['housing','employment','education','elderly','finance']
+  const dimLabels = { housing:'住房', employment:'就业', education:'教育', elderly:'养老', finance:'金融' }
+  const data = []
+  const baseScores = { '北京':{housing:78,employment:72,education:80,elderly:75,finance:70}, '上海':{housing:75,employment:74,education:78,elderly:73,finance:72}, '深圳':{housing:72,employment:70,education:65,elderly:60,finance:68}, '广州':{housing:68,employment:68,education:70,elderly:65,finance:65}, '杭州':{housing:65,employment:66,education:68,elderly:62,finance:62}, '成都':{housing:60,employment:62,education:64,elderly:60,finance:58}, '武汉':{housing:62,employment:60,education:65,elderly:58,finance:55} }
+  dims_list.forEach(dim => {
+    regions_list.forEach(region => {
+      data.push({ region, dim, label: dimLabels[dim], score: baseScores[region]?.[dim] || 50, icon: dim==='housing'?'🏠':dim==='employment'?'💼':dim==='education'?'🎓':dim==='elderly'?'👴':'💰' })
+    })
+  })
+  return data
+}
+
+/* ── 相似案例发现 ──────────────────────────────────────────── */
+export function getSimilarTestimonials({ personaKey, age, city, stageKey }) {
+  return enhancedTestimonials.map(t => {
+    let score = 0
+    if (t.persona === personaKey) score += 3
+    if (t.stage === stageKey) score += 3
+    if (age && Math.abs(t.age - age) <= 5) score += 2
+    if (city && t.city === city) score += 2
+    return { ...t, relevance: score }
+  }).filter(t => t.relevance >= 2).sort((a, b) => b.relevance - a.relevance)
+}
+
+/* ── 同路人发现 ────────────────────────────────────────────── */
+export function getPeerDiscoveries({ personaKey, stageKey }) {
+  const peers = []
+  if (personaKey === 'worker' || personaKey === 'parent') {
+    peers.push({ pct: 73, title: '同阶段用户中73%不知道共有产权房', desc: '市场价50-70%即可购房' })
+    peers.push({ pct: 65, title: '65%的人漏掉了至少一项个税扣除', desc: '平均每年多缴2000-6000元' })
+  }
+  if (stageKey === 'young_single' || stageKey === 'newlywed') {
+    peers.push({ pct: 58, title: '58%的年轻人不了解公积金贷款上限', desc: '首套最高240万，利率仅2.85%' })
+  }
+  if (stageKey === 'young_parent' || personaKey === 'parent') {
+    peers.push({ pct: 81, title: '81%的家长不了解多校划片政策', desc: '学区房确定性大幅降低' })
+    peers.push({ pct: 47, title: '47%的家长已开始规划子女入学积分', desc: '非户籍家庭的必备功课' })
+  }
+  if (stageKey === 'approaching_retire' || personaKey === 'elder') {
+    peers.push({ pct: 62, title: '62%的临近退休者未开户个人养老金', desc: '每年最多省税5400元' })
+    peers.push({ pct: 55, title: '55%不了解长期护理保险', desc: '49城已试点，失能可报销' })
+  }
+  if (personaKey === 'startup' || personaKey === 'entrepreneur') {
+    peers.push({ pct: 68, title: '68%的创业者不知道小微企业税率仅5%', desc: '年利润300万以下实际税负5%' })
+  }
+  return peers.slice(0, 5)
+}
+
+/* ── 政策体检诊断 v2 — 多维度数据驱动 ────────────────────── */
+export function getPolicyHealthCheck(form) {
+  const dims = ['housing','employment','education','elderly','finance']
+  const dimLabels = { housing:'住房', employment:'就业', education:'教育', elderly:'养老', finance:'金融' }
+  const dimIcons = { housing:'🏠', employment:'💼', education:'🎓', elderly:'👴', finance:'💰' }
+  const dimScores = { housing:100, employment:100, education:100, elderly:100, finance:100 }
+  const dimIssues = { housing:[], employment:[], education:[], elderly:[], finance:[] }
+  const addIssue = (dim, severity, icon, title, desc, action, boost, deductScore) => {
+    dimIssues[dim].push({ id:'h'+Date.now()+Math.random(), severity, icon, title, desc, action, estimatedBoost:boost })
+    dimScores[dim] = Math.max(0, dimScores[dim] - deductScore)
+  }
+  const tier1Cities = ['北京','上海','深圳','广州']
+  const tier2Cities = ['杭州','成都','武汉','南京','苏州','西安','重庆','天津','长沙','郑州','合肥','青岛','厦门','宁波','无锡']
+  const isTier1 = tier1Cities.some(c => form.city?.includes(c))
+  const isTier2 = tier2Cities.some(c => form.city?.includes(c))
+  const hasHighEdu = ['硕士','博士'].includes(form.education)
+  const hasDegree = ['本科','硕士','博士'].includes(form.education)
+  const isFemale = form.gender === '女'
+
+  // ═══ 住房维度 ═══
+  if (form.age >= 25 && form.age <= 42 && !form.hasHouse) {
+    if (isTier1) {
+      addIssue('housing', 'high', '🏠', '一线城市购房资格规划缺失',
+        `${form.city || '你所在城市'}要求连续缴纳社保5年，现在不规划可能错失上车时机`,
+        `查看${form.city||'当地'}公积金政策和共有产权房条件`,
+        {min:100000,max:500000,unit:'（潜在差价）'}, 25)
+    } else if (isTier2) {
+      addIssue('housing', 'medium', '🏠', '二线城市购房窗口期',
+        `${form.city|| '你所在城市'}人才购房补贴+低利率环境，现在是不错的入市窗口`,
+        `了解${form.city||'当地'}人才购房补贴政策`,
+        {min:50000,max:200000,unit:'（潜在节省）'}, 15)
+    } else {
+      addIssue('housing', 'low', '🏠', '购房准备建议',
+        '了解公积金缴存基数和贷款额度关系，提前规划首付',
+        '查看公积金贷款政策',
+        {min:20000,max:100000,unit:'（潜在节省）'}, 8)
+    }
+  }
+  if (form.hasHouse && form.isMarried) {
+    addIssue('housing', 'low', '🏠', '改善置换退税窗口',
+      '"卖一买一"退个税政策可节省数万至十数万，建议在窗口期内完成置换',
+      '了解卖一买一退税条件',
+      {min:20000,max:120000,unit:'（退税金额）'}, 5)
+  }
+  if (hasHighEdu && !form.hasHouse && (isTier1 || isTier2)) {
+    addIssue('housing', 'medium', '🏡', `${form.education}学历住房补贴未申领`,
+      `${form.city||'多城'}对${form.education}及以上人才提供购房补贴（数十万级），你可能符合条件`,
+      `查询${form.city||'当地'}人才安居政策`,
+      {min:50000,max:300000,unit:'（人才补贴）'}, 12)
+  }
+
+  // ═══ 就业维度 ═══
+  if (form.isSelfEmployed) {
+    addIssue('employment', 'high', '💼', '灵活就业社保权益不完整',
+      '自由职业者可以灵活就业身份参加职工社保（养老+医疗），比居民社保待遇高一倍以上',
+      '以灵活就业身份缴纳职工社保',
+      {min:30000,max:120000,unit:'（退休后多领）'}, 20)
+    addIssue('employment', 'medium', '📊', '小微企业税收优惠未利用',
+      '年应纳税所得额300万以下，实际税率仅5%（减按25%×20%），比25%低很多',
+      '申请小微企业税收优惠认定',
+      {min:10000,max:80000,unit:'/年（省税）'}, 10)
+  }
+  if (isFemale && form.age >= 25 && form.age <= 42) {
+    if (!form.hasChild) {
+      addIssue('employment', 'medium', '👶', '生育津贴规划可提前准备',
+        '生育津贴金额与社保缴费基数直接挂钩，备孕前提高基数可多领数万元',
+        '了解生育津贴与社保基数关系',
+        {min:10000,max:50000,unit:'（津贴差额）'}, 10)
+    }
+    addIssue('employment', 'low', '👩', '女性劳动权益保障',
+      '产假、哺乳假、职场歧视等权益受劳动法保护，了解你的法定权利',
+      '查看最新产假天数和生育保险政策',
+      {min:5000,max:30000,unit:'（权益保障）'}, 5)
+  }
+  if (hasDegree && (isTier1 || isTier2)) {
+    addIssue('employment', 'medium', '🎓', `${form.education}学历人才引进落户机会`,
+      `${form.city||'多城'}对${form.education}人才有落户绿色通道，落户后享购房/教育/医疗等福利`,
+      `查询${form.city||'当地'}人才引进落户条件`,
+      {min:50000,max:200000,unit:'（落户价值）'}, 10)
+  }
+  // 男性退休年龄提醒
+  if (form.gender === '男' && form.age >= 55) {
+    addIssue('employment', 'medium', '⏳', '延迟退休过渡期规划',
+      '男性退休年龄将从60岁逐步延迟至63岁（2025年起15年过渡），需重新规划职业生涯',
+      '了解延迟退休对个人养老金的影响',
+      {min:0,max:0,unit:''}, 8)
+  }
+
+  // ═══ 教育维度 ═══
+  if (form.hasChild) {
+    if (isTier1) {
+      addIssue('education', 'high', '🎓', '一线城市子女入学积分规划',
+        `${form.city||'你所在城市'}非户籍子女入学需居住证+社保+积分达标，提前3年准备`,
+        `查看${form.city||'当地'}入学积分细则`,
+        {min:100000,max:500000,unit:'（避免私立/跨区成本）'}, 20)
+    }
+    addIssue('education', 'medium', '🏫', '多校划片与学位锁定',
+      '"多校划片"稀释学区房价值，"六年一学位"限制二手学区房，买房前必查',
+      '了解所在城市学区政策',
+      {min:100000,max:1000000,unit:'（学区溢价风险）'}, 12)
+    addIssue('education', 'low', '💰', '子女教育个税扣除',
+      '每个子女每月可扣2000元（3岁到博士），别漏报',
+      '在个税APP中检查子女教育扣除',
+      {min:2400,max:4800,unit:'/年/孩'}, 5)
+  } else if (form.isMarried && form.age >= 25) {
+    addIssue('education', 'low', '📚', '教育政策提前了解',
+      '多校划片、学位锁定、入学积分等政策变化快，有孩子后再准备可能来不及',
+      '提前了解所在城市教育政策趋势',
+      {min:50000,max:300000,unit:'（未来择校成本）'}, 8)
+  }
+  // 学历继续教育扣除
+  if (!hasDegree && form.age <= 45) {
+    addIssue('education', 'low', '📖', '继续教育个税扣除',
+      '参加学历继续教育期间每月可扣400元，考证（职业资格）当年可扣3600元',
+      '在个税APP中添加继续教育扣除',
+      {min:400,max:4800,unit:'/年（省税）'}, 3)
+  }
+
+  // ═══ 养老维度 ═══
+  if (form.age >= 35) {
+    addIssue('elderly', form.age >= 45 ? 'high' : 'medium', '🏖️', '个人养老金账户未开立',
+      `年缴12000元进入个人养老金账户，最高税率档每年省税5400元，且账户内收益免税`,
+      '开立个人养老金账户并开始定投',
+      {min:3600,max:5400,unit:'/年（省税）'}, form.age >= 45 ? 18 : 10)
+  }
+  if (form.age >= 50) {
+    const retireAge = isFemale ? (form.education==='博士'||form.education==='硕士' ? 58 : 55) : 63
+    addIssue('elderly', 'high', '⏳', `延迟退休对你影响：最终退休年龄${retireAge}岁`,
+      `2025年起15年过渡，你预计${retireAge}岁退休，比原计划晚${retireAge-(isFemale?55:60)}年`,
+      '了解延迟退休对养老金计算的具体影响',
+      {min:0,max:0,unit:'（需重新规划）'}, 15)
+  }
+  addIssue('elderly', 'low', '🏥', '长期护理保险认知不足',
+    '长护险已在49城试点，覆盖超1.8亿人，失能老人每月可获数千元护理报销',
+    '查询所在城市是否已纳入长护险试点',
+    {min:10000,max:50000,unit:'（护理费用）'}, 5)
+  if (form.hasChild) {
+    addIssue('elderly', 'low', '👴', '赡养老人个税扣除',
+      '赡养60岁以上父母，每月可扣3000元（独生子女），非独生子女分摊',
+      '在个税APP中添加赡养老人扣除',
+    {min:2400,max:7200,unit:'/年（省税）'}, 5)
+  }
+
+  // ═══ 金融维度 ═══
+  addIssue('finance', 'medium', '💰', '个税专项附加扣除可能未最大化',
+    '房贷利息、子女教育、婴幼儿照护、赡养老人、继续教育、住房租金——你漏了几项？',
+    '在个税APP中逐项检查专项附加扣除',
+    {min:2000,max:15000,unit:'/年（退税）'}, 12)
+  if (form.hasHouse) {
+    addIssue('finance', 'low', '🏦', '房贷利息扣除是否已申报',
+      '首套房贷利息每月1000元、最长20年，很多人忘记申报',
+      '在个税APP中确认房贷利息扣除',
+    {min:2400,max:6000,unit:'/年（省税）'}, 5)
+  }
+  if (form.age >= 30) {
+    addIssue('finance', 'low', '📈', '年终奖计税方式选择',
+      '年终奖单独计税政策延至2027年底，选"单独计税"vs"并入综合所得"差额可达数千',
+      '下次汇算清缴时对比两种方式',
+      {min:1000,max:10000,unit:'（差额）'}, 5)
+  }
+
+  // ═══ 错题联动：从自测错题定位薄弱维度 ═══
+  try {
+    const wrongAnswers = JSON.parse(localStorage.getItem('wrong_answers') || '[]')
+    const quizHistory = JSON.parse(localStorage.getItem('quiz_history') || '[]')
+    const wrongQids = quizHistory.filter(h => !h.correct).map(h => h.qid)
+    const wrongByDim = {}
+    wrongQids.forEach(qid => {
+      const q = selfTestQuestions.find(qq => qq.id === qid)
+      if (q) wrongByDim[q.dim] = (wrongByDim[q.dim] || 0) + 1
+    })
+    // 最薄弱的维度
+    const weakest = Object.entries(wrongByDim).sort((a,b) => b[1]-a[1])[0]
+    if (weakest && weakest[1] >= 2) {
+      addIssue(weakest[0], 'medium', '🎯', `${dimLabels[weakest[0]]}维度知识薄弱`,
+        `你在${dimLabels[weakest[0]]}维度的自测中错了${weakest[1]}题，这是你的政策盲区重灾区`,
+        '去错题本复习该维度的错题',
+        {min:5000,max:30000,unit:'（知识盲区成本）'}, 8)
+    }
+  } catch {}
+
+  // ═══ 汇总 ═══
+  const allIssues = dims.flatMap(d => dimIssues[d])
+  // 加权总分：各维度取最低分加权
+  const weights = { housing:0.25, employment:0.25, education:0.15, elderly:0.20, finance:0.15 }
+  const totalScore = Math.round(dims.reduce((sum, d) => sum + dimScores[d] * weights[d], 0))
+  const tier = totalScore >= 85 ? { icon:'🟢', label:'政策达人', color:'#27ae60' }
+    : totalScore >= 65 ? { icon:'🟡', label:'还需关注', color:'#e67e22' }
+    : { icon:'🔴', label:'盲区较多', color:'#e74c3c' }
+
+  localStorage.setItem('health_checked', 'true')
+  return {
+    score: totalScore,
+    tier,
+    issues: allIssues,
+    dimScores: dims.map(d => ({ dim: d, label: dimLabels[d], icon: dimIcons[d], score: dimScores[d], count: dimIssues[d].length })),
+    totalIssues: allIssues.length,
+    highCount: allIssues.filter(i => i.severity === 'high').length,
+    mediumCount: allIssues.filter(i => i.severity === 'medium').length,
+    lowCount: allIssues.filter(i => i.severity === 'low').length,
+    date: new Date().toISOString(),
+  }
+}
+
+/* ── 个性化政策周报 ─────────────────────────────────────────── */
+export function getWeeklyDigest({ personaKey, stageKey, regionKey, viewHistory, userProfile }) {
+  const persona = personas.find(p => p.key === personaKey) || personas[0]
+  const stage = lifeRadar?.stages?.find(s => s.key === stageKey)
+  const personaLabel = persona?.label || '职场人'
+  const stageLabel = stage?.label || '中年'
+  // 盲区信号
+  const signals = []
+  if (stageKey === 'young_single' || stageKey === 'newlywed') {
+    signals.push({ type:'blindspot', title:'公积金贷款额度与缴存基数挂钩', desc:'提高缴存基数可大幅提升贷款额度（上限240万）', cost:{min:50000,max:240000,unit:''} })
+    signals.push({ type:'opportunity', title:'灵活就业可参加职工社保', desc:'自由职业者现在可缴公积金+职工社保', cost:{min:12000,max:60000,unit:'/年'} })
+  }
+  if (stageKey === 'young_parent') {
+    signals.push({ type:'blindspot', title:'多校划片后学区房价值不确定性增加', desc:'需关注所在城市的具体划片方案', cost:{min:100000,max:1000000,unit:''} })
+    signals.push({ type:'opportunity', title:'子女教育专项扣除每月2000元/孩', desc:'从3岁到博士均可享受', cost:{min:2400,max:4800,unit:'/年'} })
+  }
+  if (stageKey === 'approaching_retire') {
+    signals.push({ type:'blindspot', title:'个人养老金账户年省税最高5400元', desc:'年缴12000进入账户，45%税率档全额抵扣', cost:{min:3600,max:5400,unit:'/年'} })
+    signals.push({ type:'opportunity', title:'长期护理保险逐步扩大覆盖', desc:'49城试点，失能老人可获护理报销', cost:{min:10000,max:50000,unit:''} })
+  }
+  // 通用信号
+  signals.push({ type:'opportunity', title:'小微企业税收优惠：实际税负仅5%', desc:'年应纳税所得额300万以下适用', cost:{min:10000,max:80000,unit:'/年'} })
+  // 同路人
+  const peers = getPeerDiscoveries({ personaKey, stageKey })
+  // 立法前瞻
+  const outlook = []
+  if (typeof legislativeOutlook === 'object') {
+    const arr = Array.isArray(legislativeOutlook) ? legislativeOutlook : Object.values(legislativeOutlook).flat().filter(Boolean)
+    const relevant = arr.filter(lo => {
+      if (!lo) return false
+      const dims = lo.dims || (lo.dim ? [lo.dim] : [])
+      const stageWeights = stage?.weights || {}
+      return dims.some(d => stageWeights[d] >= 0.2)
+    })
+    relevant.slice(0, 3).forEach(lo => { outlook.push({ name: lo.name || lo.title, status: lo.status, note: lo.note || lo.summary?.slice(0, 60), dim: lo.dim || (lo.dims?.[0]) }) })
+  }
+  // 风向标个性化信号（基于全画像）
+  let compassSignals = []
+  try {
+    const profile = userProfile || getUserProfile()
+    if (profile && Object.keys(profile).length > 0) {
+      const compass = getPolicyCompass(personaKey || 'worker', profile)
+      if (compass && compass.signals) {
+        compassSignals = compass.signals.slice(0, 3).map(s => ({
+          domain: s.domain,
+          domainIcon: domainMeta[s.domain]?.icon || '📡',
+          domainLabel: domainMeta[s.domain]?.label || s.domain,
+          change: s.change,
+          action: s.actionText,
+          urgency: s.urgency,
+          financial: s._financial,
+        }))
+      }
+    }
+  } catch { compassSignals = [] }
+  return {
+    signals: signals.slice(0, 6),
+    peers,
+    outlook,
+    compassSignals,
+    personaLabel,
+    stageLabel,
+    date: new Date().toISOString().slice(0, 10),
+  }
+}
+
+/* ═══ 政策风向标 — 政策→决策域→个人行动 ═══════════════════ */
+const domainMeta = {
+  investment:  { icon:'📈', label:'投资理财', desc:'利率、金融法、产业趋势' },
+  career:      { icon:'💼', label:'就业职业', desc:'行业方向、技能、社保' },
+  housing:     { icon:'🏠', label:'购房安家', desc:'限购、贷款、人才房' },
+  education:   { icon:'🎓', label:'教育升学', desc:'学区、专业、留学' },
+  fertility:   { icon:'👶', label:'生育育儿', desc:'补贴、托育、产假' },
+  retirement:  { icon:'🏖️', label:'养老退休', desc:'延迟退休、养老金' },
+  consumption: { icon:'🛒', label:'消费生活', desc:'补贴、个税、以旧换新' },
+  business:    { icon:'🚀', label:'创业营商', desc:'税优、准入、扶持' },
+}
+export { domainMeta }
+
+export const policySignals = [
+  // ═══ 投资理财 ═══
+  { id:'ps1', domain:'investment',
+    change:'LPR持续下行，1年期3.1%、5年期3.6%，无风险利率进入"2时代"',
+    impact:(p)=>{ const isHomeowner=p.hasHouse; const age=p.age||30; const city=p.city||'你的城市';
+      if(isHomeowner) return `你有房产，如果还在还贷：LPR每降0.1%，300万贷款30年省约${Math.round(300*0.001*30/10)}万。建议确认贷款是否已转为LPR浮动利率`;
+      if(age<35) return `你${age}岁还没买房——低利率=购房成本降低，但\"等更低\"也可能踏空。${city.includes('北京')||city.includes('上海')?'一线城市建议关注成交量回升信号':'二线及以下建议关注人口流入趋势'}`;
+      return '存款利率同步走低（定存已破2%），钱存银行越来越不值钱，需要寻找替代资产'; },
+    financialImpact:(p)=>{ if(p.hasHouse) return {min:1500,max:5000,unit:'/年省（LPR联动）'}; return {min:0,max:0,unit:''}; },
+    action:(p)=>p.hasHouse?'确认贷款已转LPR浮动利率；如有余力提前还部分本金锁低利率':'关注目标城市房价和成交量走势，建立购房知识储备',
+    peerInsight:'同类有房者中，72%已将房贷转为LPR浮动利率',
+    urgency:'soon', confidence:'high' },
+  { id:'ps2', domain:'investment',
+    change:'金融法草案审议中，银证保统一监管框架将确立',
+    impact:(p)=>{ const persona=p.personaKey||'worker';
+      if(persona==='investor') return '作为投资者，统一监管=信息更透明、维权更容易、\"飞单/乱收费\"将受严惩。但也意味着部分高风险产品（P2P类、非标）可能退出市场';
+      return '你可能不直接炒股买基金，但银行理财、保险、存款都受金融法保护——\"被坑\"概率降低'; },
+    financialImpact:null, peerInsight:'同类投资者中，85%表示\"更放心了\"，15%担心产品选择变少',
+    urgency:'watch', confidence:'high' },
+  { id:'ps3', domain:'investment',
+    change:'央企国企分红率提升至30%+，高股息策略走强',
+    impact:(p)=>{ const age=p.age||30;
+      if(age>=40) return `你接近退休窗口期——高股息策略（股息率4-6%）是\"类年金\"替代方案。红利ETF、银行股、电力股值得关注`;
+      if(age>=30) return '你还处在财富积累期，可将高股息资产作为组合\"压舱石\"（占比20-30%），其余配置成长型资产';
+      return '你还年轻，可少量配置（10-15%）培养投资习惯，主力放在成长型资产'; },
+    financialImpact:(p)=>{ const age=p.age||30; return {min:age>=40?8000:2000,max:age>=40?15000:5000,unit:'/年（股息+增值）'}; },
+    action:(p)=>{ const age=p.age||30; return age>=40?'关注红利低波ETF(512890)、中证红利指数——股息率超4%时买入':'小额定投红利ETF，培养\"收息\"思维'; },
+    peerInsight:'35-50岁同类人中，41%已配置红利类资产',
+    urgency:'soon', confidence:'medium' },
+
+  // ═══ 就业职业 ═══
+  { id:'ps5', domain:'career',
+    change:'新质生产力上升为国家战略：新能源/半导体/AI/生物医药人才缺口超2000万',
+    impact:(p)=>{ const age=p.age||30; const edu=p.education||'本科'; const isHighEdu=['硕士','博士'].includes(edu);
+      if(age<30) return `你${age}岁，正处在职业方向选择的关键期。${isHighEdu?edu+'学历在新质生产力领域有天然优势——芯片设计、AI算法、新药研发等岗位起薪30万+':'即使学历不占优，新能源运维、智能产线操作等技能岗缺口也很大，培训6-12个月即可上岗'}`;
+      if(age<45) return `你${age}岁，转型时间窗口还在。关注自己行业与\"新质生产力\"的交叉点：传统制造→智能产线，传统IT→AI应用，传统金融→金融科技`;
+      return '这个趋势对你的孩子（如果考虑大学选专业）极其重要——STEM方向（科学/技术/工程/数学）未来10年的薪资溢价将持续扩大'; },
+    financialImpact:(p)=>{ const age=p.age||30; return age<35?{min:50000,max:200000,unit:'潜在年薪增幅'}:{min:20000,max:80000,unit:'技能升级收益'}; },
+    action:(p)=>{ const age=p.age||30; return age<30?'关注人社部\"急需紧缺职业目录\"，选择新能源/芯片/AI方向学习':'评估自身技能与新质生产力的重合度，参加线上培训或考取认证'; },
+    peerInsight:'30岁以下同类人中，63%正在学习一项新质生产力相关技能',
+    urgency:'soon', confidence:'high' },
+  { id:'ps6', domain:'career',
+    change:'灵活就业者可在工作地参加职工社保，户籍限制全面取消',
+    impact:(p)=>{ if(p.isSelfEmployed) return `你作为自由职业者/创业者，以前可能只能在户籍地缴社保。现在可以在${p.city||'你的工作城市'}直接缴职工社保——养老金待遇提升30-50%，医保报销比例与在职职工一致`;
+      return '你目前在职，但这个政策意味着：如果未来想做自由职业/远程工作/创业，社保不用断——\"裸辞焦虑\"减轻很多'; },
+    financialImpact:(p)=>p.isSelfEmployed?{min:30000,max:100000,unit:'退休后多领（估值）'}:{min:0,max:0,unit:''},
+    action:(p)=>p.isSelfEmployed?'到当地社保局/线上平台（如\"掌上12333\"APP）办理灵活就业参保，选择60%-100%缴费基数':'了解灵活就业参保政策，为未来职业变化做准备',
+    peerInsight:'自由职业同类人中，仅31%已办理工作地参保——你大概率是漏网之鱼',
+    urgency:'immediate', confidence:'high' },
+  { id:'ps7', domain:'career',
+    change:'AI替代效应加速：客服/翻译/基础编程/文案等重复性脑力岗需求下降30-50%',
+    impact:(p)=>{ const age=p.age||30;
+      if(age<35) return `警告窗口：你现在${age}岁，如果工作内容以\"重复执行\"为主（写周报/做翻译/改代码/整理数据），5年内被替代风险>40%。但\"会用AI的人\"将淘汰\"不会用AI的人\"——不是AI替代你，是会用AI的人替代你`;
+      return `你${age}岁，行业经验+判断力是AI无法替代的核心竞争力。但必须补上\"工具层\"：学会用AI辅助决策而非被AI取代决策`; },
+    financialImpact:(p)=>{ const age=p.age||30; return age<35?{min:30000,max:150000,unit:'技能升级避免的潜在损失'}:{min:10000,max:50000,unit:'AI提效带来的收入增量'}; },
+    action:(p)=>{ const age=p.age||30; return age<35?'每周投入2-3小时学习AI工具（Cursor编程/ChatGPT分析/Midjourney设计），3个月内形成竞争力':'选择一个与你工作相关的AI应用场景，深度掌握（比如Excel+AI数据分析）'; },
+    peerInsight:'25-35岁同类人中，仅28%正系统学习AI工具——这是你的差异化机会',
+    urgency:'immediate', confidence:'high' },
+
+  // ═══ 购房安家 ═══
+  { id:'ps8', domain:'housing',
+    change:'多城公积金贷款额度上调，首套最高120万（利率2.85%），二套最高80万',
+    impact:(p)=>{ const hasHouse=p.hasHouse; const city=p.city||'你的城市'; const isT1=['北京','上海','深圳','广州'].some(c=>city.includes(c));
+      if(!hasHouse) return `你还没买房——如果首套用公积金贷120万，相比商贷（3.5%+），30年省息${isT1?'约45万（一线房价基数高）':'约25-35万'}。建议：①确认公积金连续缴存≥6个月 ②计算可贷额度（余额×倍数）`;
+      return '你已有房产，但现在也可以关注：①\"商转公\"（商业贷款转公积金，部分城市已开放）②二套公积金贷款（如有置换/改善需求）'; },
+    financialImpact:(p)=>p.hasHouse?{min:5000,max:30000,unit:'商转公省息'}:{min:200000,max:450000,unit:'首套30年省息'},
+    action:(p)=>{ if(p.hasHouse) return '咨询当地公积金中心是否支持\"商转公\"，确认条件（通常需还款满1年+信用良好）'; return '打开当地公积金APP查余额和缴存月数，用\"房贷计算器\"对比公积金vs商贷'; },
+    peerInsight:'同类未购房者中，仅22%已确认自己的公积金可贷额度',
+    urgency:'immediate', confidence:'high' },
+  { id:'ps9', domain:'housing',
+    change:'保障性租赁住房\"十四五\"全国筹集870万套，租金≤市场价85%',
+    impact:(p)=>{ const age=p.age||30; const hasHouse=p.hasHouse; const city=p.city||'你的城市';
+      if(!hasHouse&&age<=35) return `你是保租房的精准目标人群——${city}的保租房：不限户籍、精装交付、拎包入住、租金便宜。\"先租后买\"可能比\"硬上车\"更适合你（省下的首付可以投资其他方向）`;
+      if(!hasHouse) return `即使你超过35岁，部分地区保租房年龄上限已放宽至45岁。${city}的具体政策建议关注`;
+      return '你已有房，但保租房政策对了解城市人口流向和租金走势有参考价值'; },
+    financialImpact:(p)=>!p.hasHouse?{min:12000,max:36000,unit:'/年省租金（相比市场价）'}:{min:0,max:0,unit:''},
+    action:(p)=>!p.hasHouse?'关注当地住建委官网\"保障性租赁住房\"板块，准备身份证+劳动合同/社保记录':'关注保租房对周边租赁市场的租金压制效应',
+    peerInsight:'30岁以下租房同类人中，53%不知道保租房申请渠道',
+    urgency:'soon', confidence:'high' },
+  { id:'ps10', domain:'housing',
+    change:'换房退税：\"卖一买一\"1年内完成可退个税（3-10万），政策2027年底到期',
+    impact:(p)=>{ if(p.hasHouse&&p.isMarried) return `你已有房产且已婚——如果正在考虑改善置换（小换大/远换近/旧换新），这个政策是\"真金白银\"。500万房产已缴个税约5万，全额可退`;
+      if(p.hasHouse) return '你有房产，如果未来考虑置换，记住房改退税的前提是：卖房后**1年内**购买新房，超期不退';
+      return '你还没买房，但了解这个政策有助于未来做\"买首套→换二套\"的长期规划'; },
+    financialImpact:(p)=>p.hasHouse?{min:30000,max:100000,unit:'退税金额'}:{min:0,max:0,unit:''},
+    action:(p)=>p.hasHouse?'如有置换计划，提前规划时间线（卖→买的1年窗口），保留完税凭证（个税票）':'记住\"1年内\"这个关键条件，未来置换时别错过窗口',
+    peerInsight:'有房已婚同类人中，仅18%知道换房退税政策',
+    urgency:'soon', confidence:'high' },
+
+  // ═══ 教育升学 ═══
+  { id:'ps11', domain:'education',
+    change:'教育部：扩大理工农医类招生规模，压缩部分文科专业——\"学科大调整\"进行中',
+    impact:(p)=>{ const hasChild=p.hasChild; const edu=p.education||'本科'; const isSTEM=['本科','硕士','博士'].includes(edu)&&!['文科'].includes(edu);
+      if(hasChild) return `如果你孩子未来3-5年面临高考选专业/考研：①优先选STEM（科学/技术/工程/数学）——招生名额在扩大，竞争压力相对小 ②文科中\"法学+AI\"\"财经+数据\"等交叉学科仍有机会 ③纯文科（历史/哲学等）慎选——就业面在收窄`;
+      if(!hasChild&&(p.age||30)<=40) return '你目前没有孩子，但这个趋势值得提前了解：未来你的孩子面对的就业市场，STEM人才溢价将持续扩大';
+      return '这个趋势反映了国家战略方向——人才培养在向\"硬科技\"倾斜'; },
+    financialImpact:(p)=>p.hasChild?{min:50000,max:300000,unit:'选对专业带来的收入溢价'}:{min:0,max:0,unit:''},
+    action:(p)=>p.hasChild?'关注教育部\"双一流\"建设学科调整名单，重点看新增的\"集成电路\"\"人工智能\"\"新能源科学\"等专业':'了解学科调整趋势，为未来决策储备知识',
+    peerInsight:'有高中子女的同类人中，67%已将STEM专业作为优先选项',
+    urgency:'watch', confidence:'high' },
+  { id:'ps12', domain:'education',
+    change:'AI通识教育进入中小学课标——编程/人工智能成必修，2025年秋季全面实施',
+    impact:(p)=>{ if(p.hasChild) return `你的孩子将在学校系统学习AI/编程——这是\"国家级\"的教育转向。建议：①不必焦虑报班，先关注学校课程安排 ②在家可以用Scratch（小学）/Python（初中）培养兴趣 ③重点是\"计算思维\"而非写代码`;
+      return '即使没有孩子，这个变化说明：AI素养正在成为\"新时代的英语\"——所有人都需要具备的基础能力'; },
+    financialImpact:null,
+    action:(p)=>p.hasChild?'与孩子一起探索AI工具（如用ChatGPT解答问题、用AI画画），把AI变成\"学习伙伴\"而非\"作弊工具\"':'自己先学起来——掌握AI工具本身就是一项高价值技能',
+    peerInsight:'有中小学子女的同类人中，仅12%正在引导孩子接触AI工具',
+    urgency:'soon', confidence:'high' },
+
+  // ═══ 生育育儿 ═══
+  { id:'ps14', domain:'fertility',
+    change:'生育补贴+婴幼儿照护扣除：每孩每年3600元补贴+3岁以下每月2000元个税扣除',
+    impact:(p)=>{ if(p.hasChild) { const kids=1; const annual=3600+2400*12; return `你有子女，3岁以下婴幼儿照护扣除=${annual.toLocaleString()}元/年！必须在个税APP中填报——很多人漏了这个。加上子女教育扣除（3岁以上每月2000元），你每年可节税可观金额`; }
+      if(p.isMarried&&(p.age||30)>=25&&(p.age||30)<=40) return `你已婚且在育龄期——如果计划要孩子，这些补贴虽然不多但\"聊胜于无\"。更重要的是：产假延长+育儿假+照护扣除，总价值超${(3600+2400*12+10000).toLocaleString()}元/年`;
+      return '即使你现在不需要，了解这些政策有助于为亲友（或未来的自己）提供信息支持'; },
+    financialImpact:(p)=>{ if(p.hasChild) return {min:3600+2400*10,max:3600+2400*12+4800,unit:'/年退税+补贴'}; return {min:0,max:0,unit:''}; },
+    action:(p)=>{ if(p.hasChild) return '立即打开\"个人所得税\"APP→专项附加扣除→核对\"婴幼儿照护费用\"和\"子女教育\"是否已填写'; return '如有生育计划，提前了解所在省市的生育补贴标准和申领流程'; },
+    peerInsight:'有0-3岁子女的同类人中，高达41%漏填了婴幼儿照护扣除——你可能也是其中之一',
+    urgency:'immediate', confidence:'high' },
+  { id:'ps15', domain:'fertility',
+    change:'多地延长产假至158-188天，新增夫妻各5-10天/年育儿假',
+    impact:(p)=>{ const isFemale=p.gender==='女'; const age=p.age||30;
+      if(isFemale&&age>=25&&age<=40) return `作为育龄女性，产假延长至158-188天（约5-6个月）意味着更充足的恢复和陪伴时间。但注意：①产假工资由生育保险支付（与你的社保基数挂钩）②部分私企可能因此更偏好招男性——了解你的法律保护`;
+      if(!isFemale&&p.isMarried&&age>=25) return '你作为丈夫/准爸爸，也享有育儿假（5-10天/年）——这是法律赋予的权利，别不好意思休';
+      return '了解配偶的各项假期权益，在家庭决策中可以提供信息支持'; },
+    financialImpact:(p)=>{ if(p.gender==='女'&&(p.age||30)>=25&&(p.age||30)<=40) return {min:15000,max:50000,unit:'生育津贴（与缴费基数挂钩）'}; return {min:0,max:0,unit:''}; },
+    action:(p)=>{ if(p.gender==='女') return '查询所在省市的产假最新天数，并确认生育保险连续缴费状态（通常要求缴满9-12个月）'; return '了解配偶的产假/育儿假权益，提前与雇主沟通'; },
+    peerInsight:'育龄女性同类人中，仅35%清楚自己的生育津贴与社保基数直接挂钩——基数越高津贴越多',
+    urgency:'soon', confidence:'high' },
+
+  // ═══ 养老退休 ═══
+  { id:'ps16', domain:'retirement',
+    change:'延迟退休：2025年起15年过渡，男63/女58(干部)/女55(工人)岁',
+    impact:(p)=>{ const age=p.age||30; const isF=p.gender==='女'; const edu=p.education||'本科';
+      const retire=isF?(edu==='博士'||edu==='硕士'?58:55):63;
+      const yearsLeft=retire-age;
+      const gap=Math.round((retire-(isF?55:60))*0.03*30*5000);
+      if(age>=50) return `你${age}岁，${retire}岁退休，仅剩${yearsLeft}年——时间紧迫！延迟退休意味着养老金替代率可能下降3-5%。建议尽快开立个人养老金账户+增配商业养老保险`;
+      if(age>=40) return `你${age}岁，离${retire}岁退休还有${yearsLeft}年。现在开始每月定投2000元到个人养老金+指数基金，退休时约累积${Math.round(2000*12*yearsLeft*1.06).toLocaleString()}元`;
+      return `你${age}岁，离${retire}岁退休还有${yearsLeft}年——时间是你最大的优势。现在每月投入1000元，复利${yearsLeft}年，到期约${Math.round(1000*12*yearsLeft*1.06).toLocaleString()}元`; },
+    financialImpact:(p)=>{ const age=p.age||30; return {min:age>=40?3000:1000,max:age>=40?5400:3600,unit:'/年建议存入个人养老金'}; },
+    action:(p)=>{ const age=p.age||30; return age>=40?'立即开立个人养老金账户，年底前缴存12000元享当年税前扣除':'尽早开始定投个人养老金/指数基金，利用长期复利效应'; },
+    peerInsight:'40-50岁同类人中，仅26%已开立个人养老金账户——越晚开损失越大',
+    urgency:'immediate', confidence:'high' },
+  { id:'ps17', domain:'retirement',
+    change:'个人养老金制度全国推开：年缴12000元享税前扣除+账户内投资收益免税',
+    impact:(p)=>{ const age=p.age||30; const edu=p.education||'本科'; const isHigh=edu==='硕士'||edu==='博士';
+      const taxRate=isHigh?0.30:(age>=40?0.25:(age>=35?0.20:0.10));
+      const saving=Math.round(12000*taxRate);
+      return `以你的情况（${edu}学历/约${Math.round(taxRate*100)}%边际税率），年缴12000元可节税${saving}元。如从${age}岁开始坚持到退休，累计退税+账户收益约${Math.round(saving*((p.gender==='女'?55:60)-age)*1.05).toLocaleString()}元`; },
+    financialImpact:(p)=>{ const age=p.age||30; const saving=age>=45?5400:age>=35?3600:1200; return {min:saving,max:saving,unit:'/年省税'}; },
+    action:'在工行/招行/支付宝等渠道开立个人养老金账户（5分钟搞定），年底前存入12000元即可享当年扣除',
+    peerInsight:'同类人中仅31%已开个人养老金账户——大部分人每年在白白多缴税',
+    urgency:'soon', confidence:'high' },
+
+  // ═══ 消费生活 ═══
+  { id:'ps20', domain:'consumption',
+    change:'个税年度汇算：7项专项附加扣除，每漏一项每年少退1000-5000元',
+    impact:(p)=>{ const items=[]; if(p.hasHouse) items.push('房贷利息(1000/月)'); if(p.hasChild) items.push('子女教育(2000/月)');
+      if(p.isMarried&&!p.hasChild) items.push('婴幼儿照护(2000/月)'); items.push('赡养老人(3000/月)');
+      if(['大专','高中及以下'].includes(p.education||'')) items.push('继续教育(400/月)');
+      const missed=items.slice(0,3);
+      return `根据你的情况，你可能涉及这些扣除项：${missed.join('、')||'请逐项确认'}。每漏一项，每年少退1200-6000元。${p.hasHouse&&p.hasChild?'你既有房贷又有孩子——两项合计每年可节税约3600-5400元！':''}`; },
+    financialImpact:(p)=>{ let base=2400; if(p.hasHouse) base+=2400; if(p.hasChild) base+=4800; return {min:base,max:base*1.5,unit:'/年退税'}; },
+    action:'打开\"个人所得税\"APP→\"专项附加扣除\"→逐项核对：房贷利息、子女教育、婴幼儿照护、赡养老人、继续教育、住房租金、大病医疗',
+    peerInsight:'同类人中，高达52%至少漏填了一项专项附加扣除——\"退钱\"的事别嫌麻烦',
+    urgency:'immediate', confidence:'high' },
+
+  // ═══ 创业营商 ═══
+  { id:'ps22', domain:'business',
+    change:'小微企业优惠：年利润300万以下实际税负仅5%（减按25%×20%）',
+    impact:(p)=>{ if(p.isSelfEmployed) return `你作为自由职业者/创业者——如果你年收入20-50万，注册个体工商户/小微企业后：从按\"劳务报酬\"缴20-40%个税→降至5%企业所得税，每年可省${p.age||30>30?'3-8':'1-3'}万元`;
+      return `即使你目前不创业，这个政策说明：①国家在真金白银支持小微 ②\"副业/自由职业→个体户\"的税负已经很低 ③身边的小微创业者生存环境在改善`; },
+    financialImpact:(p)=>p.isSelfEmployed?{min:10000,max:80000,unit:'/年省税'}:{min:0,max:0,unit:''},
+    action:(p)=>p.isSelfEmployed?'咨询12366或当地税务局：以个体户/小微企业身份经营vs以个人身份接活的税负差异':'了解小微企业注册流程（全程电子化，1天可办完），为未来创业做准备',
+    peerInsight:'自由职业同类人中，高达58%仍以\"个人\"身份缴税而未注册个体户——等于每年多缴1-5万',
+    urgency:'immediate', confidence:'high' },
+]
+
+/** ═══ 政策影响评估引擎 v2 — 全画像驱动+多维评分+同类人基准 ═══ */
+export function getPolicyCompass(personaKey, userProfile) {
+  const p = userProfile || {}
+  p.personaKey = personaKey
+
+  // 为每个信号计算全画像影响分数
+  const scored = policySignals.map(s => {
+    let relevance = 0 // 0-100
+
+    // ── 通用基础分 ──
+    if (s.confidence === 'high') relevance += 15
+    if (s.urgency === 'immediate') relevance += 20
+    else if (s.urgency === 'soon') relevance += 10
+
+    // ── 画像驱动的关联度计算 ──
+    const age = p.age || 30
+    const hasHouse = p.hasHouse
+    const hasChild = p.hasChild
+    const isMarried = p.isMarried
+    const isSelfEmp = p.isSelfEmployed
+    const isF = p.gender === '女'
+    const edu = p.education || '本科'
+    const highEdu = ['硕士','博士'].includes(edu)
+
+    // 投资域
+    if (s.domain === 'investment') {
+      relevance += (personaKey === 'investor' ? 30 : 12)
+      if (hasHouse) relevance += 10 // 有房贷→关心利率
+      if (age >= 40) relevance += 10 // 中年人→关心资产配置
+      if (s.id === 'ps1' && hasHouse) relevance += 15 // LPR对有房者极相关
+    }
+    // 职业域
+    if (s.domain === 'career') {
+      relevance += (personaKey === 'worker' || personaKey === 'freelancer' ? 25 : 8)
+      if (age < 35) relevance += 15 // 年轻人→职业选择关键期
+      if (isSelfEmp && s.id === 'ps6') relevance += 20 // 灵活就业社保
+      if (age < 40 && s.id === 'ps7') relevance += 15 // AI替代威胁
+      if (highEdu && s.id === 'ps5') relevance += 10 // 高学历+新质生产力
+    }
+    // 购房域
+    if (s.domain === 'housing') {
+      if (!hasHouse && age <= 40) relevance += 35 // 没房年轻人
+      else if (hasHouse) relevance += 15
+      if (hasHouse && isMarried && s.id === 'ps10') relevance += 20 // 已婚有房→换房退税
+    }
+    // 教育域
+    if (s.domain === 'education') {
+      relevance += hasChild ? 35 : (age <= 35 ? 12 : 5)
+      if (s.id === 'ps11' && hasChild) relevance += 10 // 孩子选专业
+    }
+    // 生育域
+    if (s.domain === 'fertility') {
+      if (hasChild) relevance += 30
+      else if (isMarried && age >= 25 && age <= 40) relevance += 20
+      if (isF && age >= 25 && age <= 40 && s.id === 'ps15') relevance += 20
+    }
+    // 养老域
+    if (s.domain === 'retirement') {
+      if (age >= 50) relevance += 40
+      else if (age >= 40) relevance += 30
+      else if (age >= 30) relevance += 15
+      else relevance += 8
+      if (isF && s.id === 'ps16') relevance += 8 // 女性退休年龄不同
+    }
+    // 消费域
+    if (s.domain === 'consumption') {
+      relevance += 18 // 通用
+      if (hasHouse && s.id === 'ps20') relevance += 10 // 有房贷→扣除项相关
+    }
+    // 创业域
+    if (s.domain === 'business') {
+      relevance += isSelfEmp ? 35 : 5
+      if (s.id === 'ps22' && isSelfEmp) relevance += 15
+    }
+
+    // 财务影响加分
+    const finImpact = typeof s.financialImpact === 'function' ? s.financialImpact(p) : null
+    if (finImpact && finImpact.min > 0) relevance += Math.min(25, Math.floor(finImpact.min / 2000))
+
+    relevance = Math.min(100, relevance)
+
+    return { ...s, _score: relevance, _financial: finImpact }
+  })
+
+  // 排序：高关联度优先
+  scored.sort((a, b) => b._score - a._score)
+  const top = scored.slice(0, 8)
+
+  // 生成个性化文本
+  const personalized = top.map(s => ({
+    ...s,
+    impactText: typeof s.impact === 'function' ? s.impact(p) : s.impact,
+    actionText: typeof s.action === 'function' ? s.action(p) : s.action,
+  }))
+
+  // 按决策域分组
+  const byDomain = {}
+  personalized.forEach(s => {
+    if (!byDomain[s.domain]) byDomain[s.domain] = []
+    if (byDomain[s.domain].length < 2) byDomain[s.domain].push(s)
+  })
+
+  // 影响总览
+  let totalMin = 0, totalMax = 0
+  personalized.forEach(s => {
+    if (s._financial?.min) { totalMin += s._financial.min; totalMax += s._financial.max }
+  })
+  const highCount = personalized.filter(s => s.urgency === 'immediate').length
+  const soonCount = personalized.filter(s => s.urgency === 'soon').length
+
+  return {
+    signals: personalized,
+    byDomain,
+    domains: Object.keys(byDomain).map(d => ({ ...domainMeta[d], key: d, count: byDomain[d].length })),
+    totalSignals: policySignals.length,
+    matchedSignals: personalized.length,
+    impactSummary: { totalMin, totalMax, highCount, soonCount },
+    date: new Date().toISOString(),
+  }
+}

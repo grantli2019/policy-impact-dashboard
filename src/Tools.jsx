@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { regions, birthPolicy, taxOptimizer, pensionCalc, citySettlementData, calcSettlementScore, calcHouseQualify, citySubsidies, calcEligibleSubsidies, calcGjjSavings } from './data/impactData'
+import { useState, useEffect, useRef } from 'react'
+import { regions, birthPolicy, taxOptimizer, pensionCalc, citySettlementData, calcSettlementScore, calcHouseQualify, citySubsidies, calcEligibleSubsidies, calcGjjSavings, saveToolResult } from './data/impactData'
 import './App.css'
 
 /* ═══════ 可复用Slider组件（带min/max标注） ═══════ */
@@ -29,6 +29,7 @@ function BirthCalc({ regionKey }) {
   const [birthOrder, setBirthOrder] = useState(1)
   const [deliveryType, setDeliveryType] = useState('normal')
   const [isDifficult, setIsDifficult] = useState(false)
+  const savedRef = useRef(false)
 
   const regionalBonus = bp.maternityLeave.regional[regionKey] || 0
   let leaveDays = bp.maternityLeave.base + regionalBonus
@@ -48,6 +49,18 @@ function BirthCalc({ regionKey }) {
   const taxSavingTotal = taxSavingAnnual * 3
   const totalBenefit = allowance + medicalReimburse + childcareTotal + taxSavingTotal
   const plainSummary = bp.plainSummary
+
+  // 自动保存计算结果
+  useEffect(() => {
+    if (step === 2 && !savedRef.current) {
+      savedRef.current = true
+      saveToolResult('生育权益计算器',
+        { salary, insuranceMonths, empType, birthOrder, deliveryType, isDifficult, regionKey },
+        { totalBenefit, allowance, leaveDays, medicalReimburse, childcareTotal, taxSavingTotal, paternityDays, eligible }
+      )
+    }
+    if (step !== 2) savedRef.current = false
+  }, [step, totalBenefit])
 
   return (
     <div className="tool-card birth-calc">
@@ -223,6 +236,7 @@ function MortgageCalc({ params, regionKey }) {
   const [commRate, setCommRate] = useState(params.commRate)
   const [gjjRateErr, setGjjRateErr] = useState('')
   const [commRateErr, setCommRateErr] = useState('')
+  const savedRef = useRef(false)
   const validateRate = (v, label) => {
     if (v < 0.5) return `${label}不应低于0.5%`
     if (v > 6.0) return `${label}不应高于6.0%`
@@ -242,6 +256,18 @@ function MortgageCalc({ params, regionKey }) {
   const after  = calc(gjjAfter, commRate)
   const saving = before.totalInterest - after.totalInterest
   const monthlySaving = before.monthly - after.monthly
+
+  // 自动保存
+  useEffect(() => {
+    const key = `${total}_${years}_${gjjRate}_${commRate}_${regionKey}`
+    if (!gjjRateErr && !commRateErr && !savedRef.current) {
+      savedRef.current = key
+      saveToolResult('房贷对比计算器',
+        { total, years, gjjRate, commRate, regionKey },
+        { saving, monthlySaving, gjjBefore, gjjAfter }
+      )
+    }
+  }, [saving, monthlySaving])
 
   return (
     <div className="tool-card">
@@ -453,6 +479,7 @@ function GjjSavingCalc({ params }) {
   const [commRate, setCommRate] = useState(params.commRate)
   const [gjjRateErr, setGjjRateErr] = useState('')
   const [commRateErr, setCommRateErr] = useState('')
+  const savedRef = useRef(false)
   const validateRate = (v, label) => {
     if (v < 0.5) return `${label}不应低于0.5%`
     if (v > 6.0) return `${label}不应高于6.0%`
@@ -462,6 +489,17 @@ function GjjSavingCalc({ params }) {
   const commMonthly = pmt(commRate/100/12, years*12, loan) * 10000
   const diff = commMonthly - gjjMonthly
   const totalDiff = diff * years * 12
+
+  // 自动保存
+  useEffect(() => {
+    if (!gjjRateErr && !commRateErr && !savedRef.current) {
+      savedRef.current = true
+      saveToolResult('公积金省息计算器',
+        { loan, years, gjjRate, commRate },
+        { gjjMonthly, commMonthly, diff, totalDiff }
+      )
+    }
+  }, [totalDiff])
 
   return (
     <div className="tool-card">
@@ -520,6 +558,7 @@ function TaxOptimizerCalc() {
   const [monthlySalary, setMonthlySalary] = useState(15000)
   const [annualBonus, setAnnualBonus] = useState(30000)
   const [bonusMode, setBonusMode] = useState('standalone') // standalone | combined
+  const savedRef = useRef(false)
   const [selectedDeductions, setSelectedDeductions] = useState({
     childrenEducation: false, continuingEducation: false, housingLoan: true,
     housingRent: false, elderlyCare: true, infantCare: false, seriousIllness: false,
@@ -562,6 +601,17 @@ function TaxOptimizerCalc() {
   const finalTax = Math.min(standaloneTotal, combinedTax)
   const effectiveRate = annualSalary + annualBonus > 0 ? (finalTax / (annualSalary + annualBonus) * 100).toFixed(1) : 0
   const ps = tax.plainSummary
+
+  // 自动保存
+  useEffect(() => {
+    if (!savedRef.current) {
+      savedRef.current = true
+      saveToolResult('个税优化计算器',
+        { monthlySalary, annualBonus, bonusMode, selectedDeductions },
+        { finalTax, salaryTax, bonusTaxStandalone, combinedTax, bestMode, savedAmount, effectiveRate, totalDeductions }
+      )
+    }
+  }, [finalTax])
 
   return (
     <div className="tool-card birth-calc">
@@ -676,6 +726,7 @@ function PensionEstimator() {
   const [monthlySalary, setMonthlySalary] = useState(15000)
   const [contribYears, setContribYears] = useState(15)
   const [localAvgSalary, setLocalAvgSalary] = useState(12000)
+  const savedRef = useRef(false)
 
   // 计算实际退休年龄（含延迟退休）
   const calcRetireAge = () => {
@@ -722,6 +773,17 @@ function PensionEstimator() {
   const paybackMonths = accountPension > 0 ? Math.round(accountTotal / accountPension) : 0
   const meetsMinYears = contribYears >= pc.minContributionYears
   const ps = pc.plainSummary
+
+  // 自动保存
+  useEffect(() => {
+    if (!savedRef.current && meetsMinYears) {
+      savedRef.current = true
+      saveToolResult('养老金估算器',
+        { gender, currentAge, monthlySalary, contribYears, localAvgSalary },
+        { totalPension, basePension, accountPension, retireAge, replacementRate, meetsMinYears }
+      )
+    }
+  }, [totalPension])
 
   return (
     <div className="tool-card birth-calc">
@@ -922,6 +984,13 @@ function SettlementCalculator({ regionKey }) {
     const reportData = { score, qualify, gjj, city }
     setReport(reportData)
     setStep(2)
+    // 保存工具结果
+    saveToolResult('安家综合评估',
+      { cityKey, age: user.age, edu: user.edu, socialMonths: user.socialMonths, income: user.income, married: user.married, hasChild: user.hasChild, budget: user.budget },
+      { score: { pass: score.pass, score: score.score, gap: score.gap },
+        qualify: { qualify: qualify.qualify, waitYears: qualify.waitYears },
+        gjj: gjj ? { loanAmount: gjj.loanAmount, totalSaving: gjj.totalSaving } : null }
+    )
     try { localStorage.setItem('settlement_data', JSON.stringify({ cityKey, user, report: reportData, timestamp: new Date().toISOString() })) } catch {}
     // 生成安家行动清单
     const actions = []
