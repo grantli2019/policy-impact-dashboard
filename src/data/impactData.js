@@ -2760,3 +2760,169 @@ export function calcGjjSavings(cityKey, budget) {
     gjjRate: '2.85%', comRate: '3.30%',
   }
 }
+
+/**
+ * 分数趋势：记录上次计算分数到 localStorage，返回变化趋势
+ * @param {Array} dims - 维度数组（含 key 和计算后的分数 idx）
+ * @returns {Object} { trends: { dimKey: { direction, delta, current, previous } } }
+ */
+export function getScoreTrend(dims) {
+  try {
+    const cached = JSON.parse(localStorage.getItem('score_cache') || '{}')
+    const trends = {}
+    const now = {}
+    dims.forEach(d => {
+      const key = d.key
+      const cur = d.idx
+      now[key] = cur
+      if (cached.scores && cached.scores[key] !== undefined) {
+        const prev = cached.scores[key]
+        const delta = cur - prev
+        trends[key] = {
+          direction: delta > 1 ? 'up' : delta < -1 ? 'down' : 'flat',
+          delta: delta > 0 ? `+${Math.round(delta)}` : `${Math.round(delta)}`,
+          current: cur,
+          previous: prev,
+        }
+      } else {
+        trends[key] = { direction: 'flat', delta: '0', current: cur, previous: cur }
+      }
+    })
+    localStorage.setItem('score_cache', JSON.stringify({ scores: now, timestamp: new Date().toISOString() }))
+    return { trends }
+  } catch {
+    return { trends: {} }
+  }
+}
+
+/**
+ * 计算维度分数 vs 区域基准
+ * @param {number} dimScore - 某维度的分数
+ * @param {Array} allScores - 所有维度的分数数组 [{ key, idx }]
+ * @returns {Object} { diff, direction, avg }
+ */
+export function calcScoreVsBaseline(dimScore, allScores) {
+  const scores = allScores.filter(s => s.idx != null).map(s => s.idx)
+  if (scores.length < 2) return { diff: 0, direction: 'neutral', avg: dimScore }
+  const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+  const diff = dimScore - avg
+  return {
+    diff: diff > 0 ? `+${diff}` : `${diff}`,
+    direction: diff > 2 ? 'above' : diff < -2 ? 'below' : 'neutral',
+    avg,
+  }
+}
+
+/**
+ * 统一行动存储：将 actionPlans、雷达信号、雷达推荐行动合并为统一结构
+ * @param {string} personaKey
+ * @param {string} stageKey
+ * @returns {Array} unifiedActions
+ */
+export function getUnifiedActions(personaKey, stageKey) {
+  const unified = []
+
+  // 1. 从 actionPlans 收集
+  const plans = actionPlans[personaKey] || []
+  plans.forEach(p => {
+    unified.push({
+      id: p.id,
+      source: 'actionPlans',
+      title: p.title,
+      steps: p.steps || [],
+      urgency: p.urgency || 'watch',
+      benefit: p.benefit || null,
+      policyRef: p.policyRef || '',
+      toolLink: p.toolLink || null,
+      status: 'pending',
+      completedAt: null,
+    })
+  })
+
+  // 2. 从 signals 收集（匹配 stageKey）
+  if (lifeRadar && stageKey) {
+    const matchedSignals = lifeRadar.signals.filter(s => s.stageMatch && s.stageMatch.includes(stageKey))
+    matchedSignals.forEach(s => {
+      // 避免重复（按 title 去重）
+      if (!unified.find(u => u.title === s.title)) {
+        unified.push({
+          id: s.id,
+          source: 'signal',
+          title: s.title,
+          steps: s.action ? [s.action] : [],
+          urgency: s.priority === 'high' ? 'immediate' : s.priority === 'medium' ? 'soon' : 'watch',
+          benefit: null,
+          policyRef: '',
+          toolLink: null,
+          status: 'pending',
+          completedAt: null,
+        })
+      }
+    })
+  }
+
+  // 恢复已保存的状态
+  try {
+    const saved = JSON.parse(localStorage.getItem('unified_actions') || '{}')
+    if (saved.items) {
+      saved.items.forEach(savedItem => {
+        const match = unified.find(u => u.id === savedItem.id)
+        if (match) {
+          match.status = savedItem.status || 'pending'
+          match.completedAt = savedItem.completedAt || null
+        }
+      })
+    }
+  } catch {}
+
+  // 持久化
+  try {
+    localStorage.setItem('unified_actions', JSON.stringify({
+      items: unified.map(u => ({ id: u.id, source: u.source, title: u.title, status: u.status, completedAt: u.completedAt })),
+      personaKey,
+      stageKey,
+      updatedAt: new Date().toISOString(),
+    }))
+  } catch {}
+
+  return unified
+}
+
+/**
+ * 切换统一行动完成状态
+ */
+export function toggleUnifiedAction(actionId, newStatus) {
+  try {
+    const saved = JSON.parse(localStorage.getItem('unified_actions') || '{}')
+    if (!saved.items) return
+    const item = saved.items.find(i => i.id === actionId)
+    if (item) {
+      item.status = newStatus
+      item.completedAt = newStatus === 'done' ? new Date().toISOString() : null
+      localStorage.setItem('unified_actions', JSON.stringify(saved))
+    }
+  } catch {}
+}
+
+/**
+ * 计算行动进度统计
+ */
+export function getActionProgress(personaKey, stageKey) {
+  const actions = getUnifiedActions(personaKey, stageKey)
+  const total = actions.length
+  const done = actions.filter(a => a.status === 'done').length
+
+  // 本周完成数
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+  const weekDone = actions.filter(a => a.status === 'done' && a.completedAt && new Date(a.completedAt).getTime() > weekAgo).length
+
+  // 待办最多的维度（简化：取 actionPlans 匹配次数最多的 policyRef 关联维度）
+  const pendingBySource = {}
+  actions.filter(a => a.status !== 'done').forEach(a => {
+    pendingBySource[a.source] = (pendingBySource[a.source] || 0) + 1
+  })
+  const topSource = Object.entries(pendingBySource).sort((a, b) => b[1] - a[1])[0]
+
+  return { total, done, weekDone, topSource: topSource ? topSource[0] : null }
+}
+

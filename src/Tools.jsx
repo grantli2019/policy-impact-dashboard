@@ -288,6 +288,14 @@ function MortgageCalc({ params, regionKey }) {
           <div>📉 月供减少：<b>{format(monthlySaving)} 元/月</b></div>
         </div>
       </div>
+      <div className="tool-next-steps">
+        <h5>📋 下一步行动</h5>
+        <div className="tns-list">
+          <div className="tns-item"><span className="tns-num">1</span>去公积金中心确认你的可贷额度</div>
+          <div className="tns-item"><span className="tns-num">2</span>联系多家银行对比实际审批利率</div>
+          <div className="tns-item"><span className="tns-num">3</span>准备首付和贷款材料（身份证、收入证明、征信报告）</div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -332,6 +340,14 @@ function TaxRefundCalc() {
         </div>
         {refundable > 0 && <div className="saving-highlight">💰 你可以退回 <b>{format(refundable)} 元</b>（约{(refundable/10000).toFixed(1)}万）个税！</div>}
         {!buyWithinYear && <div className="tip-box">⚠️ 需在卖房后1年内购买新房才能享受退税，请尽快行动！</div>}
+      </div>
+      <div className="tool-next-steps">
+        <h5>📋 下一步行动</h5>
+        <div className="tns-list">
+          <div className="tns-item"><span className="tns-num">1</span>保留好卖房已缴个税的完税凭证</div>
+          <div className="tns-item"><span className="tns-num">2</span>确保卖房后1年内完成新房购买</div>
+          <div className="tns-item"><span className="tns-num">3</span>到当地税务局窗口提交退税申请</div>
+        </div>
       </div>
     </div>
   )
@@ -415,6 +431,14 @@ function QualifyCheck({ regionKey }) {
           </div>
         </div>
       )}
+      <div className="tool-next-steps">
+        <h5>📋 下一步行动</h5>
+        <div className="tns-list">
+          <div className="tns-item"><span className="tns-num">1</span>确认你的户籍和社保缴纳状态</div>
+          <div className="tns-item"><span className="tns-num">2</span>联系当地住建委或房产交易中心核实最新限购政策</div>
+          <div className="tns-item"><span className="tns-num">3</span>如有购房计划，提前准备身份、社保、纳税证明</div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -474,6 +498,14 @@ function GjjSavingCalc({ params }) {
         <div className="saving-highlight">
           <div>📉 月供差额：<b>{format(diff)} 元/月</b></div>
           <div>🎉 {years}年总省息：<b>{format(totalDiff)} 元</b>（约{(totalDiff/10000).toFixed(1)}万）</div>
+        </div>
+      </div>
+      <div className="tool-next-steps">
+        <h5>📋 下一步行动</h5>
+        <div className="tns-list">
+          <div className="tns-item"><span className="tns-num">1</span>查询你的公积金账户余额和月缴存额</div>
+          <div className="tns-item"><span className="tns-num">2</span>向贷款银行咨询组合贷款流程和利率</div>
+          <div className="tns-item"><span className="tns-num">3</span>对比不同银行的公积金贷款办理时效</div>
         </div>
       </div>
     </div>
@@ -620,6 +652,14 @@ function TaxOptimizerCalc() {
               <span className="bc-myth-truth">✅ {m.truth}</span>
             </div>
           ))}
+        </div>
+        <div className="tool-next-steps">
+          <h5>📋 下一步行动</h5>
+          <div className="tns-list">
+            <div className="tns-item"><span className="tns-num">1</span>登录「个人所得税」APP确认各项扣除已填满</div>
+            <div className="tns-item"><span className="tns-num">2</span>确认年终奖计税方式选择对你最有利的方案</div>
+            <div className="tns-item"><span className="tns-num">3</span>如有疑问拨打12366税务服务热线</div>
+          </div>
         </div>
       </div>
     </div>
@@ -774,6 +814,14 @@ function PensionEstimator() {
               <span className="bc-myth-truth">✅ {m.truth}</span>
             </div>
           ))}
+        </div>
+        <div className="tool-next-steps">
+          <h5>📋 下一步行动</h5>
+          <div className="tns-list">
+            <div className="tns-item"><span className="tns-num">1</span>开立个人养老金账户，每年可存12000元税前扣除</div>
+            <div className="tns-item"><span className="tns-num">2</span>查询你的社保缴费记录，确保连续缴纳</div>
+            <div className="tns-item"><span className="tns-num">3</span>考虑增加补充养老储蓄（商业养老保险/基金定投）</div>
+          </div>
         </div>
       </div>
     </div>

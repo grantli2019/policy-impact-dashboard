@@ -4,7 +4,7 @@ import {
   dimensions, methodology, rubric, personas, weeklyUpdates, regions,
   calcDimensionScore, calcOverallIndex, getIndexLevel, keyFindings,
   getDimensionsForRegion, getTimelineForDimension, regionToolParams,
-  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, newsLianboUpdates, lifeRadar, searchScenes,
+  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, newsLianboUpdates, lifeRadar, searchScenes, getScoreTrend, calcScoreVsBaseline, getUnifiedActions, toggleUnifiedAction, getActionProgress,
   detectUserCity, getSmartRecommendations, getRecommendReason, cityToRegion, inferLifeStage, lifeStages,
 } from './data/impactData'
 import './App.css'
@@ -2720,6 +2720,7 @@ function LifeRadar({ currentDims, personaKey, onNavigateDim, onSwitchTab }) {
   })
   const [floatText, setFloatText] = useState(null)
   const [dimFilter, setDimFilter] = useState(null)
+  const [actionFilter, setActionFilter] = useState('all')
 
   const dimOptions = {
     housing: { icon: '🏠', label: '房产' },
@@ -2957,38 +2958,64 @@ function LifeRadar({ currentDims, personaKey, onNavigateDim, onSwitchTab }) {
             ) : null})()}
 
           {/* 行动清单 */}
-          {result.topActions.length > 0 && (() => {
-            const doneList = actionsDone[stageKey] || []
-            const total = result.topActions.length
-            const doneCount = doneList.filter(i => i < total).length
-            const pct = Math.round((doneCount / total) * 100)
+          {(() => {
+            // 统一行动数据
+            const unifiedAll = getUnifiedActions(personaKey, stageKey || '')
+            if (!unifiedAll.length && result.topActions.length === 0) return null
+            // 合并雷达 topActions（补充 unified 里没有的）
+            const merged = [...unifiedAll]
+            result.topActions.forEach((a, i) => {
+              if (!merged.find(m => m.title === a.title)) {
+                merged.push({
+                  id: 'top_' + i, source: 'topRadar',
+                  title: a.title, steps: a.desc ? [a.desc] : [],
+                  urgency: a.priority === 'high' ? 'immediate' : 'watch',
+                  benefit: null, policyRef: '', toolLink: null,
+                  status: 'pending', completedAt: null,
+                })
+              }
+            })
+            const filtered = actionFilter === 'all' ? merged : merged.filter(a => a.source === actionFilter)
+            const doneCount = merged.filter(a => a.status === 'done').length
+            const total = merged.length
+            const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0
             const barColor = pct === 100 ? '#27ae60' : pct >= 60 ? '#e67e22' : '#e74c3c'
             return (
               <section className="radar-section radar-action" style={{ position: 'relative' }}>
                 <h3 className="radar-section-title"><span className="rst-icon">📝</span> 你的行动清单</h3>
+                <div className="action-filters">
+                  <button className={`action-filter-btn ${actionFilter === 'all' ? 'active' : ''}`} onClick={() => setActionFilter('all')}>全部 {merged.length}</button>
+                  {['actionPlans','topRadar','signal'].filter(s => merged.some(a => a.source === s)).map(s => (
+                    <button key={s} className={`action-filter-btn ${actionFilter === s ? 'active' : ''}`} onClick={() => setActionFilter(s)}>
+                      {s === 'actionPlans' ? '行动计划' : s === 'topRadar' ? '雷达推荐' : '信号提醒'} {merged.filter(a => a.source === s).length}
+                    </button>
+                  ))}
+                </div>
                 <div className="radar-action-progress">
                   <div className="rap-bar"><div className="rap-fill" style={{ width: pct + '%', background: barColor }} /></div>
                   <span className="rap-text">已完成 {doneCount}/{total}</span>
                 </div>
                 {floatText && <div className="radar-float-text">{floatText}</div>}
                 <div className="radar-action-list">
-                  {result.topActions.map((a, i) => {
-                    const isDone = doneList.includes(i)
+                  {filtered.map(a => {
+                    const isDone = a.status === 'done'
                     return (
-                      <div key={i} className={`radar-action-item ${isDone ? 'rai-done' : ''}`} onClick={() => {
-                        if (!isDone && (a.dims?.[0])) onNavigateDim(a.dims[0])
-                        else if (!isDone) onSwitchTab('tools')
+                      <div key={a.id} className={`radar-action-item ${isDone ? 'rai-done' : ''}`} onClick={() => {
+                        if (!isDone && a.toolLink) onSwitchTab('tools')
+                        else if (!isDone) onSwitchTab('dimensions')
                       }}>
-                        <button className="rai-check" onClick={(e) => toggleAction(e, stageKey, i, total)}>
+                        <button className="rai-check" onClick={(e) => { e.stopPropagation(); toggleUnifiedAction(a.id, isDone ? 'pending' : 'done'); }}>
                           {isDone ? '✅' : <span className="rai-circle" />}
                         </button>
-                        <span className="rai-num">{i + 1}</span>
+                        <span className="rai-num">{1}</span>
+                        <span className={`action-source-badge src-${a.source}`}>{a.source === 'actionPlans' ? '行动' : a.source === 'topRadar' ? '雷达' : '信号'}</span>
                         <span className="rai-text">{a.title}</span>
                         {!isDone && <span className="rai-arrow">去做 →</span>}
                       </div>
                     )
                   })}
                 </div>
+                {filtered.length === 0 && <p style={{textAlign:'center',color:'var(--text-muted)',padding:'16px 0',fontSize:13}}>当前筛选条件下没有待办行动</p>}
               </section>
             )
           })()}
@@ -3103,6 +3130,20 @@ function App() {
   const [policyDetail, setPolicyDetail] = useState(null)
   const [targetTool, setTargetTool] = useState(0)
   const DIM_TO_TOOL = { housing: 1, employment: 5, education: 0, pension: 6, finance: 5, industry: -1 }
+  const DIM_ACTION_KEYWORDS = {
+    housing: ['公积金','房贷','房产','换房','LPR','长三角','房地产税','利率'],
+    employment: ['社保','个税','就业','参保','灵活','平台','延迟退休','养老金'],
+    education: ['学区','教育','子女','托育','学前','随迁','生育补贴'],
+    pension: ['养老','退休','养老金','个人养老金'],
+    finance: ['金融','理财','存款','大额','个人养老金','资管'],
+    industry: ['产业','企业','创业','补贴'],
+  }
+  const getDimActions = (dimKey) => {
+    const plan = actionPlans[personaKey]
+    if (!plan) return []
+    const keywords = DIM_ACTION_KEYWORDS[dimKey] || []
+    return plan.filter(a => !keywords.length || keywords.some(k => (a.policyRef || '').includes(k) || (a.title || '').includes(k))).slice(0, 3)
+  }
   const [compareList, setCompareList] = useState([])
   const [showCompare, setShowCompare] = useState(false)
 
@@ -3128,6 +3169,9 @@ function App() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+  // 新用户检测：访问次数<=2时折叠首页次要区块
+  const visitCount = (() => { try { return JSON.parse(localStorage.getItem('visit_stats') || '{}').count || 1 } catch { return 1 } })()
+  const [overviewCollapsed, setOverviewCollapsed] = useState(visitCount <= 2)
   useEffect(() => { if (!moreOpen) return; const handler = () => setMoreOpen(false); document.addEventListener('click', handler); return () => document.removeEventListener('click', handler); }, [moreOpen])
   // Track visits
   useEffect(() => {
@@ -3169,6 +3213,16 @@ function App() {
     ? [...currentDims].sort((a, b) => (currentPersona.weights[b.key] ?? 0) - (currentPersona.weights[a.key] ?? 0))
     : currentDims, [currentPersona, currentDims])
   const topDimKeys = currentPersona ? sortedDims.slice(0, 2).map(d => d.key) : []
+
+  // 分数趋势（缓存上次分数并比较）
+  const scoreTrends = useMemo(() => {
+    try {
+      const dims = sortedDims.map(d => ({ key: d.key, idx: calcDimensionScore(d) }))
+      return getScoreTrend(dims).trends || {}
+    } catch { return {} }
+  }, [])
+  // 所有维度分数（用于基准对比）
+  const allDimScores = useMemo(() => sortedDims.map(d => ({ key: d.key, idx: calcDimensionScore(d) })), [])
 
   const handlePersonaSelect = (key) => {
     setPersonaKey(key); localStorage.setItem('persona', key); setShowModal(false)
@@ -3297,72 +3351,104 @@ function App() {
               onNavigateDim={(key) => { setSelectedDim(key); setTabKey(k=>k+1) }}
             />
 
-            <RegionSelector value={regionKey} onChange={handleRegionChange} />
+            <div className={overviewCollapsed ? 'section-collapsed' : 'section-expanded'}>
+              <RegionSelector value={regionKey} onChange={handleRegionChange} />
 
-            <RegionCompare personaKey={personaKey} currentRegion={regionKey} onSelectRegion={handleRegionChange} />
+              <RegionCompare personaKey={personaKey} currentRegion={regionKey} onSelectRegion={handleRegionChange} />
 
-            <TestimonialWall />
+              <TestimonialWall />
 
-            <section className="overview-dims">
-              <h2 className="section-title">政策影响力总览</h2>
-              <div className="overview-quick-stats">
-                {sortedDims.map(dim => {
-                  const idx = calcDimensionScore(dim)
-                  const lvl = getIndexLevel(idx)
-                  return (
-                    <div key={dim.key} className="quick-stat" onClick={() => { setActiveTab('dimensions'); setSelectedDim(dim.key); setTabKey(k=>k+1) }} style={{ cursor: 'pointer' }}>
-                      <span className="qs-icon">{dim.icon}</span>
-                      <span className="qs-value" style={{ color: lvl.color }}><AnimatedCounter target={idx} /></span>
-                      <span className="qs-label">{dim.name}</span>
-                      <span className="qs-level" style={{ color: lvl.color }}>{lvl.label}</span>
-                      <span className="qs-summary">{
-                        (dim.plainSummary && dim.plainSummary.split('。')[0] + '。') ||
-                        (dim.summary && dim.summary.length > 30 ? dim.summary.slice(0, 30) + '…' : dim.summary) ||
-                        ''
-                      }</span>
-                    </div>
-                  )
-                })}
-              </div>
-            </section>
-
-            <section className="overview-summary">
-              <div className="summary-top">
-                <span className="summary-score" style={{ color: overallLevel.color }}>{overallIndex}</span>
-                <span className="summary-unit">/100 · {overallLevel.icon} {overallLevel.label}</span>
-              </div>
-              <p className="summary-plain">💬 {overallLevel.plain}</p>
-              {!currentPersona && (
-                <button className="summary-persona-btn" onClick={() => setShowModal(true)}>👤 选择我的身份，查看专属分析</button>
-              )}
-            </section>
-
-            <section className="overview-hot">
-              <h2 className="section-title">📡 本周热点政策</h2>
-              <div className="hot-list">
-                {weeklyUpdates.slice(0, 4).map((u, i) => (
-                  <div key={i} className="hot-item" onClick={() => { setActiveTab('dimensions'); setSelectedDim(u.dim); setTabKey(k=>k+1) }}>
-                    <span className="hot-date">{u.date.slice(5)}</span>
-                    <span className={['hot-tag', 'tag-' + (u.impact === '偏利好' ? 'good' : u.impact === '中性' ? 'neutral' : 'bad')].join(' ')}>{u.impact}</span>
-                    <span className="hot-text">{u.text}</span>
-                    <span className="hot-arrow">→</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="overview-radar-entry" onClick={() => { setActiveTab('radar'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
-              <div className="ore-content">
-                <span className="ore-icon">📡</span>
-                <div className="ore-text">
-                  <h3 className="ore-title">人生雷达</h3>
-                  <p className="ore-desc">扫描你的人生阶段，发现政策机会和盲区</p>
+              <section className="overview-dims">
+                <h2 className="section-title">政策影响力总览</h2>
+                <div className="overview-quick-stats">
+                  {sortedDims.map(dim => {
+                    const idx = calcDimensionScore(dim)
+                    const lvl = getIndexLevel(idx)
+                    return (
+                      <div key={dim.key} className="quick-stat" onClick={() => { setActiveTab('dimensions'); setSelectedDim(dim.key); setTabKey(k=>k+1) }} style={{ cursor: 'pointer' }}>
+                        <span className="qs-icon">{dim.icon}</span>
+                        <span className="qs-value" style={{ color: lvl.color }}><AnimatedCounter target={idx} /></span>
+                        <span className="qs-label">{dim.name}</span>
+                        <span className="qs-level" style={{ color: lvl.color }}>{lvl.label}</span>
+                        <span className="qs-summary">{
+                          (dim.plainSummary && dim.plainSummary.split('。')[0] + '。') ||
+                          (dim.summary && dim.summary.length > 30 ? dim.summary.slice(0, 30) + '…' : dim.summary) ||
+                          ''
+                        }</span>
+                        {(() => {
+                          const t = scoreTrends[dim.key]
+                          if (!t) return null
+                          const arrow = t.direction === 'up' ? '↑' : t.direction === 'down' ? '↓' : '→'
+                          return <span style={{fontSize:11,fontWeight:600,marginTop:2}} className={`score-trend score-trend-${t.direction}`}>{arrow}{t.delta}</span>
+                        })()}
+                      </div>
+                    )
+                  })}
                 </div>
-              </div>
-              <span className="ore-arrow">开启扫描 →</span>
-            </section>
+              </section>
 
-            <PolicyCalendar personaKey={personaKey} />
+              <section className="overview-summary">
+                <div className="summary-top">
+                  <span className="summary-score" style={{ color: overallLevel.color }}>{overallIndex}</span>
+                  <span className="summary-unit">/100 · {overallLevel.icon} {overallLevel.label}</span>
+                </div>
+                <p className="summary-plain">💬 {overallLevel.plain}</p>
+                {!currentPersona && (
+                  <button className="summary-persona-btn" onClick={() => setShowModal(true)}>👤 选择我的身份，查看专属分析</button>
+                )}
+              </section>
+
+              {(() => {
+                const prog = getActionProgress(personaKey || '', '')
+                if (!prog.total) return null
+                return (
+                  <div className="action-progress-panel" onClick={() => { setActiveTab('radar'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
+                    <div className="app-header">
+                      <span className="app-icon">📋</span>
+                      <span className="app-title">你的行动进度</span>
+                      <span className="app-arrow">→</span>
+                    </div>
+                    <div className="app-stats">
+                      <span className="app-stat">已完成 <strong>{prog.done}/{prog.total}</strong> 项</span>
+                      <span className="app-stat">本周完成 <strong>{prog.weekDone}</strong> 项</span>
+                      {prog.topSource && <span className="app-stat">待办最多：<strong>{prog.topSource === 'actionPlans' ? '行动清单' : prog.topSource === 'signal' ? '雷达信号' : '推荐行动'}</strong></span>}
+                    </div>
+                  </div>
+                )
+              })()}
+
+              <section className="overview-hot">
+                <h2 className="section-title">📡 本周热点政策</h2>
+                <div className="hot-list">
+                  {weeklyUpdates.slice(0, 4).map((u, i) => (
+                    <div key={i} className="hot-item" onClick={() => { setActiveTab('dimensions'); setSelectedDim(u.dim); setTabKey(k=>k+1) }}>
+                      <span className="hot-date">{u.date.slice(5)}</span>
+                      <span className={['hot-tag', 'tag-' + (u.impact === '偏利好' ? 'good' : u.impact === '中性' ? 'neutral' : 'bad')].join(' ')}>{u.impact}</span>
+                      <span className="hot-text">{u.text}</span>
+                      <span className="hot-arrow">→</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="overview-radar-entry" onClick={() => { setActiveTab('radar'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
+                <div className="ore-content">
+                  <span className="ore-icon">📡</span>
+                  <div className="ore-text">
+                    <h3 className="ore-title">人生雷达</h3>
+                    <p className="ore-desc">扫描你的人生阶段，发现政策机会和盲区</p>
+                  </div>
+                </div>
+                <span className="ore-arrow">开启扫描 →</span>
+              </section>
+
+              <PolicyCalendar personaKey={personaKey} />
+            </div>
+            {overviewCollapsed && (
+              <button className="overview-expand-btn" onClick={() => setOverviewCollapsed(false)}>
+                + 展开更多内容（政策总览、热点、雷达等）
+              </button>
+            )}
           </div>
         )}
         {/* ════════ 人生雷达 ════════ */}
@@ -3399,6 +3485,17 @@ function App() {
                     </div>
                     <div className="ds-score" style={{ color: lvl.color }}>
                       <span className="ds-score-num">{idx}</span>
+                      {(() => {
+                        const t = scoreTrends[dim.key]
+                        if (!t) return null
+                        const arrow = t.direction === 'up' ? '↑' : t.direction === 'down' ? '↓' : '→'
+                        return <span className={`score-trend score-trend-${t.direction}`}>{arrow}{t.delta}</span>
+                      })()}
+                      {(() => {
+                        const b = calcScoreVsBaseline(idx, allDimScores)
+                        if (!b || b.direction === 'neutral') return null
+                        return <span className={`score-baseline ${b.direction}`}>{b.direction === 'above' ? '高于平均 ' : '低于平均 '}{b.diff}</span>
+                      })()}
                       <span className="ds-score-label">{lvl.label}</span>
                     </div>
                   </div>
@@ -3435,6 +3532,25 @@ function App() {
                       )
                     })}
                   </div>
+                  {(() => {
+                    const dimActions = getDimActions(dim.key)
+                    return dimActions.length > 0 ? (
+                      <div className="dim-action-hint">
+                        <h4>📋 为你推荐行动</h4>
+                        {dimActions.map(a => (
+                          <div key={a.id} className="dah-item" onClick={() => { if (a.toolLink) { setActiveTab('tools'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}}>
+                            <div className="dah-header">
+                              <span className="dah-title">{a.title}</span>
+                              <span className={`dah-urgency urgency-${a.urgency}`}>
+                                {a.urgency === 'immediate' ? '紧急' : a.urgency === 'soon' ? '近期' : '关注'}
+                              </span>
+                            </div>
+                            {a.benefit && <span className="dah-benefit">预计节省 ¥{a.benefit.toLocaleString()}</span>}
+                          </div>
+                        ))}
+                      </div>
+                    ) : null
+                  })()}
                 </section>
               )
             })}
@@ -3566,6 +3682,26 @@ function App() {
                   <p>{policyDetail.rationale}</p>
                 </div>
               )}
+              {(() => {
+                const pname = policyDetail.policyName.replace(/[（(].*[）)]/g, '').trim()
+                const relatedActions = (actionPlans[personaKey] || []).filter(a => a.policyRef && (pname.includes(a.policyRef) || a.policyRef.includes(pname)))
+                return relatedActions.length > 0 ? (
+                  <div className="pd-action-card">
+                    <h4>📋 此政策相关的待办事项</h4>
+                    {relatedActions.slice(0, 2).map(a => (
+                      <div key={a.id} className="pd-action-item">
+                        <div className="pd-ai-header">
+                          <span className="pd-ai-title">{a.title}</span>
+                          <span className={`dah-urgency urgency-${a.urgency}`}>
+                            {a.urgency === 'immediate' ? '紧急' : a.urgency === 'soon' ? '近期' : '关注'}
+                          </span>
+                        </div>
+                        <ol className="pd-ai-steps">{a.steps.map((s, i) => <li key={i}>{s}</li>)}</ol>
+                      </div>
+                    ))}
+                  </div>
+                ) : null
+              })()}
               <div className="pd-report-link">
                 <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('数据问题报告：' + policyDetail.policyName)}`} className="report-issue-link" onClick={e => e.stopPropagation()}>
                   📮 发现数据不准确？报告问题 →

@@ -3924,6 +3924,305 @@ a.policy-source-link:hover::after {
   font-size: 14px;
 }
 
+/* ═══ 维度行动推荐 ═══ */
+.dim-action-hint {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--surface-alt);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-subtle);
+}
+.dim-action-hint h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.dah-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1px solid var(--border-subtle);
+}
+.dah-item:last-child { margin-bottom: 0; }
+.dah-item:hover { border-color: var(--p-300); }
+.dah-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.dah-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.dah-urgency {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.urgency-immediate { background: rgba(231,76,60,0.1); color: #e74c3c; }
+.urgency-soon { background: rgba(243,156,18,0.12); color: #d68910; }
+.urgency-watch { background: var(--gray-100); color: var(--text-muted); }
+.dah-benefit {
+  display: block;
+  font-size: 11px;
+  color: var(--success);
+  margin-top: 4px;
+  font-weight: 600;
+}
+[data-theme="dark"] .urgency-immediate { background: rgba(231,76,60,0.2); }
+[data-theme="dark"] .urgency-soon { background: rgba(243,156,18,0.2); }
+[data-theme="dark"] .urgency-watch { background: var(--gray-200); }
+
+/* ═══ 政策详情关联行动 ═══ */
+.pd-action-card {
+  margin: 12px 0;
+  padding: 12px 14px;
+  background: var(--p-50);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--p-200);
+}
+.pd-action-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--p-700);
+  margin-bottom: 8px;
+}
+.pd-action-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-subtle);
+}
+.pd-action-item:last-child { margin-bottom: 0; }
+.pd-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.pd-ai-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.pd-ai-steps {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+[data-theme="dark"] .pd-action-card {
+  background: rgba(22,119,255,0.08);
+  border-color: rgba(22,119,255,0.2);
+}
+[data-theme="dark"] .pd-action-card h4 {
+  color: var(--p-400);
+}
+
+/* ═══ 工具下一步行动 ═══ */
+.tool-next-steps {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--surface-alt);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-subtle);
+}
+.tool-next-steps h5 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.tns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tns-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  color: var(--text);
+  border: 1px solid var(--border-subtle);
+}
+.tns-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--p-500);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.tns-item:hover {
+  border-color: var(--p-300);
+}
+
+/* ═══ 维度分数趋势 ═══ */
+.score-trend {
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.score-trend-up { color: var(--success); }
+.score-trend-down { color: var(--error); }
+.score-trend-flat { color: var(--text-muted); }
+
+/* ═══ 维度分数基准对比 ═══ */
+.score-baseline {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 100px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.score-baseline.above { background: rgba(39,174,96,0.1); color: #27ae60; }
+.score-baseline.below { background: rgba(231,76,60,0.1); color: #e74c3c; }
+.score-baseline.neutral { background: var(--gray-100); color: var(--text-muted); }
+
+/* ═══ 首页渐进展示折叠 ═══ */
+.section-collapsed {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+}
+.section-expanded {
+  max-height: 2000px;
+  opacity: 1;
+  transition: max-height 0.4s ease, opacity 0.35s ease;
+}
+.overview-expand-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  background: var(--surface-alt);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--r-lg);
+  color: var(--p-500);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s;
+}
+.overview-expand-btn:hover {
+  background: var(--p-50);
+}
+[data-theme="dark"] .overview-expand-btn:hover {
+  background: rgba(22,119,255,0.08);
+}
+
+/* ═══ 统一行动筛选标签 ═══ */
+.action-filters {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.action-filter-btn {
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 100px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.action-filter-btn.active {
+  background: var(--p-500);
+  color: #fff;
+  border-color: var(--p-500);
+}
+.action-filter-btn:hover:not(.active) {
+  border-color: var(--p-300);
+  color: var(--text);
+}
+.action-source-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--gray-100);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.action-source-badge.src-actionPlans { background: rgba(22,119,255,0.1); color: #1677ff; }
+.action-source-badge.src-topRadar { background: rgba(39,174,96,0.1); color: #27ae60; }
+.action-source-badge.src-signal { background: rgba(243,156,18,0.12); color: #d68910; }
+
+/* ═══ 行动进度面板 ═══ */
+.action-progress-panel {
+  padding: 14px;
+  background: var(--surface-alt);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-subtle);
+  margin-top: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.action-progress-panel:hover {
+  border-color: var(--p-300);
+}
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.app-icon {
+  font-size: 20px;
+}
+.app-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+.app-arrow {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.app-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.app-stat {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.app-stat strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
 /* ═══ 对比复选框 ═══ */
 .pl-cb {
   font-size: 16px;
