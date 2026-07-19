@@ -2995,6 +2995,12 @@ function App() {
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [policyDetail, setPolicyDetail] = useState(null)
   const [moreOpen, setMoreOpen] = useState(false)
+  const [headerShadow, setHeaderShadow] = useState(false)
+  useEffect(() => {
+    const onScroll = () => setHeaderShadow(window.scrollY > 10)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
   useEffect(() => { if (!moreOpen) return; const handler = () => setMoreOpen(false); document.addEventListener('click', handler); return () => document.removeEventListener('click', handler); }, [moreOpen])
   // Track visits
   useEffect(() => {
@@ -3097,7 +3103,7 @@ function App() {
       {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
       <BackToTop />
 
-      <header className="header">
+      <header className={`header${headerShadow ? ' header-shadow' : ''}`}>
         <div className="header-inner">
           <div className="logo-area">
             <span className="logo-icon">🧭</span>

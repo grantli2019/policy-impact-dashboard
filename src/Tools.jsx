@@ -1,6 +1,20 @@
-import { useState } from 'react'
-import { regions, birthPolicy, taxOptimizer, pensionCalc } from './data/impactData'
+import { useState, useEffect } from 'react'
+import { regions, birthPolicy, taxOptimizer, pensionCalc, citySettlementData, calcSettlementScore, calcHouseQualify, citySubsidies, calcEligibleSubsidies, calcGjjSavings } from './data/impactData'
 import './App.css'
+
+/* ═══════ 可复用Slider组件（带min/max标注） ═══════ */
+function RangeField({ min, max, step, value, onChange, suffix, prefix }) {
+  const fmt = v => prefix ? `${prefix}${Number(v).toLocaleString()}` : `${Number(v).toLocaleString()}${suffix || ''}`
+  return (
+    <div className="bc-range-wrap">
+      <input type="range" min={min} max={max} step={step || 1} value={value} onChange={e => onChange(+e.target.value)} />
+      <div className="bc-range-row">
+        <span className="bc-val">{fmt(value)}</span>
+        <span className="bc-range-scale"><span className="bc-scale-min">{fmt(min)}</span><span className="bc-scale-max">{fmt(max)}</span></span>
+      </div>
+    </div>
+  )
+}
 
 /* ═══════════════════════════════════════════════════════
  * 工具5: 生育权益计算器（MVP）
@@ -52,17 +66,11 @@ function BirthCalc({ regionKey }) {
         <div className="bc-form">
           <label className="bc-label">
             <span>月工资（税前）</span>
-            <div className="bc-range-wrap">
-              <input type="range" min={3000} max={80000} step={1000} value={salary} onChange={e => setSalary(+e.target.value)} />
-              <span className="bc-val">¥{salary.toLocaleString()}</span>
-            </div>
+            <RangeField min={3000} max={80000} step={1000} value={salary} onChange={setSalary} prefix="¥" />
           </label>
           <label className="bc-label">
             <span>生育保险连续缴纳月数</span>
-            <div className="bc-range-wrap">
-              <input type="range" min={0} max={120} step={1} value={insuranceMonths} onChange={e => setInsuranceMonths(+e.target.value)} />
-              <span className="bc-val">{insuranceMonths}个月</span>
-            </div>
+            <RangeField min={0} max={120} step={1} value={insuranceMonths} onChange={setInsuranceMonths} suffix="个月" />
             {insuranceMonths < 12 && <span className="bc-warn">⚠️ 需连续缴纳≥12个月才能领取生育津贴</span>}
           </label>
           <label className="bc-label">
@@ -512,17 +520,11 @@ function TaxOptimizerCalc() {
       <div className="bc-form">
         <label className="bc-label">
           <span>月工资（税前）</span>
-          <div className="bc-range-wrap">
-            <input type="range" min={3000} max={80000} step={1000} value={monthlySalary} onChange={e => setMonthlySalary(+e.target.value)} />
-            <span className="bc-val">¥{monthlySalary.toLocaleString()}</span>
-          </div>
+          <RangeField min={3000} max={80000} step={1000} value={monthlySalary} onChange={setMonthlySalary} prefix="¥" />
         </label>
         <label className="bc-label">
           <span>年终奖</span>
-          <div className="bc-range-wrap">
-            <input type="range" min={0} max={200000} step={5000} value={annualBonus} onChange={e => setAnnualBonus(+e.target.value)} />
-            <span className="bc-val">¥{annualBonus.toLocaleString()}</span>
-          </div>
+          <RangeField min={0} max={200000} step={5000} value={annualBonus} onChange={setAnnualBonus} prefix="¥" />
         </label>
         <label className="bc-label">
           <span>年终奖计税方式</span>
@@ -677,32 +679,20 @@ function PensionEstimator() {
         </label>
         <label className="bc-label">
           <span>当前年龄</span>
-          <div className="bc-range-wrap">
-            <input type="range" min={20} max={59} value={currentAge} onChange={e => setCurrentAge(+e.target.value)} />
-            <span className="bc-val">{currentAge}岁</span>
-          </div>
+          <RangeField min={20} max={59} value={currentAge} onChange={setCurrentAge} suffix="岁" />
         </label>
         <label className="bc-label">
           <span>当前月工资（税前）</span>
-          <div className="bc-range-wrap">
-            <input type="range" min={3000} max={50000} step={1000} value={monthlySalary} onChange={e => setMonthlySalary(+e.target.value)} />
-            <span className="bc-val">¥{monthlySalary.toLocaleString()}</span>
-          </div>
+          <RangeField min={3000} max={50000} step={1000} value={monthlySalary} onChange={setMonthlySalary} prefix="¥" />
         </label>
         <label className="bc-label">
           <span>累计缴费年限</span>
-          <div className="bc-range-wrap">
-            <input type="range" min={1} max={40} value={contribYears} onChange={e => setContribYears(+e.target.value)} />
-            <span className="bc-val">{contribYears}年</span>
-          </div>
+          <RangeField min={1} max={40} value={contribYears} onChange={setContribYears} suffix="年" />
           {contribYears < pc.minContributionYears && <span className="bc-warn">⚠️ 最低需缴满{pc.minContributionYears}年（未来可能提高到{pc.futureMinYears}年）</span>}
         </label>
         <label className="bc-label">
           <span>当地社会平均工资</span>
-          <div className="bc-range-wrap">
-            <input type="range" min={5000} max={30000} step={500} value={localAvgSalary} onChange={e => setLocalAvgSalary(+e.target.value)} />
-            <span className="bc-val">¥{localAvgSalary.toLocaleString()}</span>
-          </div>
+          <RangeField min={5000} max={30000} step={500} value={localAvgSalary} onChange={setLocalAvgSalary} prefix="¥" />
         </label>
       </div>
       <div className="bc-report" style={{ marginTop: 16 }}>
@@ -786,6 +776,7 @@ export default function Tools({ regionKey = "national", toolParams, onNavigateDi
     { label: '💰 公积金省息', comp: () => <GjjSavingCalc params={toolParams} /> },
     { label: '🧾 个税优化', comp: TaxOptimizerCalc },
     { label: '👴 养老金', comp: PensionEstimator },
+    { label: '🏡 安家计算', comp: () => <SettlementCalculator regionKey={regionKey} /> },
   ]
   const ActiveComp = tools[active].comp
 
@@ -807,6 +798,7 @@ export default function Tools({ regionKey = "national", toolParams, onNavigateDi
         {active === 4 && <button className="policy-link-btn" onClick={() => onNavigateDim?.('housing')}>🏠 了解公积金条例详情 →</button>}
         {active === 5 && <button className="policy-link-btn" onClick={() => onNavigateDim?.('employment')}>💼 了解个税政策详情 →</button>}
         {active === 6 && <button className="policy-link-btn" onClick={() => onNavigateDim?.('elderly')}>👴 了解养老政策详情 →</button>}
+        {active === 7 && <button className="policy-link-btn" onClick={() => onNavigateDim?.('housing')}>🏠 了解城市安家政策详情 →</button>}
       </div>
       <div className="tool-disclaimer">
         ⚠️ 以上计算结果仅供参考，实际金额以银行审批和税务局核定为准。
@@ -816,7 +808,316 @@ export default function Tools({ regionKey = "national", toolParams, onNavigateDi
   )
 }
 
-/* ═══════ 辅助函数 ═══════ */
+/* ═══════ 城市安家计算器 ═══════ */
+const EDU_OPTIONS = [
+  { key: 'junior', label: '初中及以下' },
+  { key: 'high', label: '高中/中专' },
+  { key: 'college', label: '大专' },
+  { key: 'bachelor', label: '本科' },
+  { key: 'master', label: '硕士' },
+  { key: 'doctor', label: '博士' },
+]
+
+function SettlementCalculator({ regionKey }) {
+  const [step, setStep] = useState(0)
+  const [cityKey, setCityKey] = useState(null)
+  const [user, setUser] = useState({ age: 28, edu: 'bachelor', socialMonths: 24, income: 20, married: false, hasChild: false, budget: 200 })
+  const [report, setReport] = useState(null)
+
+  // 从 localStorage 恢复上次评估
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('settlement_data'))
+      if (saved) { setCityKey(saved.cityKey); setUser(saved.user); setReport(saved.report) }
+    } catch {}
+  }, [])
+
+  const city = cityKey ? citySettlementData.cities.find(c => c.key === cityKey) : null
+  const userCities = citySettlementData.cities.filter(c => regionKey === 'national' || c.region === regionKey)
+
+  const handleCitySelect = (key) => {
+    setCityKey(key)
+    setTimeout(() => setStep(1), 300)
+  }
+
+  const runAnalysis = () => {
+    if (!cityKey) return
+    const score = calcSettlementScore(cityKey, user)
+    const qualify = calcHouseQualify(cityKey, user)
+    const gjj = calcGjjSavings(cityKey, user.budget || 200)
+    const reportData = { score, qualify, gjj, city }
+    setReport(reportData)
+    setStep(2)
+    try { localStorage.setItem('settlement_data', JSON.stringify({ cityKey, user, report: reportData, timestamp: new Date().toISOString() })) } catch {}
+    // 生成安家行动清单
+    const actions = []
+    // 落户行动
+    if (!score.pass) {
+      actions.push({ id: 'set_score', title: `提升学历或社保年限力争达到${score.passScore}分落户标准`, category: '落户', priority: 'high' })
+    } else {
+      actions.push({ id: 'set_start_settle', title: '启动落户申请流程，准备身份、学历、社保证明等材料', category: '落户', priority: 'high' })
+    }
+    // 购房行动
+    if (!qualify.qualify) {
+      actions.push({ id: 'set_house_wait', title: `保持社保连续缴纳，还需${qualify.waitYears}年满足购房社保要求`, category: '购房', priority: 'high' })
+    } else {
+      actions.push({ id: 'set_house_start', title: '查看房产市场，准备首付及贷款材料', category: '购房', priority: 'high' })
+    }
+    // 公积金行动
+    if (gjj) {
+      actions.push({ id: 'set_gjj', title: `确认公积金贷款资格，目前最高可贷${gjj.loanAmount}万`, category: '贷款', priority: 'medium' })
+    }
+    // 补贴行动
+    try {
+      const eligibleSubs = calcEligibleSubsidies(cityKey, user.edu).filter(c => c.eligible)
+      const totalItems = eligibleSubs.reduce((a, c) => a + c.items.length, 0)
+      if (totalItems > 0) {
+        actions.push({ id: 'set_subsidy', title: `申请${totalItems}项人才补贴福利，查看各项目具体要求`, category: '补贴', priority: 'medium' })
+      }
+    } catch {}
+    // 教育行动
+    if (user.hasChild) {
+      actions.push({ id: 'set_edu', title: '了解目标城市入学积分政策，提前规划子女教育路径', category: '教育', priority: 'medium' })
+    }
+    // 财务行动
+    const taxSaving = Math.round((user.income || 0) * 0.005 * 10) / 10
+    if (taxSaving > 0) {
+      actions.push({ id: 'set_tax', title: `申请个税专项附加扣除，每年约省${taxSaving}万元`, category: '财务', priority: 'low' })
+    }
+    try { localStorage.setItem('settlement_actions', JSON.stringify({ cityKey, actions, timestamp: reportData.timestamp })) } catch {}
+  }
+
+  /* 步骤指示器 */
+  const steps = ['选择城市', '填写信息', '评估报告']
+
+  /* ===== Step 0: City Selection ===== */
+  if (step === 0) {
+    return (
+      <div className="sc-container">
+        {report && (
+          <div className="sc-restore-bar" onClick={() => setStep(2)}>
+            📋 上次评估：{report.city?.icon} {report.city?.name}
+            · 落户{report.score?.pass ? '✅ 达标' : '还差' + report.score?.gap + '分'}
+            · 购房{report.qualify?.qualify ? '✅ 已够格' : '还需' + report.qualify?.waitYears + '年'}
+            <span className="sc-restore-link"> → 继续查看</span>
+          </div>
+        )}
+        <h3 className="sc-subtitle">你想在哪个城市安家？</h3>
+        <p className="sc-hint">选择一个目标城市，系统将分析落户难度、购房资格和教育政策</p>
+        <div className="sc-city-grid">
+          {(userCities.length > 0 ? userCities : citySettlementData.cities).map(c => (
+            <button key={c.key} className={`sc-city-card ${cityKey === c.key ? 'selected' : ''}`} onClick={() => handleCitySelect(c.key)}>
+              <span className="scc-icon">{c.icon}</span>
+              <span className="scc-name">{c.name}</span>
+              <span className={`scc-diff diff-${c.difficulty}`}>{'★'.repeat(c.difficulty)}{'☆'.repeat(5-c.difficulty)}</span>
+              <span className="scc-summary">{c.summary}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  /* ===== Step 1: Personal Info ===== */
+  if (step === 1) {
+    return (
+      <div className="sc-container">
+        <div className="sc-step-indicator">{steps.map((s, i) => <span key={i} className={`sc-step ${i <= step ? 'active' : ''}`}>{i+1}. {s}</span>)}</div>
+        <h3 className="sc-subtitle">{city?.icon} {city?.name} — 填写你的个人信息</h3>
+        <div className="sc-form">
+          <div className="sc-form-row">
+            <div className="sc-field"><label>年龄</label><input type="range" min={18} max={60} value={user.age} onChange={e => setUser(u => ({...u, age: +e.target.value}))} /><span className="sc-val">{user.age}岁</span></div>
+            <div className="sc-field"><label>学历</label>
+              <select value={user.edu} onChange={e => setUser(u => ({...u, edu: e.target.value}))}>
+                {EDU_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="sc-form-row">
+            <div className="sc-field"><label>社保已缴</label><input type="range" min={0} max={240} step={6} value={user.socialMonths} onChange={e => setUser(u => ({...u, socialMonths: +e.target.value}))} /><span className="sc-val">{Math.floor(user.socialMonths/12)}年{user.socialMonths%12}个月</span></div>
+            <div className="sc-field"><label>年收入</label><input type="range" min={0} max={200} step={5} value={user.income} onChange={e => setUser(u => ({...u, income: +e.target.value}))} /><span className="sc-val">{user.income}万</span></div>
+          </div>
+          <div className="sc-form-row">
+            <div className="sc-field"><label>婚姻状况</label>
+              <select value={user.married ? 'married' : 'single'} onChange={e => setUser(u => ({...u, married: e.target.value === 'married'}))}>
+                <option value='single'>未婚</option>
+                <option value='married'>已婚</option>
+              </select>
+            </div>
+            <div className="sc-field"><label>子女情况</label>
+              <select value={user.hasChild ? 'yes' : 'no'} onChange={e => setUser(u => ({...u, hasChild: e.target.value === 'yes'}))}>
+                <option value='no'>无子女</option>
+                <option value='yes'>有子女</option>
+              </select>
+            </div>
+          </div>
+          <div className="sc-form-row">
+            <div className="sc-field"><label>购房预算</label><input type="range" min={50} max={2000} step={50} value={user.budget} onChange={e => setUser(u => ({...u, budget: +e.target.value}))} /><span className="sc-val">{user.budget}万</span></div>
+          </div>
+          <div className="sc-form-actions">
+            <button className="sc-btn-back" onClick={() => setStep(0)}>← 重新选择城市</button>
+            <button className="sc-btn-next" onClick={runAnalysis}>开始评估 →</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  /* ===== Step 2: Report ===== */
+  const diffLabel = ['', '极低', '低', '中等', '高', '极高']
+  return (
+    <div className="sc-container">
+      <div className="sc-step-indicator">{steps.map((s, i) => <span key={i} className={`sc-step ${i <= step ? 'active' : ''}`}>{i+1}. {s}</span>)}</div>
+      <h3 className="sc-subtitle">{report?.city?.icon} {report?.city?.name} — 安家综合评估报告</h3>
+
+      {/* 落户评分 */}
+      <div className="sc-report-card">
+        <h4 className="sc-rc-title">📋 落户可行性评分</h4>
+        <div className="sc-score-area">
+          <div className="sc-score-ring">
+            <span className={`sc-score-num ${report?.score.pass ? 'pass' : 'fail'}`}>{report?.score.score}</span>
+            <span className="sc-score-target">/ {report?.score.passScore}</span>
+          </div>
+          <div className="sc-score-info">
+            <span className={`sc-score-badge ${report?.score.pass ? 'badge-ok' : 'badge-warn'}`}>
+              {report?.score.pass ? '✅ 达到落户标准' : '❌ 距离达标还差' + report?.score.gap + '分'}
+            </span>
+            <span className="sc-diff-label">落户难度：{diffLabel[report?.city?.difficulty] || '中等'}</span>
+          </div>
+        </div>
+        <div className="sc-detail-list">
+          {report?.score.details.map((d, i) => (
+            <div key={i} className="sc-detail-item"><span>{d.label}</span><span className="sc-detail-val">{d.value}</span></div>
+          ))}
+        </div>
+        <p className="sc-rc-note">{report?.city?.summary}</p>
+      </div>
+
+      {/* 购房资格 */}
+      <div className="sc-report-card">
+        <h4 className="sc-rc-title">🏠 购房资格评估</h4>
+        {report?.qualify.qualify ? (
+          <div className="sc-qualify-ok">✅ 你已满足购房社保要求（{report?.qualify.haveYears}年）</div>
+        ) : (
+          <div className="sc-qualify-wait">
+            <p>⚠️ 还需连续缴纳 <strong>{report?.qualify.waitYears}年</strong>（{report?.qualify.waitMonths}个月）社保</p>
+            <div className="sc-wait-bar"><div className="sc-wait-fill" style={{ width: `${Math.min(100, (report?.qualify.haveYears/report?.qualify.needYears)*100)}%` }} /></div>
+            <span className="sc-wait-label">已缴{report?.qualify.haveYears}年 / 需{report?.qualify.needYears}年</span>
+          </div>
+        )}
+        {report?.qualify.needMarriage && !report?.qualify.isMarried && (
+          <p className="sc-rc-warn">⚠️ 该城市要求已婚方可购房（以上评估仅考虑社保条件）</p>
+        )}
+        <p className="sc-rc-note">公积金最高可贷 {report?.city?.gjjMaxLoan} 万（首套），二套 {report?.city?.secondGjjMaxLoan} 万</p>
+      </div>
+
+      {/* 子女教育路径 */}
+      {user.hasChild && (
+        <div className="sc-report-card">
+          <h4 className="sc-rc-title">🎓 子女入学路径</h4>
+          <p className="sc-rc-path"><strong>路径：</strong>{report?.city?.edu.path}</p>
+          <p className="sc-rc-note">{report?.city?.edu.note}</p>
+          {!report?.score.pass && <p className="sc-rc-warn">⚠️ 未落户情况下子女入学可能面临更多限制，建议优先解决落户问题</p>}
+        </div>
+      )}
+
+      {/* 人才补贴 */}
+      <div className="sc-report-card">
+        <h4 className="sc-rc-title">🎁 人才补贴与福利</h4>
+        <div className="sc-subsidy-grid">
+          {report && calcEligibleSubsidies(cityKey, user.edu).map((cat, i) => (
+            <div key={i} className={`sc-subsidy-cat ${cat.eligible ? '' : 'sc-subsidy-disabled'}`}>
+              <div className="sc-subsidy-hd">
+                <span className="sc-subsidy-label">{cat.label}</span>
+                {cat.eligible
+                  ? <span className="sc-subsidy-badge sc-subsidy-badge-ok">✓ 你可申请</span>
+                  : <span className="sc-subsidy-badge sc-subsidy-badge-no">学历不符</span>}
+              </div>
+              <p className="sc-subsidy-target">面向目标：{cat.target}</p>
+              <ul className="sc-subsidy-items">
+                {cat.items.map((item, j) => (
+                  <li key={j} className={`sc-subsidy-item ${!cat.eligible ? 'sc-subsidy-item-dim' : ''}`}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p className="sc-rc-note">不同城市和区域的具体政策细节可能有所差异，请以当地政府最新文件为准</p>
+      </div>
+
+      {/* 综合财务影响 */}
+      {report && (() => {
+        const eligibleSubs = calcEligibleSubsidies(cityKey, user.edu).filter(c => c.eligible)
+        const subsidyCount = eligibleSubs.reduce((a, c) => a + c.items.length, 0)
+        const income = user.income || 0
+        const taxSaving = Math.round(income * 0.005 * 10) / 10
+        const gjjAnnual = report.gjj ? Math.round(report.gjj.totalSaving / 30 * 10) / 10 : 0
+        const totalAnnual = Math.round((gjjAnnual + taxSaving) * 10) / 10
+        return (
+          <div className="sc-report-card sc-financial-card">
+            <h4 className="sc-rc-title">📊 安家综合财务影响</h4>
+            <div className="sc-fin-grid">
+              <div className="sc-fin-row">
+                <span className="sc-fin-icon">💰</span>
+                <span className="sc-fin-label">人才补贴</span>
+                <span className="sc-fin-value">{subsidyCount}项可申领</span>
+              </div>
+              {report.gjj && (
+                <>
+                  <div className="sc-fin-row">
+                    <span className="sc-fin-icon">🏦</span>
+                    <span className="sc-fin-label">公积金省息</span>
+                    <span className="sc-fin-value">{report.gjj.gjjRate} vs 商贷{report.gjj.comRate}</span>
+                  </div>
+                  <div className="sc-fin-detail">
+                    贷款{report.gjj.loanAmount}万 · 月供{report.gjj.gjjMonthly}元
+                    比商贷省{report.gjj.monthlySaving}元/月
+                  </div>
+                  <div className="sc-fin-row sc-fin-highlight">
+                    <span className="sc-fin-icon">💎</span>
+                    <span className="sc-fin-label">30年省息</span>
+                    <span className="sc-fin-value sc-fin-value-big">{report.gjj.totalSaving}万</span>
+                  </div>
+                </>
+              )}
+              <div className="sc-fin-row">
+                <span className="sc-fin-icon">💳</span>
+                <span className="sc-fin-label">个税专项附加扣除</span>
+                <span className="sc-fin-value">约省{taxSaving}万/年</span>
+              </div>
+            </div>
+            <div className="sc-fin-total">
+              <span className="sc-fin-total-label">📈 综合年化收益潜力</span>
+              <span className="sc-fin-total-value">约 {totalAnnual} 万/年</span>
+            </div>
+            <p className="sc-rc-note">以上为估算值，实际金额以当地政策和银行审批为准</p>
+          </div>
+        )
+      })()}
+
+      {/* 综合建议 */}
+      <div className="sc-report-card sc-insight">
+        <h4 className="sc-rc-title">💡 综合建议</h4>
+        <ul className="sc-insight-list">
+          {!report?.score.pass && <li>提升学历或增加社保缴纳年限可提高积分</li>}
+          {report?.score.pass && <li>建议尽快启动落户申请，政策窗口期可能变化</li>}
+          {!report?.qualify.qualify && <li>购房前确保社保连续缴纳，跳槽需注意社保衔接</li>}
+          {report?.city?.difficulty >= 4 && <li>可关注人才引进渠道，部分企业有落户名额</li>}
+          {user.hasChild && !report?.score.pass && <li>提前了解目标城市的入学积分政策，做好规划</li>}
+          <li>公积金贷款额度与缴存基数和余额挂钩，可适当提高缴存比例</li>
+          <li>以上分析仅供参考，具体政策以当地政府最新文件为准</li>
+        </ul>
+      </div>
+
+      <div className="sc-form-actions">
+        <button className="sc-btn-back" onClick={() => setStep(1)}>← 修改信息</button>
+        <button className="sc-btn-next" onClick={() => { setStep(0); setCityKey(null); setReport(null) }}>重新评估其他城市 →</button>
+      </div>
+    </div>
+  )
+}
+
+
 function pmt(rate, nper, pv) {
   if (rate === 0) return pv / nper
   return pv * rate * Math.pow(1 + rate, nper) / (Math.pow(1 + rate, nper) - 1)
