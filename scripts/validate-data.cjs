@@ -71,7 +71,7 @@ policies.forEach((p, i) => {
   if (isNaN(d.getTime())) {
     errors.push(`[${i}] ${p.policyName}: 日期格式无效 "${p.date}"`);
   } else {
-    if (d < new Date('2015-01-01')) warnings.push(`[${i}] ${p.policyName}: 日期过早 ${p.date}`);
+    if (d < new Date('2010-01-01')) warnings.push(`[${i}] ${p.policyName}: 日期过早 ${p.date}`);
     if (d > maxDate) errors.push(`[${i}] ${p.policyName}: 日期超出合理范围 ${p.date}`);
   }
 });

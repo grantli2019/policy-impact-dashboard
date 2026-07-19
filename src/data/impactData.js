@@ -265,6 +265,10 @@ export const dimensions = [
       { policyName: "预售资金监管制度完善", breadth: 7, depth: 7, direction: 1, status: "已发布", date: "2023-01-01", note: "保交楼+购房者权益保障", confidence: "★★★", rationale: "breadth=7: 影响所有期房购房者。depth=7: 预售制度改革推进。", url: "https://www.mohurd.gov.cn" },
       { policyName: "共有产权住房制度推广", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2022-01-01", note: "政府与购房者共有产权，降低购房门槛", confidence: "★★☆", rationale: "breadth=6: 影响中低收入购房群体。depth=8: 住房制度创新。", url: "https://www.mohurd.gov.cn" },
       { policyName: "租赁住房REITs试点", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2021-06-01", note: "租赁住房资产证券化，增加租赁供给", confidence: "★★☆", rationale: "breadth=6: 影响租房群体及投资者。depth=8: 租赁市场金融创新。", url: "https://www.csrc.gov.cn" },
+      { policyName: "国十条限购令", breadth: 8, depth: 8, direction: -1, status: "已结束", date: "2010-04-01", note: "首次全国性限购，遏制房价过快上涨", confidence: "★★★", rationale: "breadth=8: 影响全国购房者。depth=8: 确立限购调控框架。direction=-1: 抑制购房需求。", url: "https://www.gov.cn" },
+      { policyName: "新国八条调控升级", breadth: 8, depth: 8, direction: -1, status: "已结束", date: "2011-01-01", note: "二套房首付60%+限购扩至40城", confidence: "★★★", rationale: "breadth=8: 影响全国购房者。depth=8: 调控力度史上最严。direction=-1: 抑制投资需求。", url: "https://www.gov.cn" },
+      { policyName: "930新政松绑", breadth: 8, depth: 8, direction: 1, status: "已结束", date: "2014-09-01", note: "多数城市取消限购，房贷利率打折", confidence: "★★★", rationale: "breadth=8: 影响全国购房者。depth=8: 调控转向宽松。", url: "https://www.mohurd.gov.cn" },
+      { policyName: "住房公积金管理条例修订研究", breadth: 7, depth: 7, direction: 1, status: "已结束", date: "2012-06-01", note: "提取条件放宽+覆盖范围扩大讨论", confidence: "★★☆", rationale: "breadth=7: 影响公积金缴存职工。depth=7: 公积金制度完善。", url: "https://www.mohurd.gov.cn" },
       { policyName: "棚户区改造货币化安置", breadth: 9, depth: 9, direction: 1, status: "已结束", date: "2015-06-01", note: "三四线城市房价上涨的主要推手，安置超6000万套", confidence: "★★★", rationale: "breadth=9: 影响全国棚改居民及三四线楼市。depth=9: 货币化安置根本性改变住房供给格局。", url: "https://www.mohurd.gov.cn" },
       { policyName: "因城施策去库存", breadth: 8, depth: 8, direction: 1, status: "已结束", date: "2016-02-01", note: "分类调控，三四线去库存+一线控房价", confidence: "★★★", rationale: "breadth=8: 影响全国购房者。depth=8: 确立因城施策调控框架。", url: "https://www.gov.cn" },
       { policyName: "租购并举住房制度", breadth: 8, depth: 9, direction: 1, status: "已发布", date: "2017-07-01", note: "首次提出租购同权，租赁市场制度化", confidence: "★★★", rationale: "breadth=8: 影响全国租房群体。depth=9: 住房制度顶层设计中租购并列。", url: "https://www.mohurd.gov.cn" },
@@ -350,6 +354,10 @@ export const dimensions = [
       { policyName: "新就业形态劳动者权益保障", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2021-07-01", note: "外卖/网约车/快递等平台劳动者权益保障", confidence: "★★★", rationale: "breadth=8: 影响数千万平台劳动者。depth=8: 新就业形态制度性保障。", url: "https://www.mohrss.gov.cn" },
       { policyName: "阶段性缓缴社会保险费", breadth: 8, depth: 7, direction: 1, status: "已结束", date: "2022-05-01", note: "特困行业缓缴养老/失业/工伤保险费", confidence: "★★★", rationale: "breadth=8: 影响22个特困行业企业及职工。depth=7: 纤困企业保就业。", url: "https://www.mohrss.gov.cn" },
       { policyName: "稳就业一揽子政策（青年就业促进）", breadth: 9, depth: 8, direction: 1, status: "已发布", date: "2023-06-01", note: "应对青年失业率攀升，多渠道促进就业", confidence: "★★★", rationale: "breadth=9: 影响全国高校毕业生及青年群体。depth=8: 就业优先战略强化。", url: "https://www.gov.cn/zhengce/content/202306/content_6887038.htm" },
+      { policyName: "劳动合同法实施条例完善", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2010-01-01", note: "劳务派遣规范+经济补偿细化", confidence: "★★★", rationale: "breadth=8: 影响全国劳动者。depth=7: 劳动法律体系完善。", url: "https://www.mohrss.gov.cn" },
+      { policyName: "社会保险法实施", breadth: 10, depth: 9, direction: 1, status: "已发布", date: "2011-07-01", note: "首部社保综合性法律，五险统一规范", confidence: "★★★", rationale: "breadth=10: 影响全体参保人。depth=9: 社保制度法治化里程碑。", url: "http://www.npc.gov.cn" },
+      { policyName: "就业促进法配套政策完善", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2012-06-01", note: "公共就业服务体系+职业培训补贴", confidence: "★★☆", rationale: "breadth=8: 影响求职者。depth=7: 就业服务体系化。", url: "https://www.mohrss.gov.cn" },
+      { policyName: "机关事业单位养老保险并轨研究", breadth: 8, depth: 8, direction: 1, status: "已结束", date: "2013-11-01", note: "双轨制改革方案研究，为2015年并轨铺路", confidence: "★★☆", rationale: "breadth=8: 影响机关事业单位人员。depth=8: 养老公平性改革前奠。", url: "https://www.mohrss.gov.cn" },
       { policyName: "大众创业万众创新政策", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2015-06-01", note: "创业担保贷款+税收优惠+孵化平台", confidence: "★★★", rationale: "breadth=8: 影响全国创业者。depth=7: 创业生态制度化。", url: "https://www.gov.cn" },
       { policyName: "去产能职工安置政策", breadth: 7, depth: 7, direction: 0, direction_note: "对去产能行业职工利空，对再就业利好", status: "已结束", date: "2016-02-01", note: "钢铁煤炭行业去产能，分流安置职工超100万", confidence: "★★★", rationale: "breadth=7: 影响钢铁煤炭行业职工。depth=7: 产业结构调整配套。", url: "https://www.mohrss.gov.cn" },
       { policyName: "失业保险条例修订研究", breadth: 7, depth: 6, direction: 1, status: "已结束", date: "2017-06-01", note: "扩大失业保险覆盖范围+提高待遇标准", confidence: "★★☆", rationale: "breadth=7: 影响参保职工。depth=6: 失业保障制度完善。", url: "https://www.mohrss.gov.cn" },
@@ -424,6 +432,10 @@ export const dimensions = [
     scores: [
       { policyName: "民办教育促进法实施条例修订", breadth: 7, depth: 8, direction: -1, status: "已发布", date: "2021-09-01", note: "义务教育阶段‘公参民’学校全面规范", confidence: "★★★", rationale: "breadth=7: 影响全国民办学校学生家庭。depth=8: 民办教育格局重塑。direction=-1: 部分民办学校转公或停办。", url: "http://www.moe.gov.cn" },
       { policyName: "‘双减’政策（校外培训监管）", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2021-07-01", note: "K12学科类培训全面压减，教育回归校园", confidence: "★★★", rationale: "breadth=9: 影响全国1.5亿中小学生家庭。depth=9: 教培行业根本性变革。", url: "https://www.gov.cn/zhengce/2021-07/24/content_5627132.htm" },
+      { policyName: "国家中长期教育改革规划纲要", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2010-07-01", note: "未来10年教育改革发展蓝图，促进公平+提高质量", confidence: "★★★", rationale: "breadth=9: 影响全国学生家庭。depth=9: 教育改革发展顶层设计。", url: "http://www.moe.gov.cn" },
+      { policyName: "学前教育三年行动计划", breadth: 7, depth: 7, direction: 1, status: "已结束", date: "2011-01-01", note: "解决入园难入园贵，新建改扩建幼儿园", confidence: "★★★", rationale: "breadth=7: 影响全国幼儿家庭。depth=7: 学前教育供给体系建立。", url: "http://www.moe.gov.cn" },
+      { policyName: "异地高考政策破冰", breadth: 7, depth: 8, direction: 1, status: "已发布", date: "2012-12-01", note: "随迁子女就地高考方案各省落地", confidence: "★★★", rationale: "breadth=7: 影响流动人口子女家庭。depth=8: 教育公平制度性突破。", url: "http://www.moe.gov.cn" },
+      { policyName: "义务教育均衡发展督导评估", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2013-06-01", note: "缩小城乡/校际差距，推进教育公平", confidence: "★★★", rationale: "breadth=8: 影响全国义务教育学生家庭。depth=7: 教育均衡化制度化。", url: "http://www.moe.gov.cn" },
       { policyName: "全面二孩政策配套教育规划", breadth: 7, depth: 7, direction: 1, status: "已结束", date: "2016-01-01", note: "新建改扩建幼儿园+义务教育学位扩容", confidence: "★★★", rationale: "breadth=7: 影响二孩家庭。depth=7: 教育资源供给扩容。", url: "http://www.moe.gov.cn" },
       { policyName: "民办教育促进法修订", breadth: 7, depth: 8, direction: 0, status: "已发布", date: "2016-11-01", note: "民办学校分类管理（营利/非营利）", confidence: "★★★", rationale: "breadth=7: 影响民办学校学生家庭。depth=8: 民办教育制度性改革。", url: "http://www.npc.gov.cn" },
       { policyName: "新高考改革全国推广", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2017-09-01", note: "3+1+2模式，取消文理分科", confidence: "★★★", rationale: "breadth=9: 影响全国高中生家庭。depth=9: 高考制度根本性变革。", url: "http://www.moe.gov.cn" },
@@ -496,6 +508,9 @@ export const dimensions = [
     summary: "延迟退休正式实施（男60→63、女55→58/50→55），15年渐进过渡。生育补贴政策落地，育儿补贴每年3600元。医疗保障法二审，托育服务法进入立法程序。",
     analysis: "养老与生育是当前最紧迫的政策交汇点。延迟退休已于2025年1月正式实施，影响数亿在职人员：70后影响最小（延迟3-12个月），80后延迟1-2年，90后延迟2-3年。弹性退休机制允许提前3年退休（不低于原法定年龄）。生育补贴制度从2025年起发放，每孩每年3600元至3岁，预计覆盖约1000万家庭。量化影响：延迟退休可使养老金替代率下降约3-5个百分点，但个人账户积累期延长可部分抵消。风险提示：托育服务法仍在预备阶段，短期内托育资源短缺问题难以缓解。",
     scores: [
+      { policyName: "新型农村社会养老保险全覆盖", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2010-10-01", note: "农村居民首次纳入养老保险体系，覆盖超1亿人", confidence: "★★★", rationale: "breadth=9: 影响全国农村居民。depth=9: 养老保障制度历史性突破。", url: "https://www.mohrss.gov.cn" },
+      { policyName: "城镇居民社会养老保险试点", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2011-07-01", note: "城镇非就业居民纳入养老保障", confidence: "★★★", rationale: "breadth=8: 影响城镇非就业居民。depth=8: 养老保障制度全覆盖关键一步。", url: "https://www.mohrss.gov.cn" },
+      { policyName: "城乡居民养老保险制度合并", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2014-02-01", note: "新农保与城居保合并为城乡居民养老保险", confidence: "★★★", rationale: "breadth=9: 影响全国城乡居民。depth=9: 养老制度统一性改革。", url: "https://www.gov.cn" },
       { policyName: "机关事业单位养老保险并轨", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2015-01-01", note: "结束养老金双轨制，机关事业单位与企业统一制度", confidence: "★★★", rationale: "breadth=9: 影响4000万机关事业单位人员。depth=9: 养老制度公平性里程碑。", url: "https://www.gov.cn" },
       { policyName: "长期护理保险试点启动", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2016-06-01", note: "上海等15城试点，失能老人护理费用报销", confidence: "★★★", rationale: "breadth=6: 试点城市失能老人。depth=8: 第六险制度创新。", url: "https://www.nhsa.gov.cn" },
       { policyName: "划转国有资本充实社保基金", breadth: 8, depth: 9, direction: 1, status: "已发布", date: "2017-11-01", note: "国企股权划转10%充实社保，增强基金可持续性", confidence: "★★★", rationale: "breadth=8: 影响全体参保人。depth=9: 社保基金可持续性制度保障。", url: "https://www.gov.cn" },
@@ -574,6 +589,10 @@ export const dimensions = [
     summary: "金融法首次立法，银证保统一规范。大额存单管理新规压缩存款利率上限。LPR改革深化，房贷利率仍有下行空间。个税征管精准度提升。",
     analysis: "金融法是中国金融领域第一部综合性基础法律，将统一规范银行、证券、保险三大行业。量化影响：LPR已连续下调，2024年房贷利率较2021年高点下降约200个基点，300万30年贷款月供减少约3,500元。大额存单管理办法可能进一步压缩存款利率上限，无风险收益持续下行。税收征管法修订加强了对高净值人群的监管，CRS信息交换网络已覆盖100+国家。风险提示：利率下行周期中，理财产品收益率普遍下降，投资者应警惕「高收益」产品的风险。",
     scores: [
+      { policyName: "融资融券业务试点扩大", breadth: 7, depth: 7, direction: 1, status: "已发布", date: "2010-03-01", note: "资本市场做空机制建立，交易制度完善", confidence: "★★★", rationale: "breadth=7: 影响股民及机构投资者。depth=7: 资本市场制度完善。", url: "https://www.csrc.gov.cn" },
+      { policyName: "个人所得税法修订（起征点3500）", breadth: 9, depth: 7, direction: 1, status: "已发布", date: "2011-09-01", note: "起征点从2000提高至3500，减税惠及6000万人", confidence: "★★★", rationale: "breadth=9: 影响所有纳税人。depth=7: 个税减负制度化。", url: "https://www.chinatax.gov.cn" },
+      { policyName: "利率市场化改革推进", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2012-06-01", note: "存贷款利率浮动区间扩大，银行竞争加剧", confidence: "★★★", rationale: "breadth=9: 影响所有储户和贷款人。depth=9: 利率市场化关键步骤。", url: "http://www.pbc.gov.cn" },
+      { policyName: "余额宝上线（互联网金融元年）", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2013-06-01", note: "货币基金互联网化，存款利率市场化倒逼", confidence: "★★★", rationale: "breadth=8: 影响数亿用户。depth=8: 互联网金融开启利率市场化加速。", url: "http://www.pbc.gov.cn" },
       { policyName: "存款保险制度实施", breadth: 9, depth: 8, direction: 1, status: "已发布", date: "2015-05-01", note: "50万以内存款全额保障，金融安全网完善", confidence: "★★★", rationale: "breadth=9: 影响所有储户。depth=8: 金融安全制度基石。", url: "http://www.pbc.gov.cn" },
       { policyName: "营改增全面推开", breadth: 9, depth: 8, direction: 1, status: "已发布", date: "2016-05-01", note: "营业税改增值税全覆盖，企业减负超5000亿", confidence: "★★★", rationale: "breadth=9: 影响所有纳税人。depth=8: 税制结构性改革。", url: "https://www.chinatax.gov.cn" },
       { policyName: "资管新规征求意见", breadth: 8, depth: 9, direction: -1, status: "已发布", date: "2017-11-01", note: "打破刚兑+去通道+净值化，理财市场重塑", confidence: "★★★", rationale: "breadth=8: 影响所有理财投资者。depth=9: 资管行业根本性变革。direction=-1: 短期阵痛。", url: "http://www.pbc.gov.cn" },
@@ -652,6 +671,10 @@ export const dimensions = [
     summary: "AI监管与数据安全成为行业新规：生成式AI管理办法、算法推荐规定、网络安全法修订全面落地。上海科创政策密度空前：生物医药、孵化器、G60科创走廊2.0。",
     analysis: "行业政策呈现双轮驱动格局：①规范端——生成式AI管理办法要求所有AI服务提供者进行算法备案，影响超500家AI企业和数亿用户；算法推荐规定赋予用户「关闭个性化推荐」权利，互联网平台商业模式面临重构；网络安全法修订将罚款上限提升至5000万元，企业合规成本显著增加。②激励端——上海生物医药外资高能级项目扶持+G60科创走廊2.0+节能减排专项资金形成产业全链条红利。量化影响：AI行业合规成本预计增加15-20%，但长期有利于行业健康发展。风险提示：AI监管可能过度收紧，影响创新速度。",
     scores: [
+      { policyName: "战略性新兴产业培育", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2010-10-01", note: "七大战略性新兴产业规划，节能环保/新一代IT/生物/新能源等", confidence: "★★★", rationale: "breadth=8: 影响新兴产业从业者。depth=8: 产业升级顶层设计。", url: "https://www.gov.cn" },
+      { policyName: "小微企业税收优惠政策", breadth: 8, depth: 7, direction: 1, status: "已发布", date: "2011-11-01", note: "小微企业减半征收所得税+增值税起征点提高", confidence: "★★★", rationale: "breadth=8: 影响全国小微企业主。depth=7: 营商环境优化。", url: "https://www.chinatax.gov.cn" },
+      { policyName: "节能减排“十二五”规划", breadth: 8, depth: 7, direction: -1, status: "已结束", date: "2012-08-01", note: "高耗能行业约束加强，环保成本上升", confidence: "★★★", rationale: "breadth=8: 影响高耗能行业企业。depth=7: 绿色发展制度化。direction=-1: 企业合规成本增加。", url: "https://www.gov.cn" },
+      { policyName: "“宽带中国”战略及实施方案", breadth: 8, depth: 8, direction: 1, status: "已发布", date: "2013-08-01", note: "光纤到户+4G网络建设，数字经济基础设施", confidence: "★★★", rationale: "breadth=8: 影响全国网民及互联网企业。depth=8: 数字基础设施奠基。", url: "https://www.gov.cn" },
       { policyName: "中国制造2025战略", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2015-05-01", note: "十大重点领域+智能制造+绿色制造", confidence: "★★★", rationale: "breadth=9: 影响全国制造业。depth=9: 制造业升级顶层战略。", url: "https://www.gov.cn" },
       { policyName: "供给侧结构性改革（去产能）", breadth: 9, depth: 9, direction: -1, status: "已结束", date: "2016-01-01", note: "钢铁煤炭去产能，僵尸企业出清", confidence: "★★★", rationale: "breadth=9: 影响传统行业从业者。depth=9: 产业结构根本性调整。direction=-1: 传统行业阵痛。", url: "https://www.ndrc.gov.cn" },
       { policyName: "环保督察常态化", breadth: 8, depth: 8, direction: -1, status: "已发布", date: "2017-01-01", note: "中央环保督察全覆盖，高污染企业关停整改", confidence: "★★★", rationale: "breadth=8: 影响高污染行业企业。depth=8: 环保执法制度化。direction=-1: 企业合规成本增加。", url: "https://www.gov.cn" },
@@ -2750,6 +2773,30 @@ export const newsLianboUpdates = [
   { date: "2025-06-15", title: "上半年新能源汽车产销超600万辆：渗透率突破40%", dim: "industry", sentiment: "利好", data: ["600万辆", "40%", "全球第一"], summary: "中汽协数据：上半年新能源汽车产销超600万辆，市场渗透率突破40%。充电基础设施加速布局，公共充电桩超350万台。智能网联汽车占比超30%，中国汽车产业加速转型升级。", source: "新闻联播 20250615" },
   { date: "2025-06-20", title: "全国住房公积金制度惠及面扩大：灵活就业可自愿缴存", dim: "housing", sentiment: "利好", data: ["灵活就业", "自愿", "提取放宽"], summary: "住建部宣布住房公积金制度扩面：灵活就业人员可自愿缴存公积金，享受与在职职工同等贷款权益。提取条件进一步放宽，租房提取额度提高，装修提取取消限制。", source: "新闻联播 20250620" },
   { date: "2025-06-25", title: "'十四五'规划主要指标提前完成：经济总量超130万亿", dim: "industry", sentiment: "利好", data: ["130万亿", "提前", "高质量"], summary: "国家发改委宣布'十四五'规划主要经济指标提前完成：经济总量超130万亿元，人均GDP超9万元。研发投入占GDP比重达2.8%，城镇化率超67%。绿色发展指标全面达标。", source: "新闻联播 20250625" }
+];
+
+/* ── 新闻30分解读（CCTV-13午间新闻） ─────────────────── */
+export const news30Updates = [
+  { date: "2026-07-18", title: "人社部：上半年城镇新增就业698万人，完成全年目标58%", dim: "employment", sentiment: "利好", data: ["698万", "58%", "11.2%"], summary: "人社部发布上半年就业数据：城镇新增就业698万人，完成全年目标58%。城镇调查失业率均值5.2%，同比下降0.1个百分点。高校毕业生就业率同比提升2个百分点。", source: "新闻30分 20260718" },
+  { date: "2026-07-15", title: "住建部：全国保障性租赁住房已筹集超700万套", dim: "housing", sentiment: "利好", data: ["700万套", "80%", "新市民"], summary: "住建部宣布全国保障性租赁住房已筹集超700万套，完成十四五目标80%。重点解决新市民、青年人住房困难，租金低于同地段市场价10%-50%。", source: "新闻30分 20260715" },
+  { date: "2026-07-10", title: "医保局：跨省异地就医直接结算覆盖超90%定点医疗机构", dim: "pension", sentiment: "利好", data: ["90%", "12.8万家", "4.5亿人次"], summary: "国家医保局宣布跨省异地就医直接结算已覆盖超90%定点医疗机构，累计结算超4.5亿人次。住院、普通门诊、门诊慢特病均已实现跨省直接结算。", source: "新闻30分 20260710" },
+  { date: "2026-07-05", title: "教育部：2026年高考录取率创历史新高，达92.3%", dim: "education", sentiment: "利好", data: ["92.3%", "1342万", "扩招"], summary: "教育部发布2026年高考录取数据：全国高考报名人数1342万，录取率达92.3%创历史新高。强基计划、专项计划持续扩大农村和脱贫地区学生入学机会。", source: "新闻30分 20260705" },
+  { date: "2026-06-28", title: "央行：数字人民币试点扩展至全国26个地区", dim: "finance", sentiment: "利好", data: ["26个地区", "7万亿", "1.8亿"], summary: "央行宣布数字人民币试点已扩展至全国26个地区，累计交易额超7万亿元，个人钱包开立超1.8亿个。下一步将推进数字人民币在跨境支付中的应用。", source: "新闻30分 20260628" },
+  { date: "2026-06-20", title: "工信部：全国5G基站总数突破450万个", dim: "industry", sentiment: "利好", data: ["450万个", "98%", "5G-A"], summary: "工信部宣布全国5G基站总数突破450万个，实现所有地级市城区和县城98%覆盖。5G-A商用加速推进，为AI、工业互联网提供网络底座。", source: "新闻30分 20260620" },
+  { date: "2026-06-12", title: "国务院：个人养老金制度参加人数突破8000万", dim: "pension", sentiment: "利好", data: ["8000万", "12000元", "36%"], summary: "国务院新闻办发布数据：个人养老金制度参加人数突破8000万，实际缴存比例36%。产品种类扩展至基金、储蓄、保险、理财四类，年缴存上限12000元。", source: "新闻30分 20260612" },
+  { date: "2026-06-05", title: "市场监管总局：平台经济反垄断合规指引发布", dim: "industry", sentiment: "中性", data: ["合规指引", "平台经济", "公平竞争"], summary: "市场监管总局发布平台经济反垄断合规指引，明确平台企业竞争行为边界。强调数据可携带、互操作性，促进平台间公平竞争。", source: "新闻30分 20260605" },
+  { date: "2026-05-28", title: "财政部：前4个月全国一般公共预算收入增长5.2%", dim: "finance", sentiment: "利好", data: ["增长5.2%", "6.2%", "回升"], summary: "财政部发布数据：前4个月全国一般公共预算收入增长5.2%，国内增值税增长6.2%，反映经济活力持续回升。企业所得税增长4.8%，企业盈利能力改善。", source: "新闻30分 20260528" },
+  { date: "2026-05-20", title: "人社部：灵活就业人员参保取消户籍限制全面落地", dim: "employment", sentiment: "利好", data: ["取消户籍", "2亿", "灵活就业"], summary: "人社部宣布灵活就业人员参加职工社保取消户籍限制已在全国全面落地。约2亿灵活就业人员可在工作地直接参加养老和医疗保险，无需回户籍地。", source: "新闻30分 20260520" },
+  { date: "2026-05-12", title: "住建部：老旧小区改造今年新开工5.3万个", dim: "housing", sentiment: "利好", data: ["5.3万个", "加装电梯", "900万户"], summary: "住建部宣布今年全国新开工改造老旧小区5.3万个，惠及居民约900万户。重点推进加装电梯、更新管线、完善社区服务设施。", source: "新闻30分 20260512" },
+  { date: "2026-05-05", title: "税务总局：个税汇算清缴退税超3000亿元", dim: "finance", sentiment: "利好", data: ["3000亿", "1.2亿人", "退税"], summary: "税务总局发布数据：2025年度个税汇算清缴已完成，累计退税超3000亿元，惠及1.2亿纳税人。专项附加扣除政策持续优化，育儿、养老扣除标准提高。", source: "新闻30分 20260505" },
+  { date: "2026-04-25", title: "教育部：职业教育产教融合型企业超5000家", dim: "education", sentiment: "利好", data: ["5000家", "产教融合", "双元制"], summary: "教育部宣布全国产教融合型企业已超5000家，校企合作覆盖所有重点产业。职业教育毕业生就业率保持95%以上，部分热门专业超98%。", source: "新闻30分 20260425" },
+  { date: "2026-04-15", title: "民政部：全国社区养老服务设施覆盖率超95%", dim: "pension", sentiment: "利好", data: ["95%", "助餐", "日间照料"], summary: "民政部发布数据：全国社区养老服务设施覆盖率超95%，助餐服务点超10万个，日间照料中心超5万个。居家社区机构相协调的养老服务体系基本建成。", source: "新闻30分 20260415" },
+  { date: "2026-04-05", title: "商务部：一季度社会消费品零售总额增长5.8%", dim: "finance", sentiment: "利好", data: ["增长5.8%", "以旧换新", "消费升级"], summary: "商务部发布数据：一季度社会消费品零售总额同比增长5.8%。以旧换新政策带动家电、汽车销售增长超20%，服务消费增长12.3%。", source: "新闻30分 20260405" },
+  { date: "2026-03-25", title: "科技部：全国研发经费投入超3.6万亿元", dim: "industry", sentiment: "利好", data: ["3.6万亿", "2.8%", "全球第二"], summary: "科技部发布数据：2025年全国研发经费投入超3.6万亿元，占GDP比重2.8%，总量居全球第二。基础研究经费占比提升至6.5%，原始创新能力增强。", source: "新闻30分 20260325" },
+  { date: "2026-03-15", title: "卫健委：全国每千人口床位数达7.2张", dim: "pension", sentiment: "利好", data: ["7.2张", "基层医疗", "分级诊疗"], summary: "国家卫健委发布数据：全国每千人口医疗卫生机构床位数达7.2张，超过中等发达国家水平。基层医疗卫生机构诊疗量占比超55%，分级诊疗格局基本形成。", source: "新闻30分 20260315" },
+  { date: "2026-03-05", title: "政府工作报告：2026年城镇新增就业目标1200万人以上", dim: "employment", sentiment: "利好", data: ["1200万", "5%左右", "就业优先"], summary: "政府工作报告提出2026年城镇新增就业目标1200万人以上，城镇调查失业率5.5%左右。强调就业优先政策，加大对高校毕业生、农民工等重点群体就业支持。", source: "新闻30分 20260305" },
+  { date: "2026-02-20", title: "央行：1月份人民币贷款增加4.9万亿元", dim: "finance", sentiment: "利好", data: ["4.9万亿", "信贷", "实体经济"], summary: "央行发布金融数据：1月份人民币贷款增加4.9万亿元，同比多增1600亿元。企业中长期贷款增加3.2万亿元，反映实体经济融资需求旺盛。", source: "新闻30分 20260220" },
+  { date: "2026-02-10", title: "农业农村部：农村居民人均可支配收入增长7.1%", dim: "employment", sentiment: "利好", data: ["增长7.1%", "城乡差距缩小", "乡村振兴"], summary: "农业农村部发布数据：2025年农村居民人均可支配收入实际增长7.1%，增速连续5年快于城镇。城乡居民收入比缩小至2.3:1，乡村振兴成效显著。", source: "新闻30分 20260210" },
 ];
 
 /* ── 新闻富化：人物相关性标签 + 行动建议 ──────────────────── */
