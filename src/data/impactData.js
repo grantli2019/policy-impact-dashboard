@@ -6,6 +6,59 @@
  * ═══════════════════════════════════════════════════════════════
  */
 
+/* ── 信息源域名→发布机构映射 ────────────────────────────── */
+const SOURCE_MAP = [
+  { domain: 'gov.cn', source: '中国政府网', issuingBody: '国务院' },
+  { domain: 'mohurd.gov.cn', source: '住建部官网', issuingBody: '住建部' },
+  { domain: 'chinatax.gov.cn', source: '税务总局官网', issuingBody: '国家税务总局' },
+  { domain: 'npc.gov.cn', source: '全国人大官网', issuingBody: '全国人大' },
+  { domain: 'moj.gov.cn', source: '司法部官网', issuingBody: '司法部' },
+  { domain: 'mohrss.gov.cn', source: '人社部官网', issuingBody: '人社部' },
+  { domain: 'moe.gov.cn', source: '教育部官网', issuingBody: '教育部' },
+  { domain: 'mof.gov.cn', source: '财政部官网', issuingBody: '财政部' },
+  { domain: 'nhc.gov.cn', source: '国家卫健委官网', issuingBody: '国家卫健委' },
+  { domain: 'mps.gov.cn', source: '公安部官网', issuingBody: '公安部' },
+  { domain: 'miit.gov.cn', source: '工信部官网', issuingBody: '工信部' },
+  { domain: 'stats.gov.cn', source: '国家统计局官网', issuingBody: '国家统计局' },
+  { domain: 'pbc.gov.cn', source: '央行官网', issuingBody: '中国人民银行' },
+  { domain: 'ndrc.gov.cn', source: '国家发改委官网', issuingBody: '国家发改委' },
+  { domain: 'samr.gov.cn', source: '市场监管总局官网', issuingBody: '市场监管总局' },
+  { domain: 'cac.gov.cn', source: '国家网信办官网', issuingBody: '国家网信办' },
+  { domain: 'shanghai.gov.cn', source: '上海政府官网', issuingBody: '上海市政府' },
+  { domain: 'rsj.sh.gov.cn', source: '上海人社局官网', issuingBody: '上海市人社局' },
+  { domain: 'edu.sh.gov.cn', source: '上海市教委官网', issuingBody: '上海市教委' },
+  { domain: 'zjw.sh.gov.cn', source: '上海住建委官网', issuingBody: '上海市住建委' },
+  { domain: 'rsj.beijing.gov.cn', source: '北京人社局官网', issuingBody: '北京市人社局' },
+  { domain: 'zjw.beijing.gov.cn', source: '北京住建委官网', issuingBody: '北京市住建委' },
+  { domain: 'beijing.gov.cn', source: '北京政府官网', issuingBody: '北京市政府' },
+  { domain: 'mzj.beijing.gov.cn', source: '北京民政局官网', issuingBody: '北京市民政局' },
+  { domain: 'ybj.beijing.gov.cn', source: '北京医保局官网', issuingBody: '北京市医保局' },
+  { domain: 'ybj.sh.gov.cn', source: '上海医保局官网', issuingBody: '上海市医保局' },
+  { domain: 'pkulaw.com', source: '北大法宝', issuingBody: '北大法律信息网' },
+  { domain: 'court.gov.cn', source: '最高人民法院官网', issuingBody: '最高法' },
+  { domain: 'stcsm.sh.gov.cn', source: '上海科委官网', issuingBody: '上海市科委' },
+  { domain: 'nhsa.gov.cn', source: '国家医保局官网', issuingBody: '国家医保局' },
+  { domain: 'nmpa.gov.cn', source: '国家药监局官网', issuingBody: '国家药监局' },
+  { domain: 'bse.cn', source: '北交所官网', issuingBody: '北京证券交易所' },
+  { domain: 'shftz.gov.cn', source: '上海自贸区官网', issuingBody: '上海自贸区管委会' },
+  { domain: 'xiongan.gov.cn', source: '雄安新区官网', issuingBody: '雄安新区管委会' },
+  { domain: 'shgjj.com', source: '上海公积金中心官网', issuingBody: '上海市公积金中心' },
+  { domain: 'lingang.gov.cn', source: '临港新片区官网', issuingBody: '临港新片区管委会' },
+  { domain: 'g60.org.cn', source: 'G60科创走廊官网', issuingBody: 'G60科创走廊办公室' },
+  { domain: 'mca.gov.cn', source: '民政部官网', issuingBody: '民政部' },
+  { domain: 'mnr.gov.cn', source: '自然资源部官网', issuingBody: '自然资源部' },
+];
+
+/** 根据URL域名自动推断发布机构和来源名称 */
+export function getSourceFromUrl(url) {
+  if (!url) return { source: '政府官方网站', issuingBody: '' };
+  const u = url.toLowerCase();
+  for (const m of SOURCE_MAP) {
+    if (u.includes(m.domain)) return { source: m.source, issuingBody: m.issuingBody };
+  }
+  return { source: '政府官方网站', issuingBody: '' };
+}
+
 /* ── 等级标尺 ─────────────────────────────────────────────── */
 const LEVELS = [
   { min: 80, label: "显著利好", icon: "⬆⬆", color: "#27ae60", plain: "政策对你非常有利，建议积极把握" },
@@ -390,6 +443,107 @@ export const dimensions = [
 /* ── 每个维度附加通俗解读 ──────────────────────────────────── */
 dimensions.forEach(dim => {
   dim.plainSummary = plainSummary(dim, calcDimensionScore(dim));
+});
+
+/* ── 数据增强：自动注入信息源 ──────────────────────────────────── */
+const URL_DOMAIN_EXTRACTOR = /https?:\/\/([^\/]+)/;
+
+export function enrichPolicyData(dims) {
+  dims.forEach(dim => {
+    (dim.scores || []).forEach(p => {
+      if (!p.source) {
+        const info = getSourceFromUrl(p.url);
+        p.source = info.source;
+        p.issuingBody = info.issuingBody;
+      }
+    });
+    Object.values(dim.regionalPolicies || {}).forEach(regionPolicies => {
+      regionPolicies.forEach(p => {
+        if (!p.source) {
+          const info = getSourceFromUrl(p.url);
+          p.source = info.source;
+          p.issuingBody = info.issuingBody;
+        }
+      });
+    });
+  });
+}
+
+/* ── 全局数据信息 ─────────────────────────────────────────────── */
+export const DATA_INFO = {
+  lastVerified: '2026-07-17',
+  sourceCount: 7,
+  totalPolicies: (() => {
+    let count = 0;
+    dimensions.forEach(dim => {
+      count += (dim.scores || []).length;
+      Object.values(dim.regionalPolicies || {}).forEach(rp => count += rp.length);
+    });
+    return count;
+  })(),
+};
+
+// 自动增强数据
+enrichPolicyData(dimensions);
+
+/* ── 精选关键政策手工精修 ────────────────────────────────── */
+const KEY_POLICY_REFINEMENTS = {
+  // Housing (6条)
+  "住房公积金管理条例（修订）":                    { issuingBody: '国务院·住建部·财政部·央行' },
+  "换房退税政策延续至2027年底":                  { issuingBody: '财政部·国家税务总局' },
+  "个人住房房产税完善":                           { issuingBody: '上海市政府' },
+  "房地产税试点扩围（暂缓但立法研究未停）":        { issuingBody: '全国人大' },
+  "上海'沪七条'（限购松绑+公积金提额）":          { issuingBody: '上海市住建委' },
+  "北京'认房不认贷'+首付比例下调":                { issuingBody: '北京市住建委' },
+  // Employment (5条)
+  "取消就业地参保户籍限制":                        { issuingBody: '国家发改委' },
+  "民营经济促进法":                                { issuingBody: '全国人大' },
+  "超龄劳动者基本权益保障":                        { issuingBody: '人社部' },
+  "外卖平台补贴行为规范":                           { issuingBody: '市场监管总局' },
+  "电子商务法修正草案":                             { issuingBody: '全国人大' },
+  // Education (5条)
+  "常住地公共服务同权化":                           { issuingBody: '国务院' },
+  "县中振兴行动计划（2025-2027）":                  { issuingBody: '教育部' },
+  "职业教育法修订（2022年施行）":                   { issuingBody: '全国人大' },
+  "中小学科学教育加法行动":                         { issuingBody: '教育部' },
+  "国家教育数字化战略行动":                         { issuingBody: '教育部' },
+  // Elderly (5条)
+  "渐进式延迟法定退休年龄方案":                     { issuingBody: '全国人大·国务院' },
+  "生育补贴制度（2025年起发放）":                   { issuingBody: '国务院' },
+  "托育服务法草案":                                 { issuingBody: '全国人大' },
+  "医疗保障法草案（二次审议稿）":                   { issuingBody: '全国人大' },
+  "常住地基本公共服务（老人随迁）":                 { issuingBody: '国务院' },
+  // Finance (5条)
+  "金融法（草案首次审议）":                         { issuingBody: '全国人大' },
+  "大额存单管理办法":                               { issuingBody: '中国人民银行' },
+  "人民币存贷款利率管理规定":                       { issuingBody: '中国人民银行' },
+  "税收征收管理法修订":                             { issuingBody: '国家税务总局' },
+  "个人住房贷款利率降至3.1%":                      { issuingBody: '中国人民银行' },
+  // Industry (4条)
+  "生成式人工智能服务管理暂行办法":                 { issuingBody: '国家网信办' },
+  "互联网信息服务算法推荐管理规定":                 { issuingBody: '国家网信办' },
+  "网络安全法修订（罚款上限提至5000万）":           { issuingBody: '全国人大' },
+  "政府采购法+招投标法同步修订":                    { issuingBody: '全国人大' },
+};
+
+// 应用手工精修
+dimensions.forEach(dim => {
+  (dim.scores || []).forEach(p => {
+    const refinement = KEY_POLICY_REFINEMENTS[p.policyName];
+    if (refinement) {
+      if (refinement.issuingBody) p.issuingBody = refinement.issuingBody;
+      if (refinement.docNumber) p.docNumber = refinement.docNumber;
+    }
+  });
+  Object.values(dim.regionalPolicies || {}).forEach(regionPolicies => {
+    regionPolicies.forEach(p => {
+      const refinement = KEY_POLICY_REFINEMENTS[p.policyName];
+      if (refinement) {
+        if (refinement.issuingBody) p.issuingBody = refinement.issuingBody;
+        if (refinement.docNumber) p.docNumber = refinement.docNumber;
+      }
+    });
+  });
 });
 
 /* ── 关键发现 ──────────────────────────────────────────────── */

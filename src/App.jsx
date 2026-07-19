@@ -403,7 +403,10 @@ function PolicyRadar({ personaKey, regionKey }) {
             <div className="radar-content">
               <div className="radar-header">
                 <span className="radar-dim">{p.dimIcon} {p.dimName}</span>
-                <span className="radar-conf">{p.confidence}</span>
+                <span className="radar-badges">
+                  {p.source && <span className="source-tag">{p.issuingBody || p.source}</span>}
+                  <span className="radar-conf">{p.confidence}</span>
+                </span>
                 <span className="radar-dir" style={{ color: dirColor(p.direction) }}>{dirLabel(p.direction)}</span>
               </div>
               <div className="radar-name">
@@ -454,7 +457,10 @@ function PolicyCards({ scores, dimKey, expandedRationale, setExpandedRationale }
               <span className="pc-name">
                 {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer" className="policy-source-link">{s.policyName}</a> : s.policyName}
               </span>
-              <span className="conf-badge">{s.confidence}</span>
+              <span className="pc-badges">
+                {s.source && <span className="source-tag">{s.issuingBody || s.source}</span>}
+                <span className="conf-badge">{s.confidence}</span>
+              </span>
             </div>
             <div className="pc-meta">
               <span>广度 <b style={{color:'var(--info)'}}>{s.breadth}</b></span>
@@ -1911,7 +1917,7 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
         const pTitle = p.policyName.toLowerCase()
         const pNote = (p.note || '').toLowerCase()
         if (allKw.some(k => pTitle.includes(k) || pNote.includes(k))) {
-          res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date })
+          res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date, source: p.source, issuingBody: p.issuingBody })
         }
       })
     })
@@ -1978,7 +1984,7 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
         dim.scores.forEach(p => {
           if (!seen.has(p.policyName) && (p.policyName.toLowerCase().includes(k) || (p.note && p.note.toLowerCase().includes(k)))) {
             seen.add(p.policyName)
-            res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date })
+            res.push({ type: 'policy', dim: dim.key, icon: dim.icon, dimLabel: dim.name, title: p.policyName, desc: p.note, sentiment: p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性', url: p.url, date: p.date, source: p.source, issuingBody: p.issuingBody })
           }
         })
       })
@@ -2077,6 +2083,7 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
                     {r.desc && <div className="ps-ri-desc">{r.desc}</div>}
                     <div className="ps-ri-meta">
                       <span className="ps-ri-tag">{r.dimLabel}</span>
+                      {r.source && <span className="source-tag source-tag-sm">{r.issuingBody || r.source}</span>}
                       {r.sentiment && <span className="ps-ri-sent" style={{ color: sentColor(r.sentiment) }}>{r.sentiment}</span>}
                       {r.data && r.data.length > 0 && <span className="ps-ri-data">{r.data[0]}</span>}
                       {r.date && <span className="ps-ri-date">{r.date}</span>}
@@ -3325,6 +3332,34 @@ function App() {
                 <span className="pd-dim" style={{ color: policyDetail.dimColor }}>{policyDetail.dimIcon} {policyDetail.dimName}</span>
                 <span className="pd-conf">{policyDetail.confidence}</span>
               </div>
+              {(policyDetail.issuingBody || policyDetail.docNumber || policyDetail.source) && (
+                <div className="pd-source-section">
+                  {policyDetail.issuingBody && (
+                    <span className="pd-source-item">
+                      <span className="pd-source-label">发布机构</span>
+                      <span className="pd-source-value">{policyDetail.issuingBody}</span>
+                    </span>
+                  )}
+                  {policyDetail.docNumber && (
+                    <span className="pd-source-item">
+                      <span className="pd-source-label">文号</span>
+                      <span className="pd-source-value pd-doc-number">{policyDetail.docNumber}</span>
+                    </span>
+                  )}
+                  {policyDetail.date && (
+                    <span className="pd-source-item">
+                      <span className="pd-source-label">发布日期</span>
+                      <span className="pd-source-value">{policyDetail.date}</span>
+                    </span>
+                  )}
+                  {policyDetail.source && (
+                    <span className="pd-source-item">
+                      <span className="pd-source-label">来源</span>
+                      <span className="pd-source-value">{policyDetail.source}</span>
+                    </span>
+                  )}
+                </div>
+              )}
               <h2 className="pd-title">
                 {policyDetail.url ? <a href={policyDetail.url} target="_blank" rel="noopener noreferrer">{policyDetail.policyName} ↗</a> : policyDetail.policyName}
               </h2>
@@ -3354,6 +3389,11 @@ function App() {
                   <p>{policyDetail.rationale}</p>
                 </div>
               )}
+              <div className="pd-report-link">
+                <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('数据问题报告：' + policyDetail.policyName)}`} className="report-issue-link" onClick={e => e.stopPropagation()}>
+                  📮 发现数据不准确？报告问题 →
+                </a>
+              </div>
               <div className="pd-actions">
                 <button className="btn-primary" onClick={() => { setPolicyDetail(null); setActiveTab('dimensions'); setSelectedDim(policyDetail.dimKey); setTabKey(k=>k+1) }}>
                   查看「{policyDetail.dimName}」全部政策

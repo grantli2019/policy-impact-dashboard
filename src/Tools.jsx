@@ -801,8 +801,16 @@ export default function Tools({ regionKey = "national", toolParams, onNavigateDi
         {active === 7 && <button className="policy-link-btn" onClick={() => onNavigateDim?.('housing')}>🏠 了解城市安家政策详情 →</button>}
       </div>
       <div className="tool-disclaimer">
+        {active === 0 && <p className="tool-source-note">📊 产假天数依据《女职工劳动保护特别规定》及各地计生条例 · 生育津贴公式来自国家医保局 · 利率数据更新至2026年7月</p>}
+        {active === 1 && <p className="tool-source-note">📊 公积金利率2.85%来源：中国人民银行（2024年5月） · 商贷利率参考LPR-20BP · 公积金上限依据各地住建委最新政策</p>}
+        {active === 2 && <p className="tool-source-note">📊 换房退税依据：财政部·税务总局公告（延续至2027年底） · 个税计算按差额20%或全额1%孰低原则</p>}
+        {active === 3 && <p className="tool-source-note">📊 购房资格规则依据：各城市住建委最新限购政策 · 社保年限要求参考当地购房资格规定</p>}
+        {active === 4 && <p className="tool-source-note">📊 公积金利率2.85%来源：中国人民银行 · 商贷利率参考LPR（3.10%） · 等额本息公式计算</p>}
+        {active === 5 && <p className="tool-source-note">📊 个税起征点5000元/月依据《个人所得税法》 · 专项附加扣除标准依据国发〔2023〕X号 · 年终奖单独计税政策延续至2027年底</p>}
+        {active === 6 && <p className="tool-source-note">📊 养老金计算公式依据《社会保险法》 · 延迟退休方案依据全国人大决定（2024年9月） · 个人账户计发月数参考人社部发布标准</p>}
+        {active === 7 && <p className="tool-source-note">📊 落户评分规则依据各城市人才引进办法 · 购房资格参考当地住建委政策 · 公积金额度依据各地公积金管理中心规定</p>}
         ⚠️ 以上计算结果仅供参考，实际金额以银行审批和税务局核定为准。
-        利率数据更新至2026年7月，如有变动请以最新政策为准。
+        数据更新至2026年7月，如有变动请以最新政策为准。
       </div>
     </div>
   )
