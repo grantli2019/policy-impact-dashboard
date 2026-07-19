@@ -3533,7 +3533,40 @@ function App() {
     else setSelectedDim(null)
     setTabKey(prev => prev + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    // Hash路由同步
+    window.location.hash = k === 'overview' ? '' : k
   }, [selectedDim, currentDims])
+
+  // Hash路由：初始化读取 + 监听变化
+  useEffect(() => {
+    const applyHash = () => {
+      const h = window.location.hash.replace('#', '')
+      if (h && ['overview','radar','dimensions','tools','topics','dashboard','monitor','methodology','graph','api','about'].includes(h)) {
+        setActiveTab(h)
+        setTabKey(prev => prev + 1)
+      }
+    }
+    applyHash()
+    window.addEventListener('hashchange', applyHash)
+    return () => window.removeEventListener('hashchange', applyHash)
+  }, [])
+
+  // 键盘快捷键：Ctrl+K 聚焦搜索 / Esc 关闭弹窗
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault()
+        const input = document.querySelector('.ps-input, .hero-search-box input')
+        if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
+      }
+      if (e.key === 'Escape') {
+        setShowModal(false); setShowShare(false); setShowUpgrade(false)
+        setShowProfileCenter(false); setShowNotifPanel(false)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   const toggleBookmark = useCallback((policyName) => {
     setBookmarks(prev => {
