@@ -3678,7 +3678,7 @@ function PrivacyModal({ onClose }) {
 function TestimonialWall() {
   const testimonials = [
     { icon: '🏠', role: '准备买房的深圳程序员', age: '28岁', quote: '用了策查查才知道深圳公积金可以贷到126万，比预想多了40万。还发现了人才引进补贴，总计省了近10万。', result: '节省约10万元', dim: 'housing' },
-    { icon: '👶', role: '计划二胎的杭州妈妈', age: '32岁', quote: '生育计算器帮我算出了产假天数和津贴金额，还看到了各个区的托育补贴政策。三个工具一对比，选定了现在住的地方。', result: '多领津贴2.3万/年', dim: 'elderly' },
+    { icon: '👶', role: '计划二胎的杭州妈妈', age: '32岁', quote: '生育计算器帮我算出了产假天数和津贴金额，还查到了各个区的托育补贴差异。比对了三套方案后选定了最划算的产假衔接节奏，多休了两周。', result: '多领津贴2.3万/年', dim: 'elderly' },
     { icon: '🚀', role: '准备返乡创业的成都青年', age: '35岁', quote: '行业维度的创业扶持政策一目了然，从税收优惠到场地补贴都有覆盖。雷达图让我看到了被忽略的就业培训补贴。', result: '发现5项适用补贴', dim: 'industry' },
   ]
   return (
