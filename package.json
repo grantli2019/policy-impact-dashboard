@@ -9,6 +9,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "update-policies": "node scripts/update-policies.mjs",
+    "validate": "node scripts/validate-data.cjs",
+    "analyze": "node scripts/analyze-data.cjs",
     "lint": "oxlint",
     "lint:css": "stylelint \"src/**/*.css\"",
     "preview": "vite preview"
