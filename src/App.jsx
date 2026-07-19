@@ -3654,14 +3654,14 @@ function App() {
       </header>
 
       <nav className="tabs" role="tablist" aria-label="主导航">
-        {[['overview','🏠 首页'],['radar','📡 雷达'],['dimensions','📋 政策库'],['tools','🧮 工具箱'],['topics','🎯 专题'],['dashboard','👤 我的']].map(([k, label]) => (
+        {[['overview','🏠 首页'],['radar','📡 雷达'],['dimensions','📋 政策库'],['tools','🧮 工具箱'],['dashboard','👤 我的']].map(([k, label]) => (
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
         <div className="tab-more-wrap">
-          <button className={`tab tab-more ${['methodology','graph','api','monitor','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }} aria-label="更多功能" aria-expanded={moreOpen}>⋯ 更多</button>
+          <button className={`tab tab-more ${['topics','methodology','graph','api','monitor','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }} aria-label="更多功能" aria-expanded={moreOpen}>⋯ 更多</button>
           {moreOpen && (
             <div className="tab-dropdown">
-              {[['monitor','🔔 监控'],['methodology','🔬 方法论'],['graph','🕸️ 图谱'],['api','🔌 API'],['about','🧭 关于']].map(([k, label]) => (
+              {[['topics','🎯 专题'],['monitor','🔔 监控'],['methodology','🔬 方法论'],['graph','🕸️ 图谱'],['api','🔌 API'],['about','🧭 关于']].map(([k, label]) => (
                 <button key={k} className={`tab-drop-item ${activeTab===k?'active':''}`} onClick={() => { switchTab(k); setMoreOpen(false); }}>{label}</button>
               ))}
             </div>
