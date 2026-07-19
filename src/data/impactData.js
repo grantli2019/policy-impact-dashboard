@@ -2401,6 +2401,11 @@ export const lifeStages = [
   { key: 'approaching_retire', label: '临近退休', icon: '👴', ageRange: [50, 65],
     focusDims: ['elderly', 'finance', 'employment'],
     hotTopics: ['延迟退休', '养老金', '医保', '长期护理'] },
+  { key: 'career_crisis', label: '职业危机/失业', icon: '🆘', ageRange: [25, 60],
+    focusDims: ['employment', 'housing', 'elderly'],
+    hotTopics: ['失业金', '公积金提取', '社保断缴', 'N+1赔偿', '灵活就业', '保租房'],
+    crisisMode: true,
+    urgentActions: ['申领失业保险金', '确认N+1裁员赔偿', '公积金提取', '社保灵活就业续缴', '医保不能断'] },
 ];
 
 // 根据年龄推断人生阶段
