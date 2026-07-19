@@ -978,6 +978,13 @@ a:hover { color: var(--p-600); }
 }
 .persona-chip:hover { background: var(--p-100); }
 .chip-x { font-size: 10px; opacity: 0.5; margin-left: 2px; }
+.composite-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--p-500), var(--p-700));
+  color: #fff; font-size: 11px; cursor: default;
+  box-shadow: 0 1px 4px rgba(26,86,219,0.3);
+}
 .share-btn {
   background: var(--gray-50); border: 1px solid var(--gray-200);
   border-radius: var(--r-sm); padding: 4px 10px;

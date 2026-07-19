@@ -9,6 +9,10 @@
     <meta name="author" content="策查查" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#1a1a2e" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="策查查" />
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="策查查 — 读懂政策，做对决策" />
@@ -45,11 +49,24 @@
   <body>
     <div id="root">
       <!-- 首屏加载骨架屏 -->
-      <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui,-apple-system,sans-serif;color:#666;flex-direction:column;gap:12px">
-        <div style="font-size:40px;animation:pulse 1.5s infinite">🧭</div>
-        <div style="font-size:14px">正在加载策查查…</div>
+      <div style="display:flex;flex-direction:column;height:100vh;font-family:system-ui,-apple-system,sans-serif;background:#f8fafc">
+        <div style="padding:16px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e5e7eb">
+          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+          <div style="width:80px;height:16px;border-radius:4px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px">
+          <div style="font-size:40px;animation:pulse 1.5s infinite">🧭</div>
+          <div style="width:200px;height:12px;border-radius:6px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+          <div style="width:140px;height:10px;border-radius:5px;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:shimmer 1.5s infinite"></div>
+        </div>
+        <div style="padding:12px 20px;display:flex;justify-content:space-around;border-top:1px solid #e5e7eb">
+          <div style="width:40px;height:8px;border-radius:4px;background:#e5e7eb"></div>
+          <div style="width:40px;height:8px;border-radius:4px;background:#e5e7eb"></div>
+          <div style="width:40px;height:8px;border-radius:4px;background:#e5e7eb"></div>
+          <div style="width:40px;height:8px;border-radius:4px;background:#e5e7eb"></div>
+        </div>
       </div>
-      <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
+      <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>
     </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

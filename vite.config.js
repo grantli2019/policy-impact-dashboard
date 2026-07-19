@@ -11,6 +11,9 @@ export default defineConfig({
           if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
             return 'vendor';
           }
+          if (id.includes('src/data/impactData')) {
+            return 'policy-data';
+          }
         },
       },
     },

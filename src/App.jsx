@@ -26,8 +26,9 @@ import {
 import './App.css'
 
 // Trust & transparency constants
-const DATA_LAST_UPDATED = '2026-07-17'
-const DATA_LAST_UPDATED_CN = '2026年7月17日'
+const DATA_LAST_UPDATED = '2026-07-18'
+const DATA_LAST_UPDATED_CN = '2026年7月18日'
+const DATA_VERSION = '3.1.0' // 数据版本号，用于增量更新检测
 const CONTACT_EMAIL = 'contact@cechacha.com'
 
 // Helper: get rubric description for a score (breadth/depth)
@@ -3575,6 +3576,14 @@ function App() {
                 {currentPersona.icon} {currentPersona.label}<span className="chip-x">✕</span>
               </button>
             )}
+            {(() => {
+              const comp = localStorage.getItem('composite_persona')
+              if (!comp || !comp.includes('+')) return null
+              const secondKey = comp.split('+')[1]
+              const secondPersona = personas.find(p => p.key === secondKey)
+              if (!secondPersona) return null
+              return <span className="composite-badge" title={`组合画像：${currentPersona?.label} + ${secondPersona.label}`}>+{secondPersona.icon}</span>
+            })()}
             <button className="icon-btn profile-btn" onClick={() => setShowProfileCenter(true)} title="我的画像">👤</button>
             {!isPremium() && <button className="upgrade-btn" onClick={() => setShowUpgrade(true)}>⭐</button>}
             <button className="icon-btn" onClick={() => setShowReport(true)} title="下载报告">📄</button>
@@ -3588,7 +3597,7 @@ function App() {
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
         <div className="tab-more-wrap">
-          <button className={`tab tab-more ${['methodology','graph','api','monitor','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }}>⋯ 更多</button>
+          <button className={`tab tab-more ${['methodology','graph','api','monitor','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }} aria-label="更多功能" aria-expanded={moreOpen}>⋯ 更多</button>
           {moreOpen && (
             <div className="tab-dropdown">
               {[['monitor','🔔 监控'],['methodology','🔬 方法论'],['graph','🕸️ 图谱'],['api','🔌 API'],['about','🧭 关于']].map(([k, label]) => (
@@ -4056,7 +4065,7 @@ function App() {
             {/* Policy Milestones Timeline */}
             <div className="topic-search-bar">
               <span className="search-icon">🔍</span>
-              <input type="text" className="topic-search-input" placeholder="搜索专题（如：租房、医保、个税…）"
+              <input type="text" className="topic-search-input" placeholder="搜索专题（如：租房、医保、个税…）" aria-label="搜索专题"
                 value={topicSearch} onChange={e => setTopicSearch(e.target.value)} />
               {topicSearch && <button className="search-clear" onClick={() => setTopicSearch('')}>✕</button>}
             </div>
