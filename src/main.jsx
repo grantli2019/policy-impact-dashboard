@@ -38,8 +38,8 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-/* ── PWA: 注册 Service Worker ── */
-if ('serviceWorker' in navigator) {
+/* ── PWA: 仅生产环境注册 Service Worker ── */
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {})
   })

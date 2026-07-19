@@ -3581,14 +3581,14 @@ const insightPool = [
   { mode:'impact', id:'i4',
     title:'🎓 人才落户门槛再降，你的城市在抢你吗？',
     hook:'2025年多地放宽落户限制，本科即可落户大多数城市，硕士博士还有额外安家费。',
-    check: (p) => ['本科','硕士','博士'].includes(p.education), reason:`你的${p.education}学历在多城可走人才绿色通道，安家费10-50万`,
+    check: (p) => ['本科','硕士','博士'].includes(p.education), reason:'你的学历在多城可走人才绿色通道，安家费10-50万',
     altCheck: (p) => ['高中及以下','大专'].includes(p.education), altReason:'你的学历在部分城市需积分落户，可考虑"学历+技能"双通道',
     calc:(p)=>{ const bonus={硕士:150000,博士:300000,本科:50000}; return {save:bonus[p.education]||20000, unit:'安家补贴（估值）'} }
   },
   { mode:'impact', id:'i5',
     title:'👴 个人养老金账户，现在开还是再等等？',
     hook:'个人养老金年缴12000元上限，最高节税5400元/年。越早开户复利效应越强。',
-    check: (p) => p.age >= 35, reason:`你${p.age}岁，现在开户到退休还有${60-p.age}年，复利效应显著`,
+    check: (p) => p.age >= 35, reason:'35岁以上开户到退休仍有充足时间，复利效应显著',
     altCheck: (p) => p.age < 35, altReason:'你还年轻，但"时间就是最大的复利"——越早越划算',
     calc:(p)=>{ const years=60-p.age; return {save:Math.round(5400*years*0.7),unit:`到退休累计退税额`} }
   },
