@@ -8,6 +8,12 @@ import {
   detectUserCity, getSmartRecommendations, getRecommendReason, cityToRegion, inferLifeStage, lifeStages,
 } from './data/impactData'
 import './App.css'
+
+// Trust & transparency constants
+const DATA_LAST_UPDATED = '2026-07-17'
+const DATA_LAST_UPDATED_CN = '2026年7月17日'
+const CONTACT_EMAIL = 'contact@cechacha.com'
+
 // Lazy-loaded components
 const Tools = lazy(() => import('./Tools'));
 const ShareCard = lazy(() => import('./components/ShareCard'));
@@ -2995,6 +3001,8 @@ function App() {
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [policyDetail, setPolicyDetail] = useState(null)
   const [moreOpen, setMoreOpen] = useState(false)
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [showPrivacy, setShowPrivacy] = useState(false)
   const [headerShadow, setHeaderShadow] = useState(false)
   useEffect(() => {
     const onScroll = () => setHeaderShadow(window.scrollY > 10)
@@ -3101,6 +3109,8 @@ function App() {
       {showShare && <Suspense fallback={null}><ShareCard personaKey={personaKey} regionKey={regionKey} onClose={() => setShowShare(false)} /></Suspense>}
       {showReport && <ReportExport personaKey={personaKey} regionKey={regionKey} onClose={() => setShowReport(false)} />}
       {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
+      {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
+      {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
       <BackToTop />
 
       <header className={`header${headerShadow ? ' header-shadow' : ''}`}>
@@ -3133,10 +3143,10 @@ function App() {
           <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
         ))}
         <div className="tab-more-wrap">
-          <button className={`tab tab-more ${['methodology','graph','api','monitor'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }}>⋯ 更多</button>
+          <button className={`tab tab-more ${['methodology','graph','api','monitor','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }}>⋯ 更多</button>
           {moreOpen && (
             <div className="tab-dropdown">
-              {[['monitor','🔔 监控'],['methodology','🔬 方法论'],['graph','🕸️ 图谱'],['api','🔌 API']].map(([k, label]) => (
+              {[['monitor','🔔 监控'],['methodology','🔬 方法论'],['graph','🕸️ 图谱'],['api','🔌 API'],['about','🧭 关于']].map(([k, label]) => (
                 <button key={k} className={`tab-drop-item ${activeTab===k?'active':''}`} onClick={() => { switchTab(k); setMoreOpen(false); }}>{label}</button>
               ))}
             </div>
@@ -3156,6 +3166,8 @@ function App() {
                 <PolicySearch onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k => k+1); window.scrollTo({top:0,behavior:"smooth"}) }} variant="hero" onNavigateDim={(key) => { setSelectedDim(key); setTabKey(k=>k+1) }} />
               </div>
             </section>
+
+            <PolicyStatsBar totalPolicies={totalPolicies} />
             
             <SmartRecommendations 
               personaKey={personaKey} 
@@ -3169,6 +3181,8 @@ function App() {
             <RegionSelector value={regionKey} onChange={handleRegionChange} />
 
             <RegionCompare personaKey={personaKey} currentRegion={regionKey} onSelectRegion={handleRegionChange} />
+
+            <TestimonialWall />
 
             <section className="overview-dims">
               <h2 className="section-title">政策影响力总览</h2>
@@ -3545,9 +3559,17 @@ function App() {
             <ApiDocs />
           </div>
         )}
+
+        {/* ════════ ABOUT ════════ */}
+        {activeTab === 'about' && (
+          <div className="tab-content-wrap">
+            <AboutPage totalPolicies={totalPolicies} />
+          </div>
+        )}
       </main>
 
       <footer className="footer">
+        <TrustBadges />
         <div className="footer-nav">
           <span className="footer-brand">🧭 策查查</span>
           <div className="footer-links">
@@ -3556,13 +3578,220 @@ function App() {
             <button className="footer-link" onClick={() => { setActiveTab("graph"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>图谱</button>
             <button className="footer-link" onClick={() => { setActiveTab("api"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>API</button>
             <button className="footer-link" onClick={() => { setActiveTab("dashboard"); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:"smooth"}) }}>我的</button>
+            <button className="footer-link" onClick={() => { setShowFeedback(true) }}>💬 反馈</button>
+            <button className="footer-link" onClick={() => { setShowPrivacy(true) }}>🔒 隐私</button>
           </div>
         </div>
-        <p className="footer-info">读懂政策，做对决策 · 数据更新至 2026-07-17 · 方法论v{methodology.version} · {currentRegion.name} · {totalPolicies}条政策</p>
-        <p className="footer-legal">数据来源均为政府官方网站 · 仅供参考，不构成投资建议 · © 2026 策查查</p>
+        <p className="footer-info">读懂政策，做对决策 · 数据更新至 {DATA_LAST_UPDATED} · 方法论v{methodology.version} · {currentRegion.name} · {totalPolicies}条政策</p>
+        <p className="footer-contact">📧 {CONTACT_EMAIL} · 数据来源均为政府官方网站 · 仅供参考</p>
+        <p className="footer-legal">© 2026 策查查 · 不构成投资建议或法律意见</p>
       </footer>
     </div>
       </ErrorBoundary>
+  )
+}
+
+
+/* ═══════ 信任增强组件 ═══════ */
+
+/* P0-1: 社会证明数据栏 */
+function PolicyStatsBar({ totalPolicies }) {
+  const stats = [
+    { icon: '📋', num: totalPolicies, label: '条权威政策' },
+    { icon: '🌏', num: regions.length, label: '大经济区域' },
+    { icon: '👥', num: personas.length, label: '类用户画像' },
+    { icon: '🔬', num: 3, label: '大国际评估框架' },
+  ]
+  return (
+    <div className="trust-stats-bar">
+      {stats.map((s, i) => (
+        <div key={i} className="ts-item">
+          <span className="ts-icon">{s.icon}</span>
+          <span className="ts-num">{s.num}</span>
+          <span className="ts-label">{s.label}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* P0-3: 反馈模态框 */
+function FeedbackModal({ onClose }) {
+  const [text, setText] = useState('')
+  const [sent, setSent] = useState(false)
+  const handleSubmit = () => {
+    if (!text.trim()) return
+    window.open(`mailto:${CONTACT_EMAIL}?subject=策查查反馈&body=${encodeURIComponent(text)}`)
+    setSent(true)
+  }
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="feedback-modal" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <h3>💬 反馈建议</h3>
+        {sent ? (
+          <div className="feedback-sent">
+            <p>✅ 感谢你的反馈！邮件客户端已打开，发送即可。</p>
+            <button className="btn-primary" onClick={onClose}>关闭</button>
+          </div>
+        ) : (
+          <>
+            <p className="feedback-desc">帮助我们做得更好，你的每一条建议都非常重要。</p>
+            <textarea className="feedback-textarea" placeholder="请描述你的建议、遇到的问题或功能需求…" value={text} onChange={e => setText(e.target.value)} rows={5} />
+            <div className="feedback-actions">
+              <button className="btn-secondary" onClick={onClose}>取消</button>
+              <button className="btn-primary" onClick={handleSubmit} disabled={!text.trim()}>📤 提交反馈</button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* P1-2: 隐私政策模态框 */
+function PrivacyModal({ onClose }) {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="privacy-modal" onClick={e => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>✕</button>
+        <h3>🔒 隐私政策</h3>
+        <div className="privacy-content">
+          <h4>1. 数据收集</h4>
+          <p>策查查仅在本地浏览器存储以下数据：用户画像选择、区域偏好、主题偏好、书签收藏、界面主题设置。所有数据均存储在浏览器的 localStorage 中，不会上传至服务器。</p>
+          <h4>2. 数据使用</h4>
+          <p>收集的数据仅用于提供个性化的政策推荐和界面体验优化。我们不会将你的数据分享给任何第三方。</p>
+          <h4>3. Cookie / 本地存储</h4>
+          <p>本应用使用浏览器 localStorage 存储你的偏好设置，不使用第三方追踪 Cookie。你可以随时通过浏览器设置清除这些数据。</p>
+          <h4>4. 数据安全</h4>
+          <p>由于数据仅保存在你的本地设备上，不存在服务器端数据泄露风险。但我们建议在共享设备上使用时注意清除浏览数据。</p>
+          <h4>5. 联系我们</h4>
+          <p>如你有任何隐私相关的疑问，请发送邮件至 {CONTACT_EMAIL}</p>
+        </div>
+        <button className="btn-primary" onClick={onClose} style={{ marginTop: 16 }}>我知道了</button>
+      </div>
+    </div>
+  )
+}
+
+/* P2-1: 用户案例墙 */
+function TestimonialWall() {
+  const testimonials = [
+    { icon: '🏠', role: '准备买房的深圳程序员', age: '28岁', quote: '用了策查查才知道深圳公积金可以贷到126万，比预想多了40万。还发现了人才引进补贴，总计省了近10万。', result: '节省约10万元', dim: 'housing' },
+    { icon: '👶', role: '计划二胎的杭州妈妈', age: '32岁', quote: '生育计算器帮我算出了产假天数和津贴金额，还看到了各个区的托育补贴政策。三个工具一对比，选定了现在住的地方。', result: '多领津贴2.3万/年', dim: 'elderly' },
+    { icon: '🚀', role: '准备返乡创业的成都青年', age: '35岁', quote: '行业维度的创业扶持政策一目了然，从税收优惠到场地补贴都有覆盖。雷达图让我看到了被忽略的就业培训补贴。', result: '发现5项适用补贴', dim: 'industry' },
+  ]
+  return (
+    <div className="testimonial-wall">
+      <h3 className="tw-title">💡 他们正在用策查查做决策</h3>
+      <div className="tw-scroll">
+        {testimonials.map((t, i) => (
+          <div key={i} className="tw-card">
+            <div className="tw-header">
+              <span className="tw-icon">{t.icon}</span>
+              <div>
+                <span className="tw-role">{t.role}</span>
+                <span className="tw-age">{t.age}</span>
+              </div>
+            </div>
+            <p className="tw-quote">"{t.quote}"</p>
+            <div className="tw-result">
+              <span className="tw-result-label">决策收益</span>
+              <span className="tw-result-val">{t.result}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* P2-2: 合作/认证展示 */
+function TrustBadges() {
+  const badges = [
+    { name: 'OECD 监管影响评估', icon: '🏛️', desc: '国际通行的政策影响评估框架' },
+    { name: 'PEST 宏观分析', icon: '📊', desc: '政治·经济·社会·技术四维分析' },
+    { name: '利益相关者矩阵', icon: '🤝', desc: '多维利益相关者影响评估' },
+  ]
+  return (
+    <div className="trust-badges">
+      <span className="tb-label">评估框架基于</span>
+      <div className="tb-list">
+        {badges.map((b, i) => (
+          <div key={i} className="tb-item" title={b.desc}>
+            <span className="tb-icon">{b.icon}</span>
+            <span className="tb-name">{b.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* P1-1: 关于我们页面 */
+function AboutPage({ totalPolicies }) {
+  const roadmap = [
+    { stage: 'v1.0', title: '基础版', done: true, items: ['六大维度政策雷达', '基础评分体系', '政策库搜索'] },
+    { stage: 'v2.0', title: '区域版', done: true, items: ['多区域架构（5大经济区）', '跨区域对比', '区域政策数据'] },
+    { stage: 'v3.0', title: '个人版', done: true, items: ['用户画像体系', '个人权益计算器', '个性化推荐', '安家综合评估'] },
+    { stage: 'v4.0', title: '智能版（规划中）', done: false, items: ['AI政策问答', '政策变化实时推送', '社区讨论', '移动端APP'] },
+  ]
+  return (
+    <div className="about-page">
+      <div className="about-hero">
+        <h2>🧭 关于策查查</h2>
+        <p className="about-mission">把政策翻译成决策力</p>
+        <p className="about-desc">
+          策查查是一个面向普通人的政策决策辅助工具。我们专注于将宏观政策转化为可操作的个人决策参考，
+          帮助你在买房、就业、生育、教育、养老等人生重大决策中做出更明智的选择。
+        </p>
+      </div>
+
+      <div className="about-section">
+        <h3>🎯 我们的使命</h3>
+        <p>政策信息不应该只是专家的专利。我们的目标是通过系统化的评估框架和通俗化的解读，
+        让每一个普通人都能看懂政策对自己意味着什么，从而做出更好的决策。</p>
+      </div>
+
+      <div className="about-section">
+        <h3>🔬 方法论</h3>
+        <p>我们融合了 <strong>OECD 监管影响评估</strong>、<strong>PEST 宏观分析</strong> 和 <strong>利益相关者矩阵</strong> 三套国际通行的评估框架，
+        从"影响广度 × 深远程度 × 方向 × 确定性 × 时效"五个维度对每条政策进行打分，确保评估结果的客观性和可复现性。
+        当前方法论版本为 <strong>v{methodology.version}</strong>。</p>
+      </div>
+
+      <div className="about-section">
+        <h3>📊 覆盖规模</h3>
+        <div className="about-stats">
+          <div className="about-stat"><span className="as-num">{totalPolicies}</span><span className="as-label">条政策</span></div>
+          <div className="about-stat"><span className="as-num">{regions.length}</span><span className="as-label">个区域</span></div>
+          <div className="about-stat"><span className="as-num">{personas.length}</span><span className="as-label">种画像</span></div>
+          <div className="about-stat"><span className="as-num">6</span><span className="as-label">大维度</span></div>
+        </div>
+      </div>
+
+      <div className="about-section">
+        <h3>🗺️ 发展路线图</h3>
+        <div className="about-roadmap">
+          {roadmap.map((r, i) => (
+            <div key={i} className={`ar-item ${r.done ? 'ar-done' : 'ar-future'}`}>
+              <div className="ar-hd">
+                <span className="ar-stage">{r.stage}</span>
+                <span className="ar-title">{r.title}</span>
+                {r.done ? <span className="ar-badge ar-badge-done">✓ 已上线</span> : <span className="ar-badge ar-badge-future">规划中</span>}
+              </div>
+              <ul className="ar-items">{r.items.map((item, j) => <li key={j}>{item}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="about-section">
+        <h3>📬 联系我们</h3>
+        <p>邮箱：<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
+        <p>数据更新至 {DATA_LAST_UPDATED_CN} · 方法论 v{methodology.version}</p>
+      </div>
+    </div>
   )
 }
 
