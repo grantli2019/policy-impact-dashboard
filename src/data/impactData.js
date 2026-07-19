@@ -277,11 +277,15 @@ export const dimensions = [
         { policyName: "上海‘沪七条’（限购松绑+公积金提额）", breadth: 9, depth: 9, direction: 1, status: "已发布", date: "2026-02-26", note: "近5年最强宽松信号", confidence: "★★★", rationale: "breadth=9: 影响上海全部非沪籍居民（约1000万人）。depth=9: 限购松绑是制度性突破，将重塑上海楼市格局。", url: "https://zjw.sh.gov.cn/xwfb/bdfbdt/20260226/3a8c1f5e2d4b6f8e9a7c3b5d1e2f4a6b.html" },
         { policyName: "临港新片区购房优惠", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-06-01", note: "人才购房专项补贴", confidence: "★★★", rationale: "breadth=5: 影响临港片区购房者。depth=6: 区域产业导入型政策。", url: "https://www.lingang.gov.cn" },
         { policyName: "长三角一体化示范区公积金互认", breadth: 6, depth: 7, direction: 1, status: "已结束", date: "2025-09-01", note: "沪苏浙皖跨省公积金贷款", confidence: "★★☆", rationale: "breadth=6: 长三角跨省通勤群体。depth=7: 打破公积金行政壁垒。", url: "https://www.shgjj.com/html/infoDetail.html?infoid=67c5e5c9b7d8e4f1a2b3c4d5" },
+        { policyName: "杭州人才购房补贴及优先摇号政策", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-04-01", note: "高层次人才购房补贴最高800万+新房优先摇号", confidence: "★★☆", rationale: "breadth=5: 杭州高层次人才。depth=6: 人才住房优先保障。", url: "https://hrss.hangzhou.gov.cn" },
+        { policyName: "南京保障性租赁住房建设提速", breadth: 6, depth: 7, direction: 1, status: "进行中", date: "2026-01-01", note: "十四五筹集15万套保障性租赁住房", confidence: "★★☆", rationale: "breadth=6: 南京新市民青年群体。depth=7: 住房供应结构优化。", url: "https://www.nanjing.gov.cn" },
       ],
       jingjinji: [
         { policyName: "北京‘认房不认贷’+首付比例下调", breadth: 7, depth: 8, direction: 1, status: "已发布", date: "2026-03-01", note: "北京限购政策显著松绑", confidence: "★★★", rationale: "breadth=7: 影响北京全部购房者（约2000万常住人口）。depth=8: 首付比例调整直接降低购房门槛。", url: "https://zjw.beijing.gov.cn/xwfb/20260301/123456.html" },
         { policyName: "雄安新区住房保障体系", breadth: 5, depth: 8, direction: 1, status: "已发布", date: "2025-01-01", note: "租购并举+人才公寓", confidence: "★★☆", rationale: "breadth=5: 影响雄安新区人才和建设者。depth=8: 新型住房保障模式先行示范。", url: "https://www.xiongan.gov.cn" },
         { policyName: "北京公积金贷款额度上调至160万", breadth: 6, depth: 6, direction: 1, status: "已发布", date: "2026-06-01", note: "首套最高可贷160万", confidence: "★★☆", rationale: "breadth=6: 北京公积金缴存职工。depth=6: 贷款额度提升直接降低购房资金压力。", url: "https://www.beijing.gov.cn" },
+        { policyName: "天津滨海新区人才购房补贴", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-08-01", note: "本科以上人才购房补贴最高20万+租房补贴", confidence: "★★☆", rationale: "breadth=5: 滨海新区人才。depth=6: 人才住房保障。", url: "https://www.tj.gov.cn" },
+        { policyName: "河北廊坊北三县购房政策优化", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-11-01", note: "取消限购+京津冀协同发展区购房便利化", confidence: "★★☆", rationale: "breadth=5: 北三县购房者及北京外溢需求。depth=6: 京津冀住房协同。", url: "https://www.hebei.gov.cn" },
       ],
       greater_bay: [
         { policyName: "深圳前海深港现代服务业合作区住房补贴", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "港澳青年前海购房补贴最高200万", confidence: "★★☆", rationale: "breadth=5: 前海就业港澳青年及高端人才。depth=7: 深港融合住房制度创新。", url: "https://www.sz.gov.cn" },
@@ -441,10 +445,14 @@ export const dimensions = [
         { policyName: "虹口区‘AI教育试验区’三年行动规划", breadth: 5, depth: 8, direction: 1, status: "已结束", date: "2025-01-01", note: "AI进入中小学是确定性趋势", confidence: "★★☆", rationale: "breadth=5: 目前仅影响虹口区，但将向全市推广。depth=8: AI教育将重塑课程体系。", url: "https://edu.sh.gov.cn" },
         { policyName: "闵行区教育‘十五五’规划", breadth: 5, depth: 7, direction: 1, status: "已结束", date: "2026-05-09", note: "关注学区划分变化", confidence: "★★☆", rationale: "breadth=5: 仅影响闵行区家长。depth=7: 五年规划决定资源配置方向。", url: "https://www.shmh.gov.cn/xwfb/gsgg/" },
         { policyName: "上海中考改革方案", breadth: 6, depth: 7, direction: 1, status: "已结束", date: "2025-06-01", note: "名额分配到校比例扩大", confidence: "★★☆", rationale: "breadth=6: 上海所有初中生家庭。depth=7: 招生制度结构性调整。", url: "https://edu.sh.gov.cn/zxxx/20250601/1.html" },
+        { policyName: "杭州基础教育优质均衡创建", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "名校集团化+新建学校50所+师资轮岗", confidence: "★★☆", rationale: "breadth=5: 杭州中小学生家庭。depth=7: 教育均衡化推进。", url: "https://edu.hangzhou.gov.cn" },
+        { policyName: "苏州职业教育产教融合试点", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2026-03-01", note: "校企双元制+产业学院+学徒制", confidence: "★★☆", rationale: "breadth=5: 苏州职业院校学生。depth=6: 职教产教融合深化。", url: "https://www.suzhou.gov.cn" },
       ],
       jingjinji: [
         { policyName: "北京多校划片政策深化", breadth: 6, depth: 7, direction: 0, status: "已发布", date: "2026-05-01", note: "学区房价值面临重估", confidence: "★★☆", rationale: "breadth=6: 北京学生家长群体。depth=7: 多校划片将根本改变学区格局。", url: "https://edu.beijing.gov.cn" },
         { policyName: "京津冀教育协同共享", breadth: 6, depth: 6, direction: 1, status: "进行中", date: "2026-06-15", note: "跨区域名校合作办学", confidence: "★★☆", rationale: "breadth=6: 京津冀三地学生家庭。depth=6: 教育资源跨区域流动。", url: "https://www.moe.gov.cn/" },
+        { policyName: "天津海河教育园区产教融合升级", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-10-01", note: "园区高校+企业联合培养+实习就业一体化", confidence: "★★☆", rationale: "breadth=5: 天津职业院校学生。depth=6: 产教融合深化。", url: "https://www.tj.gov.cn" },
+        { policyName: "河北雄安新区教育高质量发展规划", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-06-01", note: "北京名校雄安校区+智慧教育先行区", confidence: "★★☆", rationale: "breadth=5: 雄安新区学生家庭。depth=7: 教育高起点规划。", url: "https://www.xiongan.gov.cn" },
       ],
       greater_bay: [
         { policyName: "深圳基础教育扩优提质工程", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "新增公办学位超30万+名校集团化", confidence: "★★★", rationale: "breadth=6: 深圳中小学生家庭。depth=7: 基础教育供给体系性提升。", url: "https://szeb.sz.gov.cn" },
@@ -513,10 +521,15 @@ export const dimensions = [
       yangtze_delta: [
         { policyName: "上海长期护理保险试点扩面", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2025-01-01", note: "覆盖更多居家老人", confidence: "★★★", rationale: "breadth=6: 上海失能老人及家庭。depth=7: 长期护理保险制度完善。", url: "https://ybj.sh.gov.cn" },
         { policyName: "长三角异地就医直接结算扩面", breadth: 7, depth: 7, direction: 1, status: "已结束", date: "2025-06-01", note: "门诊+住院均可跨省直接结算", confidence: "★★☆", rationale: "breadth=7: 长三角跨省就医群体。depth=7: 消除异地就医报销障碍。", url: "https://www.nhsa.gov.cn" },
+        { policyName: "杭州智慧养老服务体系建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "智慧养老+居家监测+社区嵌入式养老", confidence: "★★☆", rationale: "breadth=5: 杭州老年人口。depth=7: 养老服务数字化转型。", url: "https://www.hangzhou.gov.cn" },
+        { policyName: "南京医养结合示范城市建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-02-01", note: "医疗机构+养老机构融合发展", confidence: "★★☆", rationale: "breadth=5: 南京老年人口。depth=7: 医养结合模式创新。", url: "https://www.nanjing.gov.cn" },
+        { policyName: "苏州长期护理保险全覆盖", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-12-01", note: "失能老人护理费用报销70%+", confidence: "★★☆", rationale: "breadth=5: 苏州失能老人及家庭。depth=7: 长护险制度成熟。", url: "https://www.suzhou.gov.cn" },
       ],
       jingjinji: [
         { policyName: "北京居家养老服务体系升级", breadth: 6, depth: 7, direction: 1, status: "已发布", date: "2026-04-01", note: "居家养老补贴+社区助餐", confidence: "★★☆", rationale: "breadth=6: 北京老年人口超400万。depth=7: 居家养老服务体系化建设。", url: "https://mzj.beijing.gov.cn" },
         { policyName: "京津冀异地就医门诊直接结算", breadth: 7, depth: 7, direction: 1, status: "进行中", date: "2026-06-01", note: "三地医疗资源互通", confidence: "★★☆", rationale: "breadth=7: 京津冀跨省就医群体。depth=7: 打破异地就医壁垒。", url: "https://ybj.beijing.gov.cn" },
+        { policyName: "天津社区嵌入式养老服务网络", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-10-01", note: "社区助餐+日间照料+上门服务全覆盖", confidence: "★★☆", rationale: "breadth=5: 天津老年人口。depth=6: 居家养老服务网络化。", url: "https://www.tj.gov.cn" },
+        { policyName: "河北环京养老产业带建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-08-01", note: "廊坊/保定/承德养老基地+北京老人外迁养老", confidence: "★★☆", rationale: "breadth=5: 环京养老群体。depth=7: 京津冀养老协同。", url: "https://www.hebei.gov.cn" },
       ],
       greater_bay: [
         { policyName: "港澳居民大湾区社保医保同等待遇", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "港澳居民可参加大湾区内地城市社保医保", confidence: "★★★", rationale: "breadth=6: 大湾区内地城市就业居住港澳居民。depth=8: 跨境社保制度突破。", url: "https://www.gd.gov.cn" },
@@ -585,10 +598,15 @@ export const dimensions = [
       yangtze_delta: [
         { policyName: "上海自贸区金融创新试点", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "跨境金融+数字人民币", confidence: "★★☆", rationale: "breadth=6: 上海自贸区企业和居民。depth=8: 金融开放前沿试验。", url: "https://www.shftz.gov.cn" },
         { policyName: "长三角征信一体化", breadth: 6, depth: 6, direction: 1, status: "已结束", date: "2025-09-01", note: "跨省信用数据共享", confidence: "★★☆", rationale: "breadth=6: 长三角信贷用户。depth=6: 区域金融基础设施整合。", url: "http://www.pbc.gov.cn/shanghai/128243/" },
+        { policyName: "杭州数字金融创新试验区建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-11-01", note: "数字人民币+智能合约+供应链金融", confidence: "★★☆", rationale: "breadth=5: 杭州金融科技企业及用户。depth=7: 数字金融创新深化。", url: "https://www.hangzhou.gov.cn" },
+        { policyName: "南京科创金融改革试验区", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-01-01", note: "科创企业专属信贷+股权融资便利化", confidence: "★★☆", rationale: "breadth=5: 南京科创企业。depth=7: 科创金融制度创新。", url: "https://www.nanjing.gov.cn" },
+        { policyName: "苏州数字人民币试点深化", breadth: 5, depth: 6, direction: 1, status: "已发布", date: "2025-08-01", note: "数字人民币覆盖政务/交通/消费全场景", confidence: "★★☆", rationale: "breadth=5: 苏州市民。depth=6: 数字货币应用深化。", url: "https://www.suzhou.gov.cn" },
       ],
       jingjinji: [
         { policyName: "北京证券交易所改革深化", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2026-03-15", note: "创新型中小企业融资渠道拓宽", confidence: "★★☆", rationale: "breadth=6: 北交所上市和拟上市企业。depth=8: 资本市场改革纵深推进。", url: "https://www.bse.cn" },
         { policyName: "京津冀金融协同发展", breadth: 6, depth: 6, direction: 1, status: "进行中", date: "2026-05-01", note: "跨区域金融服务一体化", confidence: "★★☆", rationale: "breadth=6: 京津冀三地企业和居民。depth=6: 区域金融基础设施互联互通。", url: "http://www.pbc.gov.cn/" },
+        { policyName: "天津融资租赁产业聚集区建设", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2025-09-01", note: "东疆保税港区融资租赁+飞机/船舶租赁", confidence: "★★☆", rationale: "breadth=5: 天津融资租赁企业。depth=7: 融资租赁产业聚集。", url: "https://www.tj.gov.cn" },
+        { policyName: "河北雄安新区数字金融创新", breadth: 5, depth: 7, direction: 1, status: "已发布", date: "2026-02-01", note: "数字人民币+区块链+供应链金融", confidence: "★★☆", rationale: "breadth=5: 雄安金融科技企业。depth=7: 数字金融先行先试。", url: "https://www.xiongan.gov.cn" },
       ],
       greater_bay: [
         { policyName: "跨境理财通2.0升级（大湾区）", breadth: 6, depth: 8, direction: 1, status: "已发布", date: "2025-06-01", note: "个人投资额度提升至300万+产品范围扩大", confidence: "★★★", rationale: "breadth=6: 大湾区居民跨境理财需求。depth=8: 跨境金融制度性突破。", url: "https://www.gd.gov.cn" },
