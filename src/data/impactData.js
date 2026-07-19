@@ -84,7 +84,9 @@ const SOURCE_MAP = [
 export function getSourceFromUrl(url) {
   if (!url) return { source: '政府官方网站', issuingBody: '' };
   const u = url.toLowerCase();
-  for (const m of SOURCE_MAP) {
+  // 长域名优先匹配，避免gov.cn通用条目覆盖具体机构
+  const sorted = [...SOURCE_MAP].sort((a, b) => b.domain.length - a.domain.length);
+  for (const m of sorted) {
     if (u.includes(m.domain)) return { source: m.source, issuingBody: m.issuingBody };
   }
   return { source: '政府官方网站', issuingBody: '' };
