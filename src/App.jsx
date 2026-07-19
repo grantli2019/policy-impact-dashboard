@@ -14,6 +14,17 @@ const DATA_LAST_UPDATED = '2026-07-17'
 const DATA_LAST_UPDATED_CN = '2026年7月17日'
 const CONTACT_EMAIL = 'contact@cechacha.com'
 
+// Helper: get rubric description for a score (breadth/depth)
+function getRubricHint(type, score) {
+  const list = rubric[type];
+  if (!list) return '';
+  const match = list.find(r => {
+    const [lo, hi] = r.score.split('-').map(Number);
+    return score >= lo && score <= hi;
+  });
+  return match ? match.criteria : '';
+}
+
 // Lazy-loaded components
 const Tools = lazy(() => import('./Tools'));
 const ShareCard = lazy(() => import('./components/ShareCard'));
@@ -408,6 +419,11 @@ function PolicyRadar({ personaKey, regionKey }) {
                   <span className="radar-conf">{p.confidence}</span>
                 </span>
                 <span className="radar-dir" style={{ color: dirColor(p.direction) }}>{dirLabel(p.direction)}</span>
+                {DIM_TO_TOOL[p.dimKey] !== undefined && DIM_TO_TOOL[p.dimKey] >= 0 && (
+                  <button className="radar-calc-btn" onClick={(e) => { e.stopPropagation(); setTargetTool(DIM_TO_TOOL[p.dimKey]); setActiveTab('tools'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }} title="算算对你的影响">
+                    ⚡
+                  </button>
+                )}
               </div>
               <div className="radar-name">
                 {p.url ? <a href={p.url} target="_blank" rel="noopener noreferrer" className="policy-source-link">{p.policyName}</a> : p.policyName}
@@ -1867,6 +1883,11 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
     try { const d = JSON.parse(localStorage.getItem('search_stats') || '{}'); const today = new Date().toISOString().slice(0,10); return d.date === today ? d.count : 0 } catch { return 0 }
   })
   const [sceneExpanded, setSceneExpanded] = useState(false)
+  const [focused, setFocused] = useState(false)
+  const [recentSearches, setRecentSearches] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('recent_searches') || '[]') } catch { return [] }
+  })
+  const searchRef = useRef(null)
   const FREE_LIMIT = 10
 
   // Synonym map for better matching
@@ -1965,6 +1986,16 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
     })
     res.sort((a, b) => b._score - a._score)
     setResults(res.slice(0, 20))
+    // Save to recent searches if results found
+    if (res.length > 0) {
+      try {
+        const recent = JSON.parse(localStorage.getItem('recent_searches') || '[]')
+        const qTrim = q.trim()
+        const updated = [qTrim, ...recent.filter(s => s !== qTrim)].slice(0, 5)
+        localStorage.setItem('recent_searches', JSON.stringify(updated))
+        setRecentSearches(updated)
+      } catch {}
+    }
   }
 
   // Search all keywords for a scene
@@ -1999,18 +2030,65 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
     setQuery(scene.label)
     setSceneMatch(scene)
     setResults(res.slice(0, 20))
+    // Save to recent searches
+    try {
+      const recent = JSON.parse(localStorage.getItem('recent_searches') || '[]')
+      const updated = [scene.label, ...recent.filter(s => s !== scene.label)].slice(0, 5)
+      localStorage.setItem('recent_searches', JSON.stringify(updated))
+      setRecentSearches(updated)
+    } catch {}
   }
 
   const sentColor = s => s === '利好' || s === '偏利好' ? 'var(--success)' : s === '利空' || s === '偏利空' ? 'var(--danger)' : 'var(--text-secondary)'
 
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handler = (e) => { if (searchRef.current && !searchRef.current.contains(e.target)) setFocused(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
   return (
-    <div className={`policy-search ${variant === 'header' ? 'ps-header' : ''}`}>
+    <div className={`policy-search ${variant === 'header' ? 'ps-header' : ''}`} ref={searchRef}>
       <div className="ps-input-wrap">
         <span className="ps-icon">🔍</span>
         <input className="ps-input" aria-label="搜索政策" role="searchbox" type="text" placeholder="搜索政策（如：我要买房、规划养老、个税优化）"
-          value={query} onChange={e => doSearch(e.target.value)} />
+          value={query} onChange={e => doSearch(e.target.value)} onFocus={() => setFocused(true)} onBlur={() => setTimeout(() => setFocused(false), 200)} />
         {query && <button className="ps-clear" onClick={() => { setQuery(''); setResults(null); setSceneMatch(null) }}>✕</button>}
       </div>
+      {/* Search suggestions dropdown */}
+      {focused && !results && !query && (recentSearches.length > 0 || true) && (
+        <div className="ps-suggestions">
+          {recentSearches.length > 0 && (
+            <div className="ps-sug-section">
+              <span className="ps-sug-label">🕐 最近搜索</span>
+              <div className="ps-sug-items">
+                {recentSearches.slice(0, 3).map(s => (
+                  <button key={s} className="ps-sug-tag" onClick={() => doSearch(s)}>{s}</button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="ps-sug-section">
+            <span className="ps-sug-label">🔥 热门搜索</span>
+            <div className="ps-sug-items">
+              {['公积金','延迟退休','个税','利率','生育','限购'].map(tag => (
+                <button key={tag} className="ps-sug-tag" onClick={() => doSearch(tag)}>{tag}</button>
+              ))}
+            </div>
+          </div>
+          <div className="ps-sug-section">
+            <span className="ps-sug-label">💡 场景速查</span>
+            <div className="ps-sug-items">
+              {searchScenes.slice(0, 4).map(s => (
+                <button key={s.id} className="ps-sug-scene" onClick={() => doSceneSearch(s)}>
+                  <span>{s.icon}</span> {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       <div className="ps-hint">
         {isPremium() ? <span>VIP 不限次数</span> : <><span>已搜索 {dailyCount}/{FREE_LIMIT} 次</span>
         {dailyCount >= FREE_LIMIT && <span className="ps-limit">今日免费次数已用完，升级专业版享无限搜索</span>}</>}
@@ -2066,9 +2144,25 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
                   <p>😕 未找到相关政策，试试以下方法：</p>
                   <ul>
                     <li>换个关键词，如「公积金」「限购」「生育」</li>
-                    <li>点击下方的<span className="ps-hot-tag" style={{display:'inline',padding:'2px 6px',margin:'0 4px'}}>场景速查</span>快速浏览</li>
+                    <li>点击下方的场景速查快速浏览</li>
                     <li>输入更通用的词，如「买房」而不是「LPR下调」</li>
                   </ul>
+                  <div className="ps-empty-hot">
+                    <span className="ps-empty-hot-label">🔥 热门搜索：</span>
+                    {['公积金','延迟退休','个税','利率','生育','限购'].map(tag => (
+                      <span key={tag} className="ps-hot-tag ps-empty-tag" onClick={() => doSearch(tag)}>{tag}</span>
+                    ))}
+                  </div>
+                  <div className="ps-empty-scenes">
+                    <span className="ps-empty-hot-label">💡 场景推荐：</span>
+                    <div className="ps-empty-scene-grid">
+                      {searchScenes.slice(0, 3).map(s => (
+                        <button key={s.id} className="ps-scene-mini" onClick={() => doSceneSearch(s)}>
+                          <span>{s.icon}</span> {s.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -3007,6 +3101,24 @@ function App() {
   const [showReport, setShowReport] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [policyDetail, setPolicyDetail] = useState(null)
+  const [targetTool, setTargetTool] = useState(0)
+  const DIM_TO_TOOL = { housing: 1, employment: 5, education: 0, pension: 6, finance: 5, industry: -1 }
+  const [compareList, setCompareList] = useState([])
+  const [showCompare, setShowCompare] = useState(false)
+
+  const toggleCompare = (policy, dim) => {
+    setCompareList(prev => {
+      const key = policy.policyName + dim.key
+      if (prev.some(p => p._cmpKey === key)) return prev.filter(p => p._cmpKey !== key)
+      if (prev.length >= 4) return prev
+      return [...prev, { ...policy, dimName: dim.name, dimIcon: dim.icon, dimColor: dim.color, dimKey: dim.key, _cmpKey: key }]
+    })
+  }
+
+  const isInCompare = (policy, dim) => {
+    const key = policy.policyName + dim.key
+    return compareList.some(p => p._cmpKey === key)
+  }
   const [moreOpen, setMoreOpen] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
   const [showPrivacy, setShowPrivacy] = useState(false)
@@ -3203,6 +3315,11 @@ function App() {
                       <span className="qs-value" style={{ color: lvl.color }}><AnimatedCounter target={idx} /></span>
                       <span className="qs-label">{dim.name}</span>
                       <span className="qs-level" style={{ color: lvl.color }}>{lvl.label}</span>
+                      <span className="qs-summary">{
+                        (dim.plainSummary && dim.plainSummary.split('。')[0] + '。') ||
+                        (dim.summary && dim.summary.length > 30 ? dim.summary.slice(0, 30) + '…' : dim.summary) ||
+                        ''
+                      }</span>
                     </div>
                   )
                 })}
@@ -3305,8 +3422,12 @@ function App() {
                                                         localStorage.setItem('view_history', JSON.stringify(filtered.slice(0, 50)))
                                                       } catch {}
                                                     }}>
+                          <span className={`pl-cb ${isInCompare(s, dim) ? 'checked' : ''}`} onClick={e => { e.stopPropagation(); toggleCompare(s, dim) }}>
+                            {isInCompare(s, dim) ? '☑' : '☐'}
+                          </span>
                           <span className="pl-name">{s.policyName}</span>
                           <span className="pl-dir" style={{ color: dirColor }}>{dirLabel}</span>
+                          <span className="policy-score-badge">广度<b>{s.breadth}</b> 深度<b>{s.depth}</b></span>
                           <span className="pl-conf">{s.confidence}</span>
                           <span className="pl-note">{s.note}</span>
                           <span className="pl-arrow">→</span>
@@ -3320,6 +3441,60 @@ function App() {
 
             <NewsLianboPanel />
             <LegislativeOutlook regionKey={regionKey} personaKey={personaKey} />
+          </div>
+        )}
+        {/* ════════ 对比浮条 ════════ */}
+        {activeTab === 'dimensions' && compareList.length >= 2 && (
+          <div className="compare-bar">
+            <span className="cb-count">已选 {compareList.length} 条政策</span>
+            <div className="cb-preview">
+              {compareList.slice(0, 4).map(p => (
+                <span key={p._cmpKey} className="cb-chip">
+                  {p.dimIcon} {p.policyName.slice(0, 10)}{p.policyName.length > 10 ? '…' : ''}
+                  <span className="cb-chip-close" onClick={() => toggleCompare(p, { key: p.dimKey })}>✕</span>
+                </span>
+              ))}
+            </div>
+            <button className="cb-btn" onClick={() => setShowCompare(true)}>📊 对比查看</button>
+            <button className="cb-clear" onClick={() => setCompareList([])}>清空</button>
+          </div>
+        )}
+        {/* ════════ 对比弹窗 ════════ */}
+        {showCompare && compareList.length >= 2 && (
+          <div className="compare-overlay" onClick={() => setShowCompare(false)}>
+            <div className="compare-panel" onClick={e => e.stopPropagation()}>
+              <button className="compare-close" onClick={() => setShowCompare(false)}>✕</button>
+              <h3 className="compare-title">📊 政策对比</h3>
+              <div className="compare-grid">
+                {compareList.map(p => (
+                  <div key={p._cmpKey} className="compare-card">
+                    <div className="cc-header">
+                      <span className="cc-dim" style={{ color: p.dimColor }}>{p.dimIcon} {p.dimName}</span>
+                      <span className="cc-conf">{p.confidence}</span>
+                    </div>
+                    <div className="cc-name">{p.policyName}</div>
+                    <div className="cc-score-row">
+                      <div className="cc-score-item">
+                        <span className="cc-score-label">广度</span>
+                        <div className="cc-bar-bg"><div className="cc-bar-fill" style={{ width: (p.breadth || 0) * 10 + '%', background: '#1677ff' }} /></div>
+                        <span className="cc-score-val">{p.breadth}</span>
+                      </div>
+                      <div className="cc-score-item">
+                        <span className="cc-score-label">深度</span>
+                        <div className="cc-bar-bg"><div className="cc-bar-fill" style={{ width: (p.depth || 0) * 10 + '%', background: '#722ed1' }} /></div>
+                        <span className="cc-score-val">{p.depth}</span>
+                      </div>
+                    </div>
+                    <div className="cc-meta">
+                      <span className="cc-dir" style={{ color: p.direction > 0 ? 'var(--success)' : p.direction < 0 ? 'var(--error)' : 'var(--text-muted)' }}>{p.direction > 0 ? '利好' : p.direction < 0 ? '利空' : '中性'}</span>
+                      <span className="cc-note">{p.note ? p.note.slice(0, 40) + (p.note.length > 40 ? '…' : '') : ''}</span>
+                    </div>
+                    {p.date && <div className="cc-date">📅 {p.date}</div>}
+                    {p.url && <a className="cc-link" href={p.url} target="_blank" rel="noopener" onClick={e => e.stopPropagation()}>查看原文 ↗</a>}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
@@ -3367,10 +3542,12 @@ function App() {
                 <div className="pd-score-item">
                   <span className="pds-label">影响广度</span>
                   <RatingBar value={policyDetail.breadth} color="#1677ff" />
+                  <span className="pd-rubric-hint">{getRubricHint('breadth', policyDetail.breadth)}</span>
                 </div>
                 <div className="pd-score-item">
                   <span className="pds-label">深远程度</span>
                   <RatingBar value={policyDetail.depth} color="#722ed1" />
+                  <span className="pd-rubric-hint">{getRubricHint('depth', policyDetail.depth)}</span>
                 </div>
                 <div className="pd-score-item">
                   <span className="pds-label">影响方向</span>
@@ -3395,6 +3572,11 @@ function App() {
                 </a>
               </div>
               <div className="pd-actions">
+                {DIM_TO_TOOL[policyDetail.dimKey] !== undefined && DIM_TO_TOOL[policyDetail.dimKey] >= 0 && (
+                  <button className="btn-calc" onClick={() => { setPolicyDetail(null); setTargetTool(DIM_TO_TOOL[policyDetail.dimKey]); setActiveTab('tools'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
+                    ⚡ 算算对你的影响
+                  </button>
+                )}
                 <button className="btn-primary" onClick={() => { setPolicyDetail(null); setActiveTab('dimensions'); setSelectedDim(policyDetail.dimKey); setTabKey(k=>k+1) }}>
                   查看「{policyDetail.dimName}」全部政策
                 </button>
@@ -3404,7 +3586,7 @@ function App() {
           </div>
         )}
         {/* ════════ TOOLS ════════ */}
-        {activeTab === 'tools' && <Suspense fallback={<div style={{padding:40,textAlign:'center',color:'var(--text-secondary)'}}>加载中...</div>}><Tools regionKey={regionKey} toolParams={regionToolParams[regionKey] || regionToolParams.national} onNavigateDim={(key) => { setActiveTab('dimensions'); setSelectedDim(key); setTabKey(k=>k+1) }} /></Suspense>}
+        {activeTab === 'tools' && <Suspense fallback={<div style={{padding:40,textAlign:'center',color:'var(--text-secondary)'}}>加载中...</div>}><Tools regionKey={regionKey} toolParams={regionToolParams[regionKey] || regionToolParams.national} onNavigateDim={(key) => { setActiveTab('dimensions'); setSelectedDim(key); setTabKey(k=>k+1) }} initialTool={targetTool} /></Suspense>}
 
         {/* ════════ TOPICS ════════ */}
         {activeTab === 'topics' && (

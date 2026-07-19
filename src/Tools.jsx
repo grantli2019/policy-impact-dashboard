@@ -221,6 +221,13 @@ function MortgageCalc({ params, regionKey }) {
   const gjjAfter = params.gjjCapAfter
   const [gjjRate, setGjjRate] = useState(params.gjjRate)
   const [commRate, setCommRate] = useState(params.commRate)
+  const [gjjRateErr, setGjjRateErr] = useState('')
+  const [commRateErr, setCommRateErr] = useState('')
+  const validateRate = (v, label) => {
+    if (v < 0.5) return `${label}不应低于0.5%`
+    if (v > 6.0) return `${label}不应高于6.0%`
+    return ''
+  }
 
   const calc = (gjj, comm) => {
     const gjjLoan = Math.min(gjj, total)
@@ -254,11 +261,13 @@ function MortgageCalc({ params, regionKey }) {
         </label>
         <label>
           公积金利率（%）
-          <input type="number" step={0.01} value={gjjRate} onChange={e => setGjjRate(+e.target.value)} />
+          <input type="number" step={0.01} min={0.5} max={6.0} value={gjjRate} onChange={e => { setGjjRate(+e.target.value); setGjjRateErr('') }} onBlur={() => setGjjRateErr(validateRate(gjjRate, '公积金利率'))} className={gjjRateErr ? 'input-error' : ''} />
+          {gjjRateErr && <span className="field-error">{gjjRateErr}</span>}
         </label>
         <label>
           商贷利率（%）
-          <input type="number" step={0.01} value={commRate} onChange={e => setCommRate(+e.target.value)} />
+          <input type="number" step={0.01} min={0.5} max={6.0} value={commRate} onChange={e => { setCommRate(+e.target.value); setCommRateErr('') }} onBlur={() => setCommRateErr(validateRate(commRate, '商贷利率'))} className={commRateErr ? 'input-error' : ''} />
+          {commRateErr && <span className="field-error">{commRateErr}</span>}
         </label>
       </div>
       <div className="tool-result">
@@ -315,7 +324,7 @@ function TaxRefundCalc() {
       </div>
       <div className="tool-result">
         <div className="result-grid">
-          <div className="result-box"><div className="result-label">预估已缴个税</div><div className="result-num">{format(taxPaid)} 元</div></div>
+          <div className="result-box"><div className="result-label">预估已缴个税 <span className="help-tip" data-tip="按全额1%（全额1%计税）或差额20%（扣除30%购房成本后×20%税率）孰低原则计算">?</span></div><div className="result-num">{format(taxPaid)} 元</div></div>
           <div className={`result-box ${refundable > 0 ? 'after' : 'before'}`}>
             <div className="result-label">{refundable > 0 ? '可退税金额' : '不符合退税条件'}</div>
             <div className="result-num">{refundable > 0 ? `${format(refundable)} 元` : '0 元'}</div>
@@ -418,6 +427,13 @@ function GjjSavingCalc({ params }) {
   const [years, setYears] = useState(30)
   const [gjjRate, setGjjRate] = useState(params.gjjRate)
   const [commRate, setCommRate] = useState(params.commRate)
+  const [gjjRateErr, setGjjRateErr] = useState('')
+  const [commRateErr, setCommRateErr] = useState('')
+  const validateRate = (v, label) => {
+    if (v < 0.5) return `${label}不应低于0.5%`
+    if (v > 6.0) return `${label}不应高于6.0%`
+    return ''
+  }
   const gjjMonthly = pmt(gjjRate/100/12, years*12, loan) * 10000
   const commMonthly = pmt(commRate/100/12, years*12, loan) * 10000
   const diff = commMonthly - gjjMonthly
@@ -441,11 +457,13 @@ function GjjSavingCalc({ params }) {
         </label>
         <label>
           公积金利率（%）
-          <input type="number" step={0.01} value={gjjRate} onChange={e => setGjjRate(+e.target.value)} />
+          <input type="number" step={0.01} min={0.5} max={6.0} value={gjjRate} onChange={e => { setGjjRate(+e.target.value); setGjjRateErr('') }} onBlur={() => setGjjRateErr(validateRate(gjjRate, '公积金利率'))} className={gjjRateErr ? 'input-error' : ''} />
+          {gjjRateErr && <span className="field-error">{gjjRateErr}</span>}
         </label>
         <label>
           商贷利率（%）
-          <input type="number" step={0.01} value={commRate} onChange={e => setCommRate(+e.target.value)} />
+          <input type="number" step={0.01} min={0.5} max={6.0} value={commRate} onChange={e => { setCommRate(+e.target.value); setCommRateErr('') }} onBlur={() => setCommRateErr(validateRate(commRate, '商贷利率'))} className={commRateErr ? 'input-error' : ''} />
+          {commRateErr && <span className="field-error">{commRateErr}</span>}
         </label>
       </div>
       <div className="tool-result">
@@ -569,8 +587,8 @@ function TaxOptimizerCalc() {
             <span className="bc-card-icon">🎁</span>
             <div className="bc-card-body">
               <h5>年终奖税（{bonusMode === 'standalone' ? '单独' : '合并'}）</h5>
-              <span className="bc-card-amount">¥{(bonusMode === 'standalone' ? bonusTaxStandalone : '含在综合所得中').toString()}</span>
-              <span className="bc-card-detail">年终奖¥{annualBonus.toLocaleString()}</span>
+              <span className="bc-card-amount">¥{(bonusMode === 'standalone' ? bonusTaxStandalone : Math.round(combinedTax - salaryTax)).toLocaleString()}</span>
+              <span className="bc-card-detail">年终奖¥{annualBonus.toLocaleString()} · 合并后总税额¥{combinedTax.toLocaleString()}</span>
             </div>
           </div>
           <div className="bc-card">
@@ -710,7 +728,7 @@ function PensionEstimator() {
               <div className="bc-card-body">
                 <h5>基础养老金</h5>
                 <span className="bc-card-amount">¥{basePension.toLocaleString()}/月</span>
-                <span className="bc-card-detail">当地工资¥{futureAvgSalary.toLocaleString()} × 缴费{contribYears}年 × 指数{cappedIndex.toFixed(2)}</span>
+                <span className="bc-card-detail">当地工资¥{futureAvgSalary.toLocaleString()} × 缴费{contribYears}年 × 指数{cappedIndex.toFixed(2)} <span className="help-tip" data-tip="缴费指数=你的月工资/当地平均工资，范围0.6~3。指数越高，基础养老金越多">?</span></span>
               </div>
             </div>
             <div className="bc-card">
@@ -718,7 +736,7 @@ function PensionEstimator() {
               <div className="bc-card-body">
                 <h5>个人账户养老金</h5>
                 <span className="bc-card-amount">¥{accountPension.toLocaleString()}/月</span>
-                <span className="bc-card-detail">账户累计¥{Math.round(accountTotal).toLocaleString()} ÷ {divisor}个月</span>
+                <span className="bc-card-detail">账户累计¥{Math.round(accountTotal).toLocaleString()} ÷ {divisor}个月 <span className="help-tip" data-tip="计发月数根据退休年龄确定：60岁退休139个月，55岁170个月，50岁195个月。公式=个人账户总额÷计发月数">?</span></span>
               </div>
             </div>
             <div className="bc-card">
@@ -765,8 +783,8 @@ function PensionEstimator() {
 /* ═══════════════════════════════════════════════════════
  * 工具容器（带区域支持）
  * ═══════════════════════════════════════════════════════ */
-export default function Tools({ regionKey = "national", toolParams, onNavigateDim }) {
-  const [active, setActive] = useState(0)
+export default function Tools({ regionKey = "national", toolParams, onNavigateDim, initialTool }) {
+  const [active, setActive] = useState(initialTool || 0)
   const region = regions.find(r => r.key === regionKey)
   const tools = [
     { label: '👶 生育权益', comp: () => <BirthCalc regionKey={regionKey} /> },
@@ -1095,10 +1113,10 @@ function SettlementCalculator({ regionKey }) {
               </div>
             </div>
             <div className="sc-fin-total">
-              <span className="sc-fin-total-label">📈 综合年化收益潜力</span>
+              <span className="sc-fin-total-label">📈 综合年化收益潜力 <span className="help-tip" data-tip="= 公积金年省息(30年总省息÷30) + 个税年节省">?</span></span>
               <span className="sc-fin-total-value">约 {totalAnnual} 万/年</span>
             </div>
-            <p className="sc-rc-note">以上为估算值，实际金额以当地政策和银行审批为准</p>
+            <p className="sc-rc-note">以上为估算值（公积金年省息+个税年节省），实际金额以当地政策和银行审批为准</p>
           </div>
         )
       })()}
