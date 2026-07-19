@@ -7093,6 +7093,16 @@ a.policy-source-link:hover::after {
   opacity: 1; transform: translateY(0);
 }
 
+/* 展开更多按钮 */
+.show-more-btn {
+  display: block; width: 100%; margin-top: 8px; padding: 8px;
+  background: var(--p-50); border: 1px dashed var(--p-300);
+  border-radius: var(--r-md); color: var(--p-600);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s;
+}
+.show-more-btn:hover { background: var(--p-100); border-color: var(--p-500); }
+
 /* ═══════ 移动端安全区域 + 触摸反馈 ═══════ */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .tabs { padding-bottom: env(safe-area-inset-bottom); }

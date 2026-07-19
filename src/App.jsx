@@ -3361,6 +3361,7 @@ function App() {
   const [tabKey, setTabKey] = useState(0)
   const [ringValue, setRingValue] = useState(0)
   const [msFilterDim, setMsFilterDim] = useState(null)
+  const [showAllPolicies, setShowAllPolicies] = useState(false)
   const [topicSearch, setTopicSearch] = useState('')
   const [darkMode, setDarkMode] = useState(() => { try { return localStorage.getItem('theme') === 'dark' } catch { return false } })
   useEffect(() => { document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : ''); localStorage.setItem('theme', darkMode ? 'dark' : 'light') }, [darkMode])
@@ -3867,7 +3868,7 @@ function App() {
 
                   <div className="policy-list">
                     <h4>📌 相关政策 ({dim.scores.length}条)</h4>
-                    {dim.scores.map((s, i) => {
+                    {dim.scores.slice(0, showAllPolicies ? undefined : 5).map((s, i) => {
                       const dirLabel = s.direction > 0 ? '利好' : s.direction < 0 ? '利空' : '中性'
                       const dirColor = s.direction > 0 ? 'var(--success)' : s.direction < 0 ? 'var(--error)' : 'var(--text-muted)'
                       return (
@@ -3894,6 +3895,11 @@ function App() {
                         </div>
                       )
                     })}
+                    {dim.scores.length > 5 && (
+                      <button className="show-more-btn" onClick={() => setShowAllPolicies(!showAllPolicies)}>
+                        {showAllPolicies ? '收起 ↑' : `展开全部 ${dim.scores.length} 条 ↓`}
+                      </button>
+                    )}
                   </div>
                   {(() => {
                     const dimActions = getDimActions(dim.key)
