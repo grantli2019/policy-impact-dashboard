@@ -2661,6 +2661,8 @@ const dimPersonaMap = {
 }
 // 新闻维度→风向标决策域映射
 const newsDimToCompass = { housing:'housing', employment:'career', education:'education', pension:'retirement', elderly:'retirement', finance:'investment', industry:'business' }
+// 维度图标映射
+const dimensionIcons = { housing:'🏠', employment:'💼', education:'🎓', elderly:'👴', pension:'👴', finance:'💰', industry:'🏭' }
 // 根据新闻维度和情感生成行动建议
 // userProfile: 可选，传入后可计算个人匹配度
 const compassKeyDomains = ['investment','career','housing','education','fertility','retirement','consumption','business']

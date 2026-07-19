@@ -16,7 +16,7 @@ import {
   getDailyChallenge, submitDailyChallenge, getInsightVotes, submitInsightVote, getStreak, getTodayChallengeDone,
   getUserTier, updateUserTier, getWrongAnswers, addWrongAnswer, markWrongAnswerMastered,
   getValueSummary, getNotificationCount,
-  getUserAchievements, checkAndAwardAchievements, getUserStats,
+  getUserAchievements, checkAndAwardAchievements, getUserStats, achievementDefs,
   getRealizedValue, getUrgencyItems, recordGrowthSnapshot, getGrowthHistory,
   getShareReport, markShared,
   getDecisionProjects, createDecisionProject, updateDecisionProject, deleteDecisionProject,
