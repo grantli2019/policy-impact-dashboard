@@ -3264,6 +3264,47 @@ a.policy-source-link:hover::after {
 .region-selector .region-label { font-size: 0.75rem; }
 .region-selector .region-btn { font-size: 0.78rem; padding: 3px 10px; }
 
+/* ═══ 跨区域对比表 ═══ */
+.region-compare { margin: 0 auto 32px; max-width: 900px; }
+.rc-intro { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; }
+.rc-table { border: 1px solid var(--border-subtle); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); }
+.rc-row { display: grid; grid-template-columns: 100px repeat(5, 1fr); }
+.rc-header { background: var(--gray-50); border-bottom: 1px solid var(--border-subtle); }
+[data-theme="dark"] .rc-header { background: var(--gray-800); }
+.rc-dim { padding: 10px 12px; font-size: 0.78rem; font-weight: 600; color: var(--text); border-right: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.rc-region { padding: 10px 8px; font-size: 0.82rem; font-weight: 700; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 1px; transition: background 0.15s; }
+.rc-region.rc-active { background: var(--p-50); }
+[data-theme="dark"] .rc-region.rc-active { background: rgba(26,35,126,0.2); }
+.rc-rname { font-size: 0.82rem; }
+.rc-pcount { font-size: 0.65rem; color: var(--text-muted); font-weight: 400; }
+.rc-cell { padding: 8px 4px; font-size: 0.85rem; font-weight: 600; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 40px; transition: all 0.15s; border-left: 1px solid var(--border-subtle); }
+.rc-cell:first-of-type { border-left: none; }
+.rc-cell.rc-best { background: linear-gradient(135deg, rgba(52,168,83,0.06), rgba(52,168,83,0.02)); }
+.rc-cell.rc-current { background: rgba(26,35,126,0.04); }
+.rc-cell.rc-best.rc-current { background: linear-gradient(135deg, rgba(52,168,83,0.08), rgba(26,35,126,0.04)); }
+[data-theme="dark"] .rc-cell.rc-best { background: linear-gradient(135deg, rgba(52,168,83,0.12), rgba(52,168,83,0.04)); }
+[data-theme="dark"] .rc-cell.rc-current { background: rgba(26,35,126,0.15); }
+.rc-overall { cursor: pointer; position: relative; }
+.rc-overall:hover { background: var(--p-100); transform: scale(1.03); z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 4px; }
+[data-theme="dark"] .rc-overall:hover { background: rgba(26,35,126,0.25); }
+.rc-ov-num { font-size: 1.05rem; font-weight: 800; line-height: 1.2; }
+.rc-ov-label { font-size: 0.6rem; font-weight: 400; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.rc-total .rc-dim { color: var(--p-600); }
+.rc-legend { display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
+.rc-legend-item { font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.rc-leg-best { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: linear-gradient(135deg, rgba(52,168,83,0.3), rgba(52,168,83,0.1)); border: 1px solid rgba(52,168,83,0.3); }
+.rc-leg-cur { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: rgba(26,35,126,0.08); border: 1px solid rgba(26,35,126,0.2); }
+.rc-leg-click { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--p-100); border: 1px solid var(--p-300); }
+
+@media (max-width: 640px) {
+  .rc-row { grid-template-columns: 70px repeat(5, 1fr); font-size: 0.72rem; }
+  .rc-dim { padding: 8px 6px; font-size: 0.7rem; }
+  .rc-cell { padding: 6px 2px; font-size: 0.75rem; min-height: 32px; }
+  .rc-ov-num { font-size: 0.9rem; }
+  .rc-rname { font-size: 0.72rem; }
+  .rc-pcount { display: none; }
+}
+
 /* ═══ 首页紧凑化 ═══ */
 .overview { padding-top: 8px; }
 .overall-card { margin-top: 8px; }

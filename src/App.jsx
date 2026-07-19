@@ -1427,6 +1427,76 @@ function OnboardingTour({ onClose }) {
   )
 }
 
+/* ═══════ B2.5: 跨区域对比 ═══════ */
+function RegionCompare({ personaKey, currentRegion, onSelectRegion }) {
+  const compareData = useMemo(() => {
+    return regions.map(r => {
+      const dims = getDimensionsForRegion(r.key)
+      const scores = dims.map(d => ({ key: d.key, name: d.name, icon: d.icon, score: calcDimensionScore(d) }))
+      const overall = calcOverallIndex(personaKey, r.key)
+      return { ...r, dimScores: scores, overall, totalPolicies: dims.reduce((a, d) => a + d.scores.length, 0) }
+    })
+  }, [personaKey])
+
+  return (
+    <section className="region-compare">
+      <h2 className="section-title">🔁 跨区域政策影响对比</h2>
+      <p className="rc-intro">比较五大区域的政策影响差异，点击综合指数可快速切换区域</p>
+      <div className="rc-table" role="table" aria-label="区域对比">
+        <div className="rc-row rc-header">
+          <span className="rc-dim" role="columnheader">维度</span>
+          {compareData.map(r => (
+            <span key={r.key} className={`rc-region ${r.key === currentRegion ? 'rc-active' : ''}`}>
+              {r.icon}<span className="rc-rname">{r.name}</span>
+              <span className="rc-pcount">{r.totalPolicies}条</span>
+            </span>
+          ))}
+        </div>
+        {compareData[0]?.dimScores.map(dim => {
+          const best = Math.max(...compareData.map(r => r.dimScores.find(d2 => d2.key === dim.key)?.score || 0))
+          return (
+            <div key={dim.key} className="rc-row">
+              <span className="rc-dim">{dim.icon} {dim.name}</span>
+              {compareData.map(r => {
+                const s = r.dimScores.find(d2 => d2.key === dim.key)
+                const isBest = s?.score === best && best > 0
+                return (
+                  <span key={r.key} className={`rc-cell ${isBest ? 'rc-best' : ''} ${r.key === currentRegion ? 'rc-current' : ''}`}>
+                    {s?.score ?? '-'}
+                  </span>
+                )
+              })}
+            </div>
+          )
+        })}
+        <div className="rc-row rc-total">
+          <span className="rc-dim">📊 综合指数</span>
+          {(() => {
+            const best = Math.max(...compareData.map(r => r.overall))
+            return compareData.map(r => {
+              const isBest = r.overall === best && best > 0
+              return (
+                <span key={r.key}
+                  className={`rc-cell rc-overall ${isBest ? 'rc-best' : ''} ${r.key === currentRegion ? 'rc-current' : ''}`}
+                  onClick={() => onSelectRegion(r.key)}
+                  title={`点击切换到${r.name}`}>
+                  <span className="rc-ov-num">{r.overall}</span>
+                  <span className="rc-ov-label">综合</span>
+                </span>
+              )
+            })
+          })()}
+        </div>
+      </div>
+      <div className="rc-legend">
+        <span className="rc-legend-item"><span className="rc-leg-best" />最优区域</span>
+        <span className="rc-legend-item"><span className="rc-leg-cur" />当前区域</span>
+        <span className="rc-legend-item"><span className="rc-leg-click" />点击切换</span>
+      </div>
+    </section>
+  )
+}
+
 /* ═══════ B3: 个人仪表盘 ═══════ */
 function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab }) {
   const visits = (() => { try { return JSON.parse(localStorage.getItem("visit_stats") || "{}") } catch { return {} } })()
@@ -3091,6 +3161,8 @@ function App() {
             />
 
             <RegionSelector value={regionKey} onChange={handleRegionChange} />
+
+            <RegionCompare personaKey={personaKey} currentRegion={regionKey} onSelectRegion={handleRegionChange} />
 
             <section className="overview-dims">
               <h2 className="section-title">政策影响力总览</h2>
