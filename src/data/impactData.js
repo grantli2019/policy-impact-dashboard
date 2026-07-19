@@ -3443,6 +3443,19 @@ export const enhancedTestimonials = [
   { id:'t30', name:'老赵', avatar:'👨‍🏭', age:50, city:'太原', scenario:'employment', stage:'approaching_retire', persona:'worker', title:'能源转型安置', desc:'煤炭行业转岗培训后进入新能源企业，薪资不降反升', quote:'能源转型让我从煤矿工人变成了新能源技术员，策查查帮我规划了转岗路径', value:60000, date:'2026-04-25' },
   { id:'t31', name:'小丽', avatar:'👩‍🎨', age:26, city:'深圳', scenario:'housing', stage:'young_single', persona:'worker', title:'前海人才住房', desc:'申请前海人才住房补贴，每月节省房租3000元', quote:'前海人才住房补贴让我在深圳安居乐业，策查查让我没错过申请', value:72000, date:'2026-06-28' },
   { id:'t32', name:'大伟', avatar:'👨‍💼', age:38, city:'重庆', scenario:'finance', stage:'mid_career', persona:'investor', title:'西部金融中心', desc:'利用重庆西部金融中心政策，获得企业融资便利化支持', quote:'西部金融中心建设让企业融资更方便了，策查查帮我对接了金融产品', value:80000, date:'2026-07-01' },
+  { id:'t33', name:'阿文', avatar:'👨‍🎓', age:22, city:'武汉', scenario:'employment', stage:'young_single', persona:'student', title:'就业见习补贴', desc:'通过就业见习基地获得每月2000元补贴+留用机会', quote:'见习补贴让我毕业后不用“裸奔”，还顺利留用了', value:24000, date:'2026-07-06' },
+  { id:'t34', name:'张姐', avatar:'👩‍⚕️', age:50, city:'成都', scenario:'elderly', stage:'approaching_retire', persona:'worker', title:'跨省社保转移', desc:'从广东转回成都，养老保险关系顺利接续', quote:'跨省社保转移以前很麻烦，现在线上就能办，策查查指导我每一步', value:35000, date:'2026-05-12' },
+  { id:'t35', name:'小杰', avatar:'👨‍💻', age:27, city:'深圳', scenario:'entrepreneur', stage:'young_single', persona:'startup', title:'AI创业孵化', desc:'入驻深圳AI产业园，获得算力补贴+天使投资对接', quote:'AI创业最贵的是算力，政府补贴省了一大笔', value:200000, date:'2026-06-08' },
+  { id:'t36', name:'王叔', avatar:'👨‍🌾', age:56, city:'长沙', scenario:'elderly', stage:'approaching_retire', persona:'worker', title:'城乡居民养老提档', desc:'城乡居民养老保险从最低档提到最高档，退休金翻倍', quote:'策查查让我知道提档补缴还来得及，退休后每月多领800', value:96000, date:'2026-04-18' },
+  { id:'t37', name:'美玲', avatar:'👩‍💼', age:33, city:'广州', scenario:'housing', stage:'newlywed', persona:'buyer', title:'南沙人才购房', desc:'南沙区人才购房补贴+港澳居民购房便利化', quote:'南沙人才政策让我以很低成本安了家，策查查帮我梳理了所有补贴', value:150000, date:'2026-05-30' },
+  { id:'t38', name:'老陈', avatar:'👨‍🏭', age:47, city:'东莞', scenario:'employment', stage:'mid_career', persona:'worker', title:'失业保险技能提升', desc:'利用失业保险基金支付技能提升补贴，免费学了新技能', quote:'失业保险不只是失业才能用，在职也能领技能补贴', value:4600, date:'2026-06-12' },
+  { id:'t39', name:'小雪', avatar:'👩‍🎓', age:24, city:'合肥', scenario:'housing', stage:'young_single', persona:'student', title:'毕业生租房补贴', desc:'申请合肥毕业生租房补贴，每月800元连补三年', quote:'毕业后租房压力很大，租房补贴让我缓了口气', value:28800, date:'2026-07-03' },
+  { id:'t40', name:'志强', avatar:'👨‍💼', age:44, city:'上海', scenario:'finance', stage:'mid_career', persona:'investor', title:'年终奖计税优化', desc:'年终奖单独计税政策延续，合理分配月薪和年终奖比例节税2万+', quote:'策查查帮我算清了年终奖单独计税和并入综合所得的差异', value:20000, date:'2026-07-14' },
+  { id:'t41', name:'阿婆', avatar:'👵', age:68, city:'南京', scenario:'elderly', stage:'retired', persona:'elder', title:'高龄补贴申领', desc:'满70岁后每月领取高龄补贴+免费体检+公交免费', quote:'策查查提醒我满70岁就能领高龄补贴，之前都不知道', value:3600, date:'2026-06-16' },
+  { id:'t42', name:'大鹏', avatar:'👨‍🚀', age:30, city:'西安', scenario:'entrepreneur', stage:'young_single', persona:'startup', title:'硬科技创业', desc:'申请西安硬科技创业补贴+秦创原平台孵化支持', quote:'西安硬科技政策很给力，策查查帮我找到了所有能申请的补贴', value:250000, date:'2026-05-22' },
+  { id:'t43', name:'小芳', avatar:'👩‍🍼', age:31, city:'郑州', scenario:'elderly', stage:'young_parent', persona:'parent', title:'普惠托育服务', desc:'孩子入托普惠托育机构，每月费用比市场价低60%', quote:'普惠托育每月只要800元，以前私立托班要3000+', value:26400, date:'2026-06-26' },
+  { id:'t44', name:'老周', avatar:'👨‍🔧', age:49, city:'太原', scenario:'housing', stage:'mid_career', persona:'worker', title:'老旧小区改造', desc:'小区加装电梯+管线改造+保温层，房价涨了15%', quote:'老旧小区改造后住着舒服多了，房子也升值了', value:120000, date:'2026-04-08' },
+  { id:'t45', name:'婷婷', avatar:'👩‍💻', age:25, city:'杭州', scenario:'finance', stage:'young_single', persona:'freelancer', title:'个税汇算退税', desc:'自由职业者个税汇算，补充申报专项扣除后退税6000+', quote:'自由职业者也能享受专项扣除，策查查让我知道了这个权利', value:6000, date:'2026-07-11' },
 ]
 
 /* ── 政策预演场景分组 ──────────────────────────────────────── */
