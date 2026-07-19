@@ -149,6 +149,8 @@ export const personas = [
 
 /* ── 本周更新数据 ──────────────────────────────────────────── */
 export const weeklyUpdates = [
+  { date: "2026-07-18", dim: "employment", type: "new", text: "国务院发布《关于促进高质量充分就业的若干措施》，重点支持高校毕业生和农民工就业", impact: "偏利好" },
+  { date: "2026-07-18", dim: "housing", type: "update", text: "住建部：全国保障性租赁住房已筹集超700万套，完成十四五目标80%", impact: "偏利好" },
   { date: "2026-07-17", dim: "industry", type: "new", text: "2026世界人工智能大会在上海开幕，AI全球治理高级别会议举行", impact: "偏利好" },
   { date: "2026-07-15", dim: "employment", type: "update", text: "上半年GDP同比增长4.7%，经济总量达69.6万亿元", impact: "偏利好" },
   { date: "2026-07-15", dim: "finance", type: "update", text: "个人住房贷款利率约3.1%，企业贷款利率约3.0%创新低", impact: "偏利好" },
