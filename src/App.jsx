@@ -3341,6 +3341,9 @@ function App() {
   const [personaKey, setPersonaKey] = useState(() => localStorage.getItem('persona') || null)
   const [regionKey, setRegionKey] = useState(() => localStorage.getItem('region') || 'national')
   const [showModal, setShowModal] = useState(!personaKey && !sessionStorage.getItem('skipped'))
+  const { show: showToast, ToastContainer } = useToast()
+  // 数据版本迁移（首次加载时执行）
+  useEffect(() => { migrateDataVersion() }, [])
   // “上次访问后新增”标记系统
   const [lastVisit] = useState(() => localStorage.getItem('last_visit') || null)
   useEffect(() => {
@@ -4295,6 +4298,7 @@ function App() {
       <TimeMachinePanel show={showTimeMachine} onClose={()=>setShowTimeMachine(false)} />
       <DecisionProjectPanel show={showDecisionProject} onClose={()=>setShowDecisionProject(false)} onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1)}} />
       <CelebrationToast celebration={celebration} onClose={()=>setCelebration(null)} />
+      <ToastContainer />
       <ProfileCenterModal show={showProfileCenter} onClose={()=>setShowProfileCenter(false)} personaKey={personaKey} />
 
       <footer className="footer">
@@ -5988,5 +5992,77 @@ const RatingBar = memo(function RatingBar({ value, max = 10, color = '#3498db' }
     </div>
   )
 });
+
+/* ═══════ Toast 通知系统 ═══════ */
+let toastId = 0
+function useToast() {
+  const [toasts, setToasts] = useState([])
+  const show = useCallback((msg, type = 'success') => {
+    const id = ++toastId
+    setToasts(prev => [...prev.slice(-2), { id, msg, type }])
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000)
+  }, [])
+  const ToastContainer = useCallback(() => (
+    <div className="toast-container" aria-live="polite">
+      {toasts.map(t => (
+        <div key={t.id} className={`toast toast-${t.type}`}>
+          <span className="toast-icon">{t.type === 'success' ? '✅' : t.type === 'error' ? '❌' : 'ℹ️'}</span>
+          <span className="toast-msg">{t.msg}</span>
+        </div>
+      ))}
+    </div>
+  ), [toasts])
+  return { show, ToastContainer }
+}
+
+/* ═══════ 滚动入场动画 Hook ═══════ */
+function useScrollReveal() {
+  const ref = useRef(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setVisible(true); obs.disconnect() }
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+  return [ref, visible]
+}
+
+/* ═══════ localStorage 安全工具 ═══════ */
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value)
+    return true
+  } catch (e) {
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      // 尝试清理过期数据
+      const keysToRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i)
+        if (k && (k.startsWith('quiz_history') || k.startsWith('tool_result') || k.startsWith('growth_'))) {
+          keysToRemove.push(k)
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k))
+      try { localStorage.setItem(key, value); return true } catch { return false }
+    }
+    return false
+  }
+}
+
+/* 数据版本迁移 */
+function migrateDataVersion() {
+  const stored = localStorage.getItem('data_version')
+  if (stored === DATA_VERSION) return
+  // 版本变更时清理过期缓存
+  if (stored && stored !== DATA_VERSION) {
+    localStorage.removeItem('recent_searches')
+    localStorage.removeItem('search_stats')
+  }
+  localStorage.setItem('data_version', DATA_VERSION)
+}
 
 export default App
