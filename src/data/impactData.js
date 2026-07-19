@@ -3562,6 +3562,16 @@ export const enhancedTestimonials = [
   { id:'t43', name:'小芳', avatar:'👩‍🍼', age:31, city:'郑州', scenario:'elderly', stage:'young_parent', persona:'parent', title:'普惠托育服务', desc:'孩子入托普惠托育机构，每月费用比市场价低60%', quote:'普惠托育每月只要800元，以前私立托班要3000+', value:26400, date:'2026-06-26' },
   { id:'t44', name:'老周', avatar:'👨‍🔧', age:49, city:'太原', scenario:'housing', stage:'mid_career', persona:'worker', title:'老旧小区改造', desc:'小区加装电梯+管线改造+保温层，房价涨了15%', quote:'老旧小区改造后住着舒服多了，房子也升值了', value:120000, date:'2026-04-08' },
   { id:'t45', name:'婷婷', avatar:'👩‍💻', age:25, city:'杭州', scenario:'finance', stage:'young_single', persona:'freelancer', title:'个税汇算退税', desc:'自由职业者个税汇算，补充申报专项扣除后退税6000+', quote:'自由职业者也能享受专项扣除，策查查让我知道了这个权利', value:6000, date:'2026-07-11' },
+  { id:'t46', name:'老周', avatar:'👨‍🏭', age:55, city:'天津', scenario:'elderly', stage:'approaching_retire', persona:'worker', title:'提前退休规划', desc:'利用弹性退休机制，选择提前2年退休，养老金损失最小化', quote:'策查查帮我算清了提前退休和正常退休的养老金差异，心里有底了', value:72000, date:'2026-06-20' },
+  { id:'t47', name:'陈总', avatar:'👨‍💼', age:43, city:'苏州', scenario:'housing', stage:'mid_career', persona:'investor', title:'改善置换退税', desc:'利用卖一买一退税政策，置换大房子退了15万个税', quote:'换房退税窗口期只剩半年，幸好策查查提醒了我', value:150000, date:'2026-05-18' },
+  { id:'t48', name:'美玲', avatar:'👩‍🏫', age:34, city:'南京', scenario:'education', stage:'young_parent', persona:'parent', title:'幼升小择校', desc:'通过名额分配到校政策，孩子进入优质小学', quote:'多校划片后学区房不值钱了，策查查让我关注名额分配政策', value:300000, date:'2026-06-05' },
+  { id:'t49', name:'阿杰', avatar:'👨‍💼', age:36, city:'济南', scenario:'employment', stage:'mid_career', persona:'worker', title:'体制内转行', desc:'从事业单位辞职创业，社保转移+创业担保贷款一站式解决', quote:'策查查帮我理清了社保转移和创业补贴的全部流程', value:200000, date:'2026-04-22' },
+  { id:'t50', name:'小雪', avatar:'👩‍💻', age:27, city:'厦门', scenario:'housing', stage:'young_single', persona:'worker', title:'首套房上车', desc:'利用公积金贷款+人才购房补贴，总价180万买到两居室', quote:'人才购房补贴8万+公积金贷款，策查查帮我省了12万', value:120000, date:'2026-07-08' },
+  { id:'t51', name:'张叔', avatar:'👴', age:63, city:'昆明', scenario:'elderly', stage:'retired', persona:'elder', title:'异地养老医保', desc:'退休后随子女到昆明生活，异地就医直接结算', quote:'以前看病要回成都报销，现在昆明直接结算太方便了', value:18000, date:'2026-05-30' },
+  { id:'t52', name:'大伟', avatar:'👨‍💻', age:29, city:'青岛', scenario:'finance', stage:'young_single', persona:'investor', title:'数字人民币红利', desc:'使用数字人民币享受消费红包+支付优惠，一年省了3000+', quote:'数字人民币红包和优惠真的很多，策查查让我没错过任何一个', value:3000, date:'2026-07-15' },
+  { id:'t53', name:'小雪', avatar:'👩‍🎓', age:28, city:'大连', scenario:'entrepreneur', stage:'young_single', persona:'startup', title:'海归创业补贴', desc:'留学回国创业，获得创业启动资金+租房补贴+社保补贴', quote:'海归创业补贴比我想象的多，策查查帮我梳理了所有能申请的', value:180000, date:'2026-06-12' },
+  { id:'t54', name:'志强', avatar:'👨‍🔧', age:20, city:'石家庄', scenario:'education', stage:'student', persona:'student', title:'职教升学路径', desc:'通过职教高考升入本科，学费减免+技能补贴', quote:'职教也能上本科，策查查让我看到了另一条路', value:50000, date:'2026-07-01' },
+  { id:'t55', name:'美玲', avatar:'👩‍💼', age:35, city:'珠海', scenario:'housing', stage:'newlywed', persona:'buyer', title:'港澳居民购房', desc:'港澳居民珠海购房享同等待遇，公积金贷款+契税优惠', quote:'港澳居民在珠海买房和内地居民一样，策查查让我放心了', value:80000, date:'2026-06-28' },
 ]
 
 /* ── 政策预演场景分组 ──────────────────────────────────────── */
