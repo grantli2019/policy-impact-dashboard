@@ -890,6 +890,112 @@ function PensionEstimator() {
   )
 }
 
+/* ═══════ 失业金计算器 ═══════ */
+function UnemploymentCalc() {
+  const [years, setYears] = useState(5)
+  const [salary, setSalary] = useState(10000)
+  const [city, setCity] = useState('shanghai')
+  const cityData = {
+    shanghai: { amount: 2175, label: '上海' },
+    beijing: { amount: 2124, label: '北京' },
+    guangzhou: { amount: 1890, label: '广州' },
+    shenzhen: { amount: 1980, label: '深圳' },
+    chengdu: { amount: 1680, label: '成都' },
+    wuhan: { amount: 1580, label: '武汉' },
+  }
+  const months = Math.min(2 + (years - 1) * 2, 24)
+  const total = cityData[city].amount * months
+  const nPlus1 = Math.round(salary * (years + 1))
+  return (
+    <div className="calc-card">
+      <h3>🆘 失业金 + 裁员赔偿计算器</h3>
+      <p className="calc-note">被裁员不是你的错，这些是你应得的权益。</p>
+      <div className="calc-row"><label>所在城市</label>
+        <select value={city} onChange={e=>setCity(e.target.value)}>
+          {Object.entries(cityData).map(([k,v]) => <option key={k} value={k}>{v.label}</option>)}
+        </select>
+      </div>
+      <div className="calc-row"><label>累计缴费年限：{years}年</label>
+        <input type="range" min="1" max="20" value={years} onChange={e=>setYears(+e.target.value)} />
+      </div>
+      <div className="calc-row"><label>离职前月工资：{salary.toLocaleString()}元</label>
+        <input type="range" min="3000" max="50000" step="500" value={salary} onChange={e=>setSalary(+e.target.value)} />
+      </div>
+      <div className="calc-result">
+        <div className="cr-item"><span>失业金标准（{cityData[city].label}）</span><b>{cityData[city].amount.toLocaleString()}元/月</b></div>
+        <div className="cr-item"><span>可领取月数</span><b>{months}个月</b></div>
+        <div className="cr-item highlight"><span>失业金总计</span><b>¥{total.toLocaleString()}</b></div>
+        <div className="cr-item highlight"><span>N+1裁员赔偿（参考）</span><b>¥{nPlus1.toLocaleString()}</b></div>
+      </div>
+      <div className="calc-action">
+        <h4>📋 下一步行动</h4>
+        <ol>
+          <li>保存劳动合同、工资条、裁员通知等证据</li>
+          <li>离职60天内通过“随申办”APP申领失业金</li>
+          <li>如公司拒绝支付N+1，拨打12348申请劳动仲裁</li>
+          <li>离职当月办理灵活就业社保续缴</li>
+        </ol>
+      </div>
+      <p className="calc-disclaimer">ℹ️ 失业金标准各城市每年调整，以当地人社局最新公告为准。N+1赔偿为参考值，具体以劳动合同和实际工资为准。</p>
+    </div>
+  )
+}
+
+/* ═══════ 公积金提取计算器 ═══════ */
+function GjjWithdrawCalc() {
+  const [balance, setBalance] = useState(80000)
+  const [monthlyRent, setMonthlyRent] = useState(3000)
+  const [mode, setMode] = useState('leave')
+  const leaveAmount = balance
+  const rentMonthly = Math.min(monthlyRent, 3000)
+  const rentYearly = rentMonthly * 12
+  return (
+    <div className="calc-card">
+      <h3>🏦 公积金提取计算器</h3>
+      <p className="calc-note">离职后公积金可以提取，这是你的钱。</p>
+      <div className="calc-row"><label>提取方式</label>
+        <select value={mode} onChange={e=>setMode(e.target.value)}>
+          <option value="leave">离职提取（封存满6个月）</option>
+          <option value="rent">租房提取（每月可提）</option>
+        </select>
+      </div>
+      <div className="calc-row"><label>公积金账户余额：{balance.toLocaleString()}元</label>
+        <input type="range" min="5000" max="500000" step="1000" value={balance} onChange={e=>setBalance(+e.target.value)} />
+      </div>
+      {mode === 'rent' && (
+        <div className="calc-row"><label>月租金：{monthlyRent.toLocaleString()}元</label>
+          <input type="range" min="500" max="15000" step="100" value={monthlyRent} onChange={e=>setMonthlyRent(+e.target.value)} />
+        </div>
+      )}
+      <div className="calc-result">
+        {mode === 'leave' ? (
+          <>
+            <div className="cr-item highlight"><span>可一次性提取</span><b>¥{leaveAmount.toLocaleString()}</b></div>
+            <div className="cr-item"><span>提取条件</span><b>账户封存满6个月</b></div>
+            <div className="cr-item"><span>到账时间</span><b>3-5个工作日</b></div>
+          </>
+        ) : (
+          <>
+            <div className="cr-item"><span>每月可提取（上限3000元）</span><b>¥{rentMonthly.toLocaleString()}/月</b></div>
+            <div className="cr-item highlight"><span>每年可提取</span><b>¥{rentYearly.toLocaleString()}/年</b></div>
+            <div className="cr-item"><span>提取条件</span><b>无房+租房备案</b></div>
+          </>
+        )}
+      </div>
+      <div className="calc-action">
+        <h4>📋 下一步行动</h4>
+        <ol>
+          <li>确认公积金账户已封存（离职后单位办理）</li>
+          <li>封存满6个月后登录上海公积金网或随申办申请提取</li>
+          <li>租房提取需提供租房合同+发票</li>
+          <li>提取后资金转入本人银行卡，3-5工作日到账</li>
+        </ol>
+      </div>
+      <p className="calc-disclaimer">ℹ️ 各城市提取政策不同，上海租房提取上限3000元/月。具体以当地公积金中心最新规定为准。咨询热线：12329。</p>
+    </div>
+  )
+}
+
 /* ═══════════════════════════════════════════════════════
  * 工具容器（带区域支持）
  * ═══════════════════════════════════════════════════════ */
@@ -897,6 +1003,8 @@ export default function Tools({ regionKey = "national", toolParams, onNavigateDi
   const [active, setActive] = useState(initialTool || 0)
   const region = regions.find(r => r.key === regionKey)
   const tools = [
+    { label: '🆘 失业金', comp: UnemploymentCalc },
+    { label: '🏦 公积金提取', comp: GjjWithdrawCalc },
     { label: '👶 生育权益', comp: () => <BirthCalc regionKey={regionKey} /> },
     { label: '🏠 房贷对比', comp: () => <MortgageCalc params={toolParams} regionKey={regionKey} /> },
     { label: '🔄 换房退税', comp: TaxRefundCalc },
