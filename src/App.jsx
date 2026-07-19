@@ -2206,6 +2206,30 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
           </button>
         </div>
       )}
+      {/* 危机场景情感化设计：检测失业/裁员/断缴等关键词时显示安抚语+紧急求助 */}
+      {query && ['失业','裁员','断缴','离职','辞退','赔偿','公积金提取','社保断缴','医保断缴'].some(k => query.includes(k)) && (
+        <div className="crisis-banner">
+          <div className="crisis-empathy">
+            <span className="crisis-icon">🤝</span>
+            <div className="crisis-text">
+              <span className="crisis-title">我们理解你现在的处境，别慌，有办法。</span>
+              <span className="crisis-sub">以下政策可以帮到你，按紧急程度排序：</span>
+            </div>
+          </div>
+          <div className="crisis-actions">
+            <span className="crisis-tag crisis-urgent">🔴 失业金申领：2175元/月</span>
+            <span className="crisis-tag crisis-urgent">🔴 公积金可提取</span>
+            <span className="crisis-tag crisis-soon">🟡 社保灵活就业续缴</span>
+            <span className="crisis-tag crisis-soon">🟡 医保不能断</span>
+          </div>
+          <div className="crisis-hotline">
+            <span className="crisis-hotline-label">紧急求助：</span>
+            <a href="tel:12333" className="crisis-phone">📞 12333人社</a>
+            <a href="tel:12348" className="crisis-phone">📞 12348法律援助</a>
+            <a href="tel:12329" className="crisis-phone">📞 12329公积金</a>
+          </div>
+        </div>
+      )}
       {/* Scene cards (empty state) */}
       {!results && !query && (
         <div className="ps-scenes">
