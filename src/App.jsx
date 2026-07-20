@@ -2622,6 +2622,7 @@ function ApiDocs() {
 /* ═══════ 联播解读专栏 v2 — 高价值版 ═══════ */
 function NewsLianboPanel({ personaKey, stageKey, onNavigateDim, userProfile, lastVisit }) {
   const [activeTab, setActiveTab] = useState('foryou') // foryou | all | dims
+  const [srcFilter, setSrcFilter] = useState('all') // all | lianbo | news30
   const [selDim, setSelDim] = useState(null)
   const [expandedId, setExpandedId] = useState(null)
   const dimMeta = { housing: { icon: '🏠', label: '住房' }, employment: { icon: '💼', label: '就业' }, education: { icon: '🎓', label: '教育' }, pension: { icon: '👴', label: '养老' }, elderly: { icon: '👴', label: '养老' }, finance: { icon: '💰', label: '金融' }, industry: { icon: '🏭', label: '产业' } }
@@ -2642,7 +2643,12 @@ function NewsLianboPanel({ personaKey, stageKey, onNavigateDim, userProfile, las
     return { total, 利好, 利好Pct: Math.round(利好 / total * 100), latestDate: latest?.date, latestTitle: latest?.title?.slice(0, 30) }
   }, [])
 
-  const displayItems = activeTab === 'foryou' ? forYou : selDim ? (byDim.find(g => g.dim === selDim)?.items || []) : allNews.slice(0, 12)
+  const displayItems = useMemo(() => {
+    let items = activeTab === 'foryou' ? forYou : selDim ? (byDim.find(g => g.dim === selDim)?.items || []) : allNews.slice(0, 20)
+    if (srcFilter === 'lianbo') items = items.filter(n => (n.source || '').includes('新闻联播'))
+    if (srcFilter === 'news30') items = items.filter(n => (n.source || '').includes('新闻30分'))
+    return items
+  }, [activeTab, selDim, srcFilter, forYou, byDim, allNews])
 
   return (
     <div className="lianbo-dashboard">
@@ -2688,6 +2694,11 @@ function NewsLianboPanel({ personaKey, stageKey, onNavigateDim, userProfile, las
 
       {/* 新闻列表 */}
       <div className="lbd-news-list">
+        <div className="lbd-source-filter">
+          <button className={`lbd-src-btn ${srcFilter === 'all' ? 'active' : ''}`} onClick={() => setSrcFilter('all')}>全部</button>
+          <button className={`lbd-src-btn ${srcFilter === 'lianbo' ? 'active' : ''}`} onClick={() => setSrcFilter('lianbo')}>📺 新闻联播</button>
+          <button className={`lbd-src-btn ${srcFilter === 'news30' ? 'active' : ''}`} onClick={() => setSrcFilter('news30')}>📰 新闻30分</button>
+        </div>
         {displayItems.map((item, i) => (
           <div key={i} className={`lbd-news-card ${expandedId === i ? 'expanded' : ''}`} onClick={() => setExpandedId(expandedId === i ? null : i)}>
             <div className="lbd-nc-header">
