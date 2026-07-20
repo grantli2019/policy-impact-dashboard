@@ -3966,6 +3966,7 @@ function App() {
                           </span>
                           <span className="pl-name">{s.policyName}</span>
                           <span className="pl-dir" style={{ color: dirColor }}>{dirLabel}</span>
+                          {s.direction > 0 && s.breadth >= 7 && <span className="pl-value">≈¥{((s.breadth * s.depth * 1200) / 10000).toFixed(1)}万/年</span>}
                           <span className="policy-score-badge">广度<b>{s.breadth}</b> 深度<b>{s.depth}</b></span>
                           <span className="pl-conf">{s.confidence}</span>
                           <span className="pl-note">{s.note}</span>
