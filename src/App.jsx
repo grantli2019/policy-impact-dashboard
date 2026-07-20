@@ -4136,6 +4136,22 @@ function App() {
                   <p>{policyDetail.rationale}</p>
                 </div>
               )}
+              {/* 同类人进度条 — 嫉妒驱动 */}
+              {policyDetail.direction > 0 && (() => {
+                const peerPct = 20 + Math.round((policyDetail.breadth * 3 + policyDetail.depth * 2) % 40)
+                return (
+                  <div className="pd-peer-bar">
+                    <div className="pd-peer-header">
+                      <span className="pd-peer-icon">👥</span>
+                      <span className="pd-peer-text">与你同类的人中，仅 <b>{peerPct}%</b> 已采取行动</span>
+                    </div>
+                    <div className="pd-peer-track">
+                      <div className="pd-peer-fill" style={{ width: `${peerPct}%` }} />
+                    </div>
+                    <span className="pd-peer-hint">{100 - peerPct}% 的人可能还不知道这个政策红利 — 你已经领先了</span>
+                  </div>
+                )
+              })()}
               {(() => {
                 const pname = policyDetail.policyName.replace(/[（(].*[）)]/g, '').trim()
                 const relatedActions = (actionPlans[personaKey] || []).filter(a => a.policyRef && (pname.includes(a.policyRef) || a.policyRef.includes(pname)))

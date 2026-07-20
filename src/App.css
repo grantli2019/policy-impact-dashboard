@@ -4805,6 +4805,15 @@ a.policy-source-link:hover::after {
   border-radius: var(--r-sm);
   border: 1px solid var(--warning-border);
 }
+/* 同类人进度条 — 嫉妒驱动 */
+.pd-peer-bar { margin: 12px 0; padding: 12px 14px; background: var(--surface-alt); border-radius: var(--r-md); border: 1px solid var(--border-subtle); }
+.pd-peer-header { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.pd-peer-icon { font-size: 16px; }
+.pd-peer-text { font-size: 13px; color: var(--text-secondary); }
+.pd-peer-text b { color: var(--accent-orange); font-size: 15px; }
+.pd-peer-track { height: 8px; background: var(--gray-200); border-radius: var(--r-full); overflow: hidden; margin-bottom: 6px; }
+.pd-peer-fill { height: 100%; background: linear-gradient(90deg, var(--accent-orange), #f59e0b); border-radius: var(--r-full); transition: width 0.8s ease; }
+.pd-peer-hint { font-size: 11px; color: var(--text-muted); font-style: italic; }
 .pd-actions {
   display: flex;
   gap: 10px;
