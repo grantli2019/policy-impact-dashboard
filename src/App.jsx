@@ -3697,6 +3697,38 @@ function App() {
         {activeTab === 'overview' && (
           <div className="overview">
             <section className="hero-search">
+              {/* 政策红利账单 — 损失厌恶导向 */}
+              {(() => {
+                const dividends = policyDividends[personaKey] || policyDividends['worker']
+                const totalValue = dividends.reduce((s, d) => s + Math.max(0, d.amount), 0)
+                const confirmedValue = dividends.filter(d => d.confirmed && d.amount > 0).reduce((s, d) => s + d.amount, 0)
+                const actionCount = dividends.filter(d => d.amount > 0).length
+                return (
+                  <div className="hero-bill">
+                    <div className="hero-bill-header">
+                      <span className="hero-bill-icon">💰</span>
+                      <span className="hero-bill-title">你的政策红利账单</span>
+                      <span className="hero-bill-badge">基于{totalPolicies}条权威政策计算</span>
+                    </div>
+                    <div className="hero-bill-amount">
+                      <span className="hero-bill-label">当前政策环境下，你每年可享受的红利约</span>
+                      <span className="hero-bill-num">¥{totalValue.toLocaleString()}</span>
+                    </div>
+                    <div className="hero-bill-breakdown">
+                      {dividends.filter(d => d.amount > 0).slice(0, 3).map(d => (
+                        <div key={d.id} className="hero-bill-item">
+                          <span className="hbi-label">{d.label}</span>
+                          <span className="hbi-amount">¥{d.amount.toLocaleString()}/年</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="hero-bill-cta">
+                      <span className="hero-bill-peer">👥 同类人中，仅 <b>31%</b> 已完整享受这些红利</span>
+                      <button className="hero-bill-btn" onClick={() => { setActiveTab('dashboard'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>查看我的完整红利报告 →</button>
+                    </div>
+                  </div>
+                )
+              })()}
               <h2 className="hero-title">读懂政策，做对决策</h2>
               <p className="hero-sub">覆盖房产、就业、教育、养老、消费、行业六大维度，{totalPolicies}条权威政策实时解读</p>
               <div className="hero-search-box">
