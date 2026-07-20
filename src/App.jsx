@@ -4,7 +4,7 @@ import {
   dimensions, methodology, rubric, personas, weeklyUpdates, regions,
   calcDimensionScore, calcOverallIndex, getIndexLevel, keyFindings,
   getDimensionsForRegion, getTimelineForDimension, regionToolParams,
-  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, newsLianboUpdates, lifeRadar, searchScenes, getScoreTrend, calcScoreVsBaseline, getUnifiedActions, toggleUnifiedAction, getActionProgress,
+  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, newsLianboUpdates, news30Updates, lifeRadar, searchScenes, getScoreTrend, calcScoreVsBaseline, getUnifiedActions, toggleUnifiedAction, getActionProgress,
   detectUserCity, getSmartRecommendations, getRecommendReason, cityToRegion, inferLifeStage, lifeStages,
   enhancedTestimonials, getSimilarTestimonials, getPeerDiscoveries,
   getPolicyHealthCheck, getPolicyCompass, getWeeklyDigest, scenarioGroups, getScenarioImpacts,
@@ -2053,6 +2053,14 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
         res.push({ type: 'news', dim: n.dim, icon: dimMeta[n.dim] || '📺', dimLabel: '新闻联播', title: n.title, desc: n.summary?.slice(0,60), sentiment: n.sentiment, data: n.data, date: n.date })
       }
     })
+    news30Updates.forEach(n => {
+      const nTitle = n.title.toLowerCase()
+      const nSummary = n.summary.toLowerCase()
+      if (allKw.some(k => nTitle.includes(k) || nSummary.includes(k))) {
+        const dimMeta = { housing:'🏠', employment:'💼', education:'🎓', pension:'👴', finance:'💰', industry:'🏭' }
+        res.push({ type: 'news', dim: n.dim, icon: dimMeta[n.dim] || '📺', dimLabel: '新闻30分', title: n.title, desc: n.summary?.slice(0,60), sentiment: n.sentiment, data: n.data, date: n.date })
+      }
+    })
     weeklyUpdates.forEach(w => {
       const wText = w.text.toLowerCase()
       if (allKw.some(k => wText.includes(k))) {
@@ -2623,13 +2631,14 @@ function NewsLianboPanel({ personaKey, stageKey, onNavigateDim, userProfile, las
   // 个性化推荐（传入userProfile以计算个人匹配度）
   const forYou = useMemo(() => getNewsForPersona(personaKey || 'worker', 8, userProfile), [personaKey, JSON.stringify(userProfile || {})])
   const byDim = useMemo(() => getNewsByDimension(), [])
-  const allNews = useMemo(() => newsLianboUpdates.map(n => enrichNewsForPersona(n, personaKey || 'worker', userProfile)), [personaKey, JSON.stringify(userProfile || {})])
+  const allNews = useMemo(() => [...newsLianboUpdates, ...news30Updates].sort((a,b) => b.date.localeCompare(a.date)).map(n => enrichNewsForPersona(n, personaKey || 'worker', userProfile)), [personaKey, JSON.stringify(userProfile || {})])
 
   // 周报摘要统计
   const weeklyStats = useMemo(() => {
-    const total = newsLianboUpdates.length
-    const利好 = newsLianboUpdates.filter(n => n.sentiment === '利好').length
-    const latest = newsLianboUpdates[0]
+    const combined = [...newsLianboUpdates, ...news30Updates]
+    const total = combined.length
+    const利好 = combined.filter(n => n.sentiment === '利好').length
+    const latest = combined.sort((a,b) => b.date.localeCompare(a.date))[0]
     return { total, 利好, 利好Pct: Math.round(利好 / total * 100), latestDate: latest?.date, latestTitle: latest?.title?.slice(0, 30) }
   }, [])
 
