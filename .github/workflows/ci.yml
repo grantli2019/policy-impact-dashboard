@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint JavaScript
+        run: npm run lint
+
+      - name: Lint CSS
+        run: npm run lint:css
+        continue-on-error: true
+
+      - name: Validate data integrity
+        run: npm run validate
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Build production
+        run: npm run build
+
+      - name: Check bundle size
+        run: |
+          TOTAL=$(du -sk dist/assets/ | cut -f1)
+          echo "Bundle size: ${TOTAL}KB"
+          if [ "$TOTAL" -gt 1500 ]; then
+            echo "::warning::Bundle size exceeds 1.5MB (${TOTAL}KB)"
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
