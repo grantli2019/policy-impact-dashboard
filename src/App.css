@@ -146,6 +146,38 @@ a:hover { color: var(--p-600); }
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tabs-wrapper { position: sticky; top: 56px; z-index: 90; }
+
+/* ═══ 探索子导航 ═══ */
+.explore-subnav {
+  display: flex;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  max-width: 1200px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-soft);
+}
+.explore-subnav-btn {
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+  white-space: nowrap;
+}
+.explore-subnav-btn:hover {
+  border-color: var(--p-300);
+  color: var(--p-600);
+}
+.explore-subnav-btn.active {
+  background: var(--p-500);
+  border-color: var(--p-500);
+  color: #fff;
+}
 .tab {
   padding: 16px 20px;
   border: none;
@@ -188,6 +220,38 @@ a:hover { color: var(--p-600); }
 [data-theme="dark"] .hero-search {
   background: linear-gradient(180deg, rgba(45,91,255,0.1) 0%, transparent 100%);
 }
+
+/* ═══ P0: 政策窗口期提醒 ═══ */
+.urgency-strip {
+  max-width: 600px; margin: 0 auto 16px; padding: 14px 18px;
+  background: var(--warning-light); border: 1px solid var(--warning-border);
+  border-radius: var(--r-lg);
+}
+.urgency-header { font-size: 13px; font-weight: 700; color: var(--warning); margin-bottom: 10px; }
+.urgency-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.urgency-item:last-child { border-bottom: none; }
+.urgency-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); flex-shrink: 0; }
+.urgency-dot.urgent { background: var(--error); animation: subtlePulse 1.5s infinite; }
+.urgency-text { flex: 1; font-size: 13px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.urgency-days { font-size: 12px; font-weight: 700; color: var(--warning); font-family: var(--font-data); }
+.urgency-days.urgent { color: var(--error); }
+
+/* ═══ P0: 待办行动条 ═══ */
+.todo-strip {
+  max-width: 600px; margin: 0 auto 16px; padding: 14px 18px;
+  background: var(--info-light); border: 1px solid var(--p-200);
+  border-radius: var(--r-lg); cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: all var(--dur-fast);
+}
+.todo-strip:hover { border-color: var(--p-400); box-shadow: var(--sh-sm); }
+.todo-left { display: flex; align-items: center; gap: 10px; }
+.todo-icon { font-size: 18px; }
+.todo-text { font-size: 14px; color: var(--text); }
+.todo-arrow { font-size: 13px; font-weight: 600; color: var(--p-500); white-space: nowrap; }
 /* 政策红利账单 — 损失厌恶导向 */
 .hero-bill {
   text-align: left; margin: 0 auto 20px; max-width: 520px;
@@ -4805,6 +4869,15 @@ a.policy-source-link:hover::after {
   border-radius: var(--r-sm);
   border: 1px solid var(--warning-border);
 }
+/* P2: 评分方法透明化 */
+.pd-method-note {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin: 12px 0 16px; padding: 10px 14px;
+  background: var(--surface-alt); border-radius: var(--r-md);
+  border: 1px solid var(--border-subtle);
+}
+.pd-method-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.pd-method-text { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
 /* 同类人进度条 — 嫉妒驱动 */
 .pd-peer-bar { margin: 12px 0; padding: 12px 14px; background: var(--surface-alt); border-radius: var(--r-md); border: 1px solid var(--border-subtle); }
 .pd-peer-header { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
@@ -7212,5 +7285,14 @@ a.policy-source-link:hover::after {
   .tabs .tab-more-wrap { display: none; }
   .main { padding-bottom: 70px; }
   .footer { padding-bottom: 80px; }
+  /* P2: 移动端新组件适配 */
+  .explore-subnav { padding: 8px 12px; gap: 6px; }
+  .explore-subnav-btn { font-size: 12px; padding: 6px 12px; }
+  .urgency-strip { margin: 0 12px 12px; padding: 12px 14px; }
+  .urgency-text { font-size: 12px; }
+  .todo-strip { margin: 0 12px 12px; padding: 12px 14px; }
+  .todo-text { font-size: 13px; }
+  .hero-bill { margin: 0 12px 16px; padding: 14px 16px; }
+  .hero-bill-num { font-size: 26px; }
 }
 

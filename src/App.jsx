@@ -2936,6 +2936,14 @@ function App() {
 
   const handlePersonaSelect = (key) => {
     setPersonaKey(key); localStorage.setItem('persona', key); setShowModal(false)
+    // P1 Aha Moment: 选完画像立即展示具体红利数字
+    try {
+      const dividends = policyDividends[key] || []
+      const totalValue = dividends.reduce((s, d) => s + Math.max(0, d.amount), 0)
+      if (totalValue > 0) {
+        setTimeout(() => showToast(`🎉 作为${personas.find(p=>p.key===key)?.label || '你'}，你每年有 ¥${totalValue.toLocaleString()} 政策红利待申领！`, 'success'), 600)
+      }
+    } catch {}
   }
   const handleSkip = () => { sessionStorage.setItem('skipped', '1'); setShowModal(false) }
   const handleRegionChange = (key) => {
@@ -3065,14 +3073,14 @@ function App() {
       </header>
 
       <nav className="tabs" role="tablist" aria-label="主导航">
-        {[['overview','🏠 首页'],['radar','📡 雷达'],['dimensions','📋 政策库'],['tools','🧮 工具箱'],['dashboard','👤 我的']].map(([k, label]) => (
-          <button key={k} className={`tab ${activeTab===k?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k)}>{label}</button>
+        {[['overview','🏠 首页'],['explore','🔍 探索'],['tools','🧮 工具'],['dashboard','👤 我的']].map(([k, label]) => (
+          <button key={k} className={`tab ${['overview','explore','tools','dashboard'].includes(activeTab) && (activeTab===k || (k==='explore' && ['radar','dimensions','topics'].includes(activeTab)))?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k === 'explore' ? 'radar' : k)}>{label}</button>
         ))}
         <div className="tab-more-wrap">
-          <button className={`tab tab-more ${['topics','methodology','graph','api','monitor','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }} aria-label="更多功能" aria-expanded={moreOpen}>⋯ 更多</button>
+          <button className={`tab tab-more ${['monitor','methodology','graph','api','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }} aria-label="更多" aria-expanded={moreOpen}>⋯</button>
           {moreOpen && (
             <div className="tab-dropdown">
-              {[['topics','🎯 专题'],['monitor','🔔 监控'],['methodology','🔬 方法论'],['graph','🕸️ 图谱'],['api','🔌 API'],['about','🧭 关于']].map(([k, label]) => (
+              {[['monitor','🔔 监控'],['methodology','🔬 方法论'],['about','🧭 关于']].map(([k, label]) => (
                 <button key={k} className={`tab-drop-item ${activeTab===k?'active':''}`} onClick={() => { switchTab(k); setMoreOpen(false); }}>{label}</button>
               ))}
             </div>
@@ -3148,11 +3156,47 @@ function App() {
             })()}
 
             <PolicyStatsBar totalPolicies={totalPolicies} />
-            
-            {/* P0: 价值感知横幅 — 用户进入首页立即感知价值 */}
-            <ValuePerceptionBanner personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'}
-              onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}} />
-            
+
+            {/* ═══ P0: 政策窗口期提醒（紧迫感） ═══ */}
+            {(() => {
+              const upcoming = deadlines.filter(d => {
+                const days = Math.ceil((new Date(d.date) - new Date()) / 86400000)
+                return days > 0 && days <= 60
+              }).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 3)
+              if (!upcoming.length) return null
+              return (
+                <div className="urgency-strip">
+                  <div className="urgency-header">⏰ 即将到期</div>
+                  {upcoming.map((d, i) => {
+                    const days = Math.ceil((new Date(d.date) - new Date()) / 86400000)
+                    return (
+                      <div key={i} className="urgency-item" onClick={() => { setActiveTab('dimensions'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
+                        <span className={`urgency-dot ${days <= 14 ? 'urgent' : ''}`} />
+                        <span className="urgency-text">{d.title || d.event}</span>
+                        <span className={`urgency-days ${days <= 14 ? 'urgent' : ''}`}>{days}天</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              )
+            })()}
+
+            {/* ═══ P0: 待办行动（行动驱动） ═══ */}
+            {(() => {
+              const prog = getActionProgress(personaKey || '', '')
+              if (!prog.total) return null
+              const pending = prog.total - prog.done
+              return (
+                <div className="todo-strip" onClick={() => { setActiveTab('radar'); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}>
+                  <div className="todo-left">
+                    <span className="todo-icon">📋</span>
+                    <span className="todo-text">你有 <b>{pending}</b> 项政策行动待完成</span>
+                  </div>
+                  <span className="todo-arrow">去处理 →</span>
+                </div>
+              )
+            })()}
+
             <SmartRecommendations 
               personaKey={personaKey} 
               regionKey={regionKey} 
@@ -3161,20 +3205,6 @@ function App() {
               onSwitchTab={(tab) => { setActiveTab(tab); setTabKey(k=>k+1); window.scrollTo({top:0,behavior:'smooth'}) }}
               onNavigateDim={(key) => { setSelectedDim(key); setTabKey(k=>k+1) }}
             />
-
-            <DiscoveryPanel personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'}
-              regionKey={regionKey} userCity={userCity} userAge={userAge}
-              onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}}
-              onNavigateDim={(key)=>{setSelectedDim(key);setTabKey(k=>k+1)}}
-              setShowHealthCheck={setShowHealthCheck} setShowQuiz={setShowQuiz} setShowWeeklyDigest={setShowWeeklyDigest} />
-
-            <DailyChallengeCard challenge={(()=>{try{return getDailyChallenge(personaKey,getUserProfile())}catch{return null}})()}
-            personaKey={personaKey}
-            onStart={()=>setShowDailyChallenge(true)} />
-
-            <PolicyCompassPanel personaKey={personaKey} userProfile={(()=>{try{return getUserProfile()||{}}catch(e){return {}}})()}
-              autoExpand={compassAutoExpand} onAutoExpandHandled={()=>setCompassAutoExpand(false)}
-              onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}} />
 
             <div className={overviewCollapsed ? 'section-collapsed' : 'section-expanded'}>
               <RegionSelector value={regionKey} onChange={handleRegionChange} />
@@ -3280,6 +3310,14 @@ function App() {
                 + 展开更多内容（政策总览、热点、雷达等）
               </button>
             )}
+          </div>
+        )}
+        {/* ════════ 探索区域（雷达+政策库+专题 合并） ════════ */}
+        {['radar','dimensions','topics'].includes(activeTab) && (
+          <div className="explore-subnav">
+            {[['radar','📡 人生雷达'],['dimensions','📋 政策库'],['topics','🎯 专题']].map(([k, label]) => (
+              <button key={k} className={`explore-subnav-btn ${activeTab===k?'active':''}`} onClick={() => { setActiveTab(k); setTabKey(prev=>prev+1); window.scrollTo({top:0,behavior:'smooth'}) }}>{label}</button>
+            ))}
           </div>
         )}
         {/* ════════ 人生雷达 ════════ */}
@@ -3525,6 +3563,11 @@ function App() {
                   <p>{policyDetail.rationale}</p>
                 </div>
               )}
+              {/* P2: 评分方法透明化 — 解决"信不过"痛点 */}
+              <div className="pd-method-note">
+                <span className="pd-method-icon">🔬</span>
+                <span className="pd-method-text">评分基于 OECD RIA 框架：影响广度({policyDetail.breadth}/10) × 深远程度({policyDetail.depth}/10) × 方向 × 确定性({policyDetail.confidence})，数据来源为政府官方网站。</span>
+              </div>
               {/* 同类人进度条 — 嫉妒驱动 */}
               {policyDetail.direction > 0 && (() => {
                 const peerPct = 20 + Math.round((policyDetail.breadth * 3 + policyDetail.depth * 2) % 40)
@@ -3812,11 +3855,7 @@ function App() {
         onClose={()=>setShowNotifPanel(false)}
         personaKey={personaKey} stageKey={lifeRadar.personaStageMap[personaKey]||'mid_career'} regionKey={regionKey}
         onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1);window.scrollTo({top:0,behavior:'smooth'})}} />
-      <DailyChallengeModal show={showDailyChallenge} onClose={()=>setShowDailyChallenge(false)}
-        challenge={(()=>{try{return getDailyChallenge(personaKey,getUserProfile())}catch{return null}})()}
-        personaKey={personaKey} userProfile={(()=>{try{return getUserProfile()||{}}catch{return {}}})()}
-        setNotifCount={setNotifCount} />
-      <WrongAnswerBook show={showWrongBook} onClose={()=>setShowWrongBook(false)} />
+      {/* [P1瘦身] 每日挑战和错题本已移除，聚焦核心决策价值 */}
       <ShareReportModal show={showShareModal} onClose={()=>setShowShareModal(false)} />
       <TimeMachinePanel show={showTimeMachine} onClose={()=>setShowTimeMachine(false)} />
       <DecisionProjectPanel show={showDecisionProject} onClose={()=>setShowDecisionProject(false)} onSwitchTab={(tab)=>{setActiveTab(tab);setTabKey(k=>k+1)}} />
