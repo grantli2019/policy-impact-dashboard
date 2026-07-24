@@ -3425,6 +3425,17 @@ a.policy-source-link:hover::after {
 .ps-impact-badge.impact-mid { background: rgba(245,166,35,0.12); color: #f5a623; }
 .ps-impact-badge.impact-low { background: rgba(149,165,166,0.12); color: #95a5a6; }
 .ps-ri-link { color: var(--p-500); text-decoration: none; font-size: 1rem; flex-shrink: 0; }
+/* P0: 搜索结果行动按钮 */
+.ps-ri-action {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--p-500);
+  cursor: pointer;
+  font-weight: 500;
+  padding: 4px 0;
+  transition: opacity var(--dur-fast);
+}
+.ps-ri-action:hover { opacity: 0.7; text-decoration: underline; }
 
 /* ═══ 搜索建议下拉面板 ═══ */
 .ps-suggestions {
@@ -3530,6 +3541,16 @@ a.policy-source-link:hover::after {
   .ledger-grid { grid-template-columns: 1fr; }
   .profile-header { flex-wrap: wrap; }
   .ps-results { max-height: 320px; }
+  /* P1: 移动端信息密度优化 — 搜索结果精简 */
+  .ps-result-item { padding: 8px 12px; gap: 8px; }
+  .ps-ri-desc { display: none; }
+  .ps-ri-meta { flex-wrap: wrap; gap: 4px; }
+  .ps-ri-conf { display: none; }
+  .ps-ri-action { font-size: 11px; }
+  .ps-summary-card { padding: 10px 12px; }
+  /* P1: 政策详情移动端精简 */
+  .pd-method-note { font-size: 11px; }
+  .pd-peer-bar { display: none; }
 }
 
 /* ═══ P2: 付费墙 + 升级模态框 ═══ */
@@ -6266,6 +6287,18 @@ a.policy-source-link:hover::after {
   .sc-score-area { flex-direction: column; align-items: flex-start; }
 }
 
+/* ═══ 评分通俗化表达（政策详情弹窗） ═══ */
+.pd-plain-score {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary, #555);
+  margin-top: 2px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+[data-theme="dark"] .pd-plain-score {
+  color: var(--text-secondary, #aaa);
+}
 /* ═══ 评分rubric提示（政策详情弹窗） ═══ */
 .pd-rubric-hint {
   display: block;

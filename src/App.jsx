@@ -50,6 +50,23 @@ function getRubricHint(type, score) {
   return match ? match.criteria : '';
 }
 
+// P0: 通俗化表达 — 将 breadth/depth 数字转为用户能理解的语言
+function getPlainScore(type, score) {
+  if (type === 'breadth') {
+    if (score >= 9) return '影响几乎所有人'
+    if (score >= 7) return '影响数千万人'
+    if (score >= 5) return '影响特定群体'
+    return '影响少数人'
+  }
+  if (type === 'depth') {
+    if (score >= 9) return '根本性制度变革'
+    if (score >= 7) return '长期结构性影响'
+    if (score >= 5) return '中期政策调整'
+    return '短期窗口性变化'
+  }
+  return ''
+}
+
 // Lazy-loaded components
 const Tools = lazy(() => import('./Tools'));
 const ShareCard = lazy(() => import('./components/ShareCard'));
@@ -1734,6 +1751,12 @@ function PolicySearch({ onSwitchTab, variant, onNavigateDim }) {
                       {r.data && r.data.length > 0 && <span className="ps-ri-data">{r.data[0]}</span>}
                       {r.date && <span className="ps-ri-date">{r.date}</span>}
                     </div>
+                    {/* P0: 下一步行动按钮 */}
+                    {r.type === 'policy' && r.dim && (
+                      <div className="ps-ri-action" onClick={e => { e.stopPropagation(); onSwitchTab('tools'); }}>
+                        ⚡ 下一步：用计算器测算对你的具体影响 →
+                      </div>
+                    )}
                   </div>
                   {r.url && <a className="ps-ri-link" href={r.url} target="_blank" rel="noopener" onClick={e => e.stopPropagation()}>↗</a>}
                 </div>
@@ -3539,12 +3562,12 @@ function App() {
                 <div className="pd-score-item">
                   <span className="pds-label">影响广度</span>
                   <RatingBar value={policyDetail.breadth} color="#1677ff" />
-                  <span className="pd-rubric-hint">{getRubricHint('breadth', policyDetail.breadth)}</span>
+                  <span className="pd-plain-score">{getPlainScore('breadth', policyDetail.breadth)}</span>
                 </div>
                 <div className="pd-score-item">
                   <span className="pds-label">深远程度</span>
                   <RatingBar value={policyDetail.depth} color="#722ed1" />
-                  <span className="pd-rubric-hint">{getRubricHint('depth', policyDetail.depth)}</span>
+                  <span className="pd-plain-score">{getPlainScore('depth', policyDetail.depth)}</span>
                 </div>
                 <div className="pd-score-item">
                   <span className="pds-label">影响方向</span>
@@ -3566,7 +3589,7 @@ function App() {
               {/* P2: 评分方法透明化 — 解决"信不过"痛点 */}
               <div className="pd-method-note">
                 <span className="pd-method-icon">🔬</span>
-                <span className="pd-method-text">评分基于 OECD RIA 框架：影响广度({policyDetail.breadth}/10) × 深远程度({policyDetail.depth}/10) × 方向 × 确定性({policyDetail.confidence})，数据来源为政府官方网站。</span>
+                <span className="pd-method-text">评分基于 OECD RIA 框架：{getPlainScore('breadth', policyDetail.breadth)}（广度{policyDetail.breadth}/10）× {getPlainScore('depth', policyDetail.depth)}（深度{policyDetail.depth}/10）× 方向 × 确定性({policyDetail.confidence})。数据来源为政府官方网站，最后验证于 {DATA_LAST_UPDATED_CN}。</span>
               </div>
               {/* 同类人进度条 — 嫉妒驱动 */}
               {policyDetail.direction > 0 && (() => {
