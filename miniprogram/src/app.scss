@@ -1,0 +1,24 @@
+/* 策查查小程序全局样式 */
+page {
+  background-color: #f5f6f8;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 28px;
+  color: #1a1a2e;
+  line-height: 1.6;
+}
+
+/* 通用容器 */
+.container {
+  padding: 24px 32px;
+}
+
+/* 品牌色变量 */
+$primary: #1a56db;
+$success: #10b981;
+$warning: #f59e0b;
+$danger: #ef4444;
+$text: #1a1a2e;
+$text-secondary: #4a5568;
+$text-muted: #8c95a6;
+$surface: #ffffff;
+$border: #e5e9f0;

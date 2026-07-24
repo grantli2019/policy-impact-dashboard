@@ -1,0 +1,130 @@
+.calc-page {
+  padding: 24px 32px;
+}
+
+.tool-tabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.tool-tab {
+  flex: 1;
+  background: #fff;
+  border: 2px solid #e5e9f0;
+  border-radius: 16px;
+  padding: 20px 12px;
+  text-align: center;
+  transition: all 0.2s;
+}
+.tool-tab.active {
+  border-color: #1a56db;
+  background: #eef3ff;
+}
+.tool-tab-icon {
+  display: block;
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+.tool-tab-name {
+  display: block;
+  font-size: 22px;
+  color: #4a5568;
+  font-weight: 500;
+}
+.tool-tab.active .tool-tab-name {
+  color: #1a56db;
+  font-weight: 600;
+}
+
+.calc-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid #e5e9f0;
+}
+.calc-title {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 32px;
+}
+
+.calc-field {
+  margin-bottom: 32px;
+}
+.calc-label {
+  display: block;
+  font-size: 26px;
+  color: #4a5568;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.calc-results {
+  background: #f8f9fc;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+}
+.calc-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e9f0;
+}
+.calc-result-item:last-child {
+  border-bottom: none;
+}
+.calc-result-label {
+  font-size: 26px;
+  color: #4a5568;
+}
+.calc-result-value {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+.calc-result-value.highlight {
+  color: #1a56db;
+}
+.calc-result-value.warning {
+  color: #f59e0b;
+}
+
+.calc-info {
+  background: #f8f9fc;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+}
+.calc-info-title {
+  display: block;
+  font-size: 24px;
+  color: #4a5568;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.calc-info-item {
+  display: block;
+  font-size: 24px;
+  color: #8c95a6;
+  padding: 4px 0;
+}
+
+.calc-placeholder {
+  text-align: center;
+  padding: 60px 0;
+}
+.placeholder-text {
+  display: block;
+  font-size: 28px;
+  color: #4a5568;
+  margin-bottom: 12px;
+}
+.placeholder-hint {
+  display: block;
+  font-size: 24px;
+  color: #8c95a6;
+}

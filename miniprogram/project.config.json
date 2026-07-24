@@ -1,0 +1,16 @@
+{
+  "miniprogramRoot": "dist/",
+  "projectname": "cechacha-miniprogram",
+  "description": "策查查 — 读懂政策，做对决策",
+  "appid": "touristappid",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "enhance": false,
+    "compileHotReLoad": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "condition": {}
+}
