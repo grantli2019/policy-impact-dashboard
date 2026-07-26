@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1B2838"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#C8860A"/>
+  <text x="100" y="200" font-family="system-ui,-apple-system,sans-serif" font-size="72" font-weight="800" fill="#FFFFFF">策查查</text>
+  <text x="100" y="290" font-family="system-ui,-apple-system,sans-serif" font-size="36" fill="#9AA5B1">读懂政策，做对决策</text>
+  <text x="100" y="400" font-family="system-ui,-apple-system,sans-serif" font-size="28" fill="#52606D">房产 · 就业 · 教育 · 养老 · 金融 · 行业</text>
+  <text x="100" y="450" font-family="system-ui,-apple-system,sans-serif" font-size="28" fill="#52606D">六维度政策影响评估 | OECD RIA 框架 | 免费测算</text>
+  <rect x="100" y="510" width="240" height="56" rx="8" fill="#C8860A"/>
+  <text x="140" y="547" font-family="system-ui,-apple-system,sans-serif" font-size="24" font-weight="600" fill="#FFFFFF">立即免费测算</text>
+  <text x="900" y="580" font-family="system-ui,-apple-system,sans-serif" font-size="20" fill="#3D5066">cechacha.com</text>
+</svg>
