@@ -3096,15 +3096,23 @@ function App() {
       </header>
 
       <nav className="tabs" role="tablist" aria-label="主导航">
-        {[['overview','🏠 首页'],['explore','🔍 探索'],['tools','🧮 工具'],['dashboard','👤 我的']].map(([k, label]) => (
-          <button key={k} className={`tab ${['overview','explore','tools','dashboard'].includes(activeTab) && (activeTab===k || (k==='explore' && ['radar','dimensions','topics'].includes(activeTab)))?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k === 'explore' ? 'radar' : k)}>{label}</button>
+        {[['overview','icon-home','首页'],['explore','icon-explore','探索'],['tools','icon-tools','工具'],['dashboard','icon-user','我的']].map(([k, icon, label]) => (
+          <button key={k} className={`tab ${['overview','explore','tools','dashboard'].includes(activeTab) && (activeTab===k || (k==='explore' && ['radar','dimensions','topics'].includes(activeTab)))?'active':''}`} role="tab" aria-selected={activeTab===k} onClick={() => switchTab(k === 'explore' ? 'radar' : k)}>
+            <svg className="tab-icon"><use href={`#${icon}`}/></svg>
+            <span>{label}</span>
+          </button>
         ))}
         <div className="tab-more-wrap">
-          <button className={`tab tab-more ${['monitor','methodology','graph','api','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }} aria-label="更多" aria-expanded={moreOpen}>⋯</button>
+          <button className={`tab tab-more ${['monitor','methodology','graph','api','about'].includes(activeTab)?'active':''}`} onClick={(e) => { e.stopPropagation(); setMoreOpen(!moreOpen); }} aria-label="更多" aria-expanded={moreOpen}>
+            <svg className="tab-icon"><use href="#icon-more"/></svg>
+          </button>
           {moreOpen && (
             <div className="tab-dropdown">
-              {[['monitor','🔔 监控'],['methodology','🔬 方法论'],['about','🧭 关于']].map(([k, label]) => (
-                <button key={k} className={`tab-drop-item ${activeTab===k?'active':''}`} onClick={() => { switchTab(k); setMoreOpen(false); }}>{label}</button>
+              {[['monitor','icon-bell','监控'],['methodology','icon-book','方法论'],['about','icon-compass','关于']].map(([k, icon, label]) => (
+                <button key={k} className={`tab-drop-item ${activeTab===k?'active':''}`} onClick={() => { switchTab(k); setMoreOpen(false); }}>
+                  <svg className="tab-icon-sm"><use href={`#${icon}`}/></svg>
+                  <span>{label}</span>
+                </button>
               ))}
             </div>
           )}
