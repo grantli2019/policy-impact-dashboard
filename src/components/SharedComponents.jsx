@@ -2,7 +2,7 @@
  * 策查查 — 共享UI组件
  * 从 App.jsx 提取的独立展示组件
  */
-import { regions, personas } from '../data/impactData'
+import { regions, personas } from '../data/core'
 
 /* 信任框架徽章 */
 export function TrustBadges() {

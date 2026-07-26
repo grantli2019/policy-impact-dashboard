@@ -1,9 +1,6 @@
 import { useState, useMemo } from 'react'
-import {
-  submitDailyChallenge, submitInsightVote, updateUserTier, getNotificationCount, getStreak,
-  getDailyQuizQuestions, getFullQuizQuestions, getRegionQuizQuestions, getQuizHistory,
-  recordQuizAttempt, getQuizStats, scoreSelfTest, addWrongAnswer,
-} from '../data/impactData'
+import { getDailyQuizQuestions, getFullQuizQuestions, getRegionQuizQuestions, getQuizHistory, recordQuizAttempt, getQuizStats, scoreSelfTest } from '../data/quiz'
+import { submitDailyChallenge, submitInsightVote, updateUserTier, getNotificationCount, getStreak, addWrongAnswer } from '../data/gamification'
 
 /* ═══════ 每日洞察挑战弹窗 v2 ═══════ */
 export function DailyChallengeModal({ show, onClose, challenge, personaKey, userProfile, setNotifCount }) {

@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import { regions, birthPolicy, taxOptimizer, pensionCalc, citySettlementData, calcSettlementScore, calcHouseQualify, citySubsidies, calcEligibleSubsidies, calcGjjSavings, saveToolResult } from './data/impactData'
+import { regions } from './data/core'
+import { birthPolicy, taxOptimizer, pensionCalc } from './data/topics'
+import { citySettlementData, calcSettlementScore, calcHouseQualify, citySubsidies, calcEligibleSubsidies, calcGjjSavings } from './data/life'
+import { saveToolResult } from './data/gamification'
 import './App.css'
 
 /* ═══════ 可复用Slider组件（带min/max标注） ═══════ */

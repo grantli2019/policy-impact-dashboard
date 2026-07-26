@@ -1,4 +1,4 @@
-import { crossLinks } from '../data/impactData'
+import { crossLinks } from '../data/content'
 
 export default function PolicyCrossLinks() {
   return (

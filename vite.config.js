@@ -20,8 +20,9 @@ export default defineConfig({
           if (id.includes('node_modules/zustand')) {
             return 'vendor';
           }
-          // 政策数据（最大块，独立加载）
-          if (id.includes('src/data/impactData')) {
+          // 政策数据模块（拆分为 core/content/topics/news/life/quiz/gamification/signals）
+          // 统一放入独立 chunk 并行加载，不阻塞主 JS
+          if (id.includes('src/data/') && !id.includes('node_modules')) {
             return 'policy-data';
           }
           // 工具计算器（懒加载）

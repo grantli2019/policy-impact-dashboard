@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
-import {
-  personas, regions, dimensions, crossLinks, actionPlans, policyDividends, premiumFeatures,
-  getDimensionsForRegion, calcDimensionScore, calcOverallIndex, getIndexLevel,
-  getSmartRecommendations, getRegionComparison,
-} from '../data/impactData'
+import { personas, regions, dimensions, getDimensionsForRegion, calcDimensionScore, calcOverallIndex, getIndexLevel } from '../data/core'
+import { crossLinks, actionPlans, policyDividends } from '../data/content'
+import { premiumFeatures, getSmartRecommendations } from '../data/topics'
+import { getRegionComparison } from '../data/gamification'
 
 /* ═══════ A2: PDF 报告导出 ═══════ */
 export function ReportExport({ personaKey, regionKey, onClose }) {

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import {
-  dimensions, searchScenes, newsLianboUpdates, news30Updates,
-  weeklyUpdates, keyFindings, specialTopics,
-} from '../data/impactData'
+import { dimensions, weeklyUpdates, keyFindings } from '../data/core'
+import { searchScenes } from '../data/content'
+import { specialTopics } from '../data/topics'
+import { newsLianboUpdates, news30Updates } from '../data/news'
 
 function getTier() { return localStorage.getItem('user_tier') || 'free' }
 function isPremium() { return getTier() !== 'free' }

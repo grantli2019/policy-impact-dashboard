@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { actionPlans, policyDividends, deadlines } from '../data/impactData'
+import { actionPlans, policyDividends, deadlines } from '../data/content'
 
 /* ═══════ A1: 行动成果可视化 (Savings Dashboard) ═══════ */
 export function SavingsDashboard({ personaKey }) {

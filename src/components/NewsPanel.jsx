@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react'
-import {
-  personas, deadlines, newsLianboUpdates, news30Updates,
-  enrichNewsForPersona, getNewsForPersona, getNewsByDimension,
-} from '../data/impactData'
+import { personas } from '../data/core'
+import { deadlines } from '../data/content'
+import { newsLianboUpdates, news30Updates, enrichNewsForPersona, getNewsForPersona, getNewsByDimension } from '../data/news'
 
 /* ═══════ 新闻联播面板 ═══════ */
 export default function NewsLianboPanel({ personaKey, stageKey, onNavigateDim, userProfile, lastVisit }) {

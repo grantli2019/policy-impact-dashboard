@@ -1,9 +1,7 @@
 import { useState } from 'react'
-import {
-  personas, regions, crossLinks, decisionScenarios,
-  getDimensionsForRegion, getTimelineForDimension, legislativeOutlook,
-  calcDimensionScore, calcOverallIndex, getIndexLevel,
-} from '../../data/impactData'
+import { personas, regions, getDimensionsForRegion, getTimelineForDimension, calcDimensionScore, calcOverallIndex, getIndexLevel } from '../../data/core'
+import { crossLinks, legislativeOutlook } from '../../data/content'
+import { decisionScenarios } from '../../data/topics'
 
 /* ═══════ 历史时间线 ═══════ */
 export function Timeline({ dimKey }) {

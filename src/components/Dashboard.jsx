@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import {
-  personas, actionPlans, policyDividends,
-  getDimensionsForRegion, calcDimensionScore, calcOverallIndex, getIndexLevel,
-} from '../data/impactData'
+import { personas, getDimensionsForRegion, calcDimensionScore, calcOverallIndex, getIndexLevel } from '../data/core'
+import { actionPlans, policyDividends } from '../data/content'
 
 /* ═══════ B3: 个人仪表盘 ═══════ */
 export default function Dashboard({ personaKey, regionKey, bookmarks, onSwitchTab, userCity, userRegion, RegionComparisonPanel, PolicyCalendar }) {

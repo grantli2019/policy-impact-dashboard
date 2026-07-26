@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
-import { personas, regions, calcOverallIndex, getIndexLevel, calcDimensionScore, getDimensionsForRegion, policyDividends } from '../data/impactData'
+import { personas, regions, calcOverallIndex, getIndexLevel, calcDimensionScore, getDimensionsForRegion } from '../data/core'
+import { policyDividends } from '../data/content'
 
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y)

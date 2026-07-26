@@ -1,28 +1,31 @@
 import React, { Suspense, lazy } from 'react'
 import { useState, useRef, useEffect, useCallback, useMemo, memo } from 'react'
 import {
-  dimensions, methodology, rubric, personas, weeklyUpdates, regions,
+  dimensions, rubric, personas, weeklyUpdates, regions,
   calcDimensionScore, calcOverallIndex, getIndexLevel, keyFindings,
   getDimensionsForRegion, getTimelineForDimension, regionToolParams,
-  legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, specialTopics, decisionScenarios, policyMilestones, policyGlossary, rentalQuiz, premiumFeatures, recommendations, newsLianboUpdates, news30Updates, lifeRadar, searchScenes, getScoreTrend, calcScoreVsBaseline, getUnifiedActions, toggleUnifiedAction, getActionProgress,
-  detectUserCity, getSmartRecommendations, getRecommendReason, cityToRegion, inferLifeStage, lifeStages,
-  enhancedTestimonials, getSimilarTestimonials, getPeerDiscoveries,
-  getPolicyHealthCheck, getPolicyCompass, getWeeklyDigest, scenarioGroups, getScenarioImpacts,
-  domainMeta,
-  selfTestQuestions, scoreSelfTest, getBlindspotCost, getDailyQuizQuestions, getFullQuizQuestions, getRegionQuizQuestions, getQuizHistory, recordQuizAttempt, getQuizStats,
+} from './data/core'
+import { methodology, legislativeOutlook, crossLinks, actionPlans, policyDividends, deadlines, policyMilestones, policyGlossary, searchScenes } from './data/content'
+import { specialTopics, decisionScenarios, rentalQuiz, premiumFeatures, recommendations, detectUserCity, getSmartRecommendations, getRecommendReason, cityToRegion, inferLifeStage, lifeStages } from './data/topics'
+import { newsLianboUpdates, news30Updates, enrichNewsForPersona, getNewsForPersona, getNewsByDimension } from './data/news'
+import { lifeRadar, getScoreTrend, calcScoreVsBaseline, getUnifiedActions, toggleUnifiedAction, getActionProgress } from './data/life'
+import { selfTestQuestions, scoreSelfTest, getBlindspotCost, getDailyQuizQuestions, getFullQuizQuestions, getRegionQuizQuestions, getQuizHistory, recordQuizAttempt, getQuizStats, enhancedTestimonials, scenarioGroups, getScenarioImpacts, achievementDefs } from './data/quiz'
+import {
+  getSimilarTestimonials, getPeerDiscoveries,
   getPolicyAlerts, getPolicySubscriptions, togglePolicySubscription,
   submitUserTestimonial, getUserTestimonials, getAllTestimonials,
   getUserProfile, saveUserProfile, saveToolResult, getToolResults,
   getDailyChallenge, submitDailyChallenge, getInsightVotes, submitInsightVote, getStreak, getTodayChallengeDone,
   getUserTier, updateUserTier, getWrongAnswers, addWrongAnswer, markWrongAnswerMastered,
   getValueSummary, getNotificationCount,
-  getUserAchievements, checkAndAwardAchievements, getUserStats, achievementDefs,
+  getUserAchievements, checkAndAwardAchievements, getUserStats,
   getRealizedValue, getUrgencyItems, recordGrowthSnapshot, getGrowthHistory,
   getShareReport, markShared,
   getDecisionProjects, createDecisionProject, updateDecisionProject, deleteDecisionProject,
   getTimeMachineScenarios, checkMilestones, getRegionComparison,
-  enrichNewsForPersona, getNewsForPersona, getNewsByDimension,
-} from './data/impactData'
+  getPolicyHealthCheck, getWeeklyDigest,
+} from './data/gamification'
+import { getPolicyCompass, domainMeta } from './data/signals'
 import './App.css'
 
 /* ═══ 重构模块导入 ═══ */

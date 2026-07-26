@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { newsLianboUpdates } from '../data/impactData'
+import { newsLianboUpdates } from '../data/news'
 
 function getTier() { return localStorage.getItem('user_tier') || 'free' }
 

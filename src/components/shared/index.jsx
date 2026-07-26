@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { personas, regions } from '../../data/impactData'
+import { personas, regions } from '../../data/core'
 
 /* ═══════ 画像选择器 ═══════ */
 export function PersonaModal({ onSelect, onSkip }) {

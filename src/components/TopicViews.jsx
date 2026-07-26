@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { specialTopics, rentalQuiz } from '../data/impactData'
+import { specialTopics, rentalQuiz } from '../data/topics'
 
 /* ═══════ 场景化专题（Special Topic） ═══════ */
 export function SpecialTopicView({ topic, personaKey }) {

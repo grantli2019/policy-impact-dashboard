@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
-import {
-  lifeRadar, personas, calcDimensionScore, getIndexLevel,
-  getUnifiedActions, toggleUnifiedAction,
-} from '../data/impactData'
+import { personas, calcDimensionScore, getIndexLevel } from '../data/core'
+import { lifeRadar, getUnifiedActions, toggleUnifiedAction } from '../data/life'
 
 /* ═══════ 雷达扫描逻辑 ═══════ */
 function runRadarScan(stageKey, currentDims) {
